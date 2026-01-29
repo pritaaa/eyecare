@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:eye_care_app/screens/clinic_screen.dart';
 import 'package:eye_care_app/screens/test_screen.dart';
 import 'package:eye_care_app/screens/timers_screen.dart';
-import 'package:flutter/material.dart';
 import 'tips_screen.dart';
+import 'package:eye_care_app/theme/app_colors.dart';
+import 'package:eye_care_app/theme/app_text.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,11 +12,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.biru,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
               /// ================= HEADER =================
@@ -23,7 +24,7 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF3B82F6), Color(0xFF14B8A6)],
+                    colors: [AppColors.biru, AppColors.biru],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -36,7 +37,7 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hello 👋',
+                      'Welcome back 👋',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -45,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      'How are your eyes today?',
+                      'Take care of your eyes today',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
@@ -57,8 +58,8 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              /// ================= DAILY REMINDER =================
-              _dailyReminder(),
+              /// ================= TIPS CAROUSEL =================
+              const TipsCarousel(),
 
               const SizedBox(height: 20),
 
@@ -69,14 +70,14 @@ class HomeScreen extends StatelessWidget {
                   children: const [
                     _StatCard(
                       value: '4.2h',
-                      label: 'Screen time today',
-                      color: Colors.blue,
+                      label: 'Screen time',
+                      color: AppColors.putih,
                     ),
                     SizedBox(width: 12),
                     _StatCard(
                       value: '12',
-                      label: 'Breaks taken',
-                      color: Colors.teal,
+                      label: 'Breaks',
+                      color: AppColors.putih,
                     ),
                   ],
                 ),
@@ -84,134 +85,118 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              /// ================= QUICK ACCESS =================
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Quick Access',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
+              /// ================= QUICK ACCESS CARD =================
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.1,
-                  children: [
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Quick Access',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
 
-                    _FeatureCard(
-                      icon: Icons.remove_red_eye,
-                      title: 'Vision Test',
-                      subtitle: 'Quick self-assessment',
-                      bgColor: Color(0xFFEFF6FF),
-                      iconColor: Colors.blue,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const VisionTestScreen(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _QuickAccessItem(
+                              icon: Icons.remove_red_eye,
+                              title: 'Vision Test',
+                              subtitle: 'Check eyes',
+                              color: AppColors.ijo,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const VisionTestScreen(),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        );
-                      },
-                    ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickAccessItem(
+                              icon: Icons.schedule,
+                              title: 'Screen Timer',
+                              subtitle: 'Track time',
+                              color: AppColors.ijo,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const TimersScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
 
-                    _FeatureCard(
-                      icon: Icons.schedule,
-                      title: 'Screen Timer',
-                      subtitle: 'Track screen time',
-                      bgColor: Color(0xFFE6FFFA),
-                      iconColor: Colors.teal,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TimersScreen(),
-                          ),
-                        );
-                      },
-                    ),
+                      const SizedBox(height: 12),
 
-                    
-                    _FeatureCard(
-                      icon: Icons.lightbulb,
-                      title: 'Eye Care Tips',
-                      subtitle: 'Daily health advice',
-                      bgColor: Color(0xFFFFFBEB),
-                      iconColor: Colors.orange,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const TipsScreen(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _QuickAccessItem(
+                              icon: Icons.lightbulb,
+                              title: 'Eye Tips',
+                              subtitle: 'Daily tips',
+                              color: AppColors.ijo,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const TipsScreen(),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        );
-                      },
-                    ),
-
-                    _FeatureCard(
-                      icon: Icons.location_on,
-                      title: 'Find Clinics',
-                      subtitle: 'Nearby eye care',
-                      bgColor: Color(0xFFF5F3FF),
-                      iconColor: Colors.purple,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ClinicFinderScreen(),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _QuickAccessItem(
+                              icon: Icons.location_on,
+                              title: 'Clinics',
+                              subtitle: 'Nearby',
+                              color: AppColors.ijo,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const ClinicFinderScreen(),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
-              const SizedBox(height: 32),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  static Widget _dailyReminder() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: const [
-              CircleAvatar(
-                backgroundColor: Color(0xFF3B82F6),
-                child: Icon(Icons.visibility, color: Colors.white),
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '20-20-20 Rule Reminder',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Every 20 minutes, look at something 20 feet away for 20 seconds',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -220,7 +205,193 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-/// ================= COMPONENTS =================
+
+class TipsCarousel extends StatefulWidget {
+  const TipsCarousel({super.key});
+
+  @override
+  State<TipsCarousel> createState() => _TipsCarouselState();
+}
+
+class _TipsCarouselState extends State<TipsCarousel> {
+  final PageController _controller = PageController();
+  int currentIndex = 0;
+
+  final tips = [
+    {
+      'title': '20-20-20 Rule',
+      'desc': 'Look 20 feet away every 20 minutes',
+      'image': 'assets/images/tip1.jpg',
+    },
+    {
+      'title': 'Blink More',
+      'desc': 'Reduce dry eyes',
+      'image': 'assets/images/tip2.jpg',
+    },
+    {
+      'title': 'Adjust Brightness',
+      'desc': 'Match your environment',
+      'image': 'assets/images/tip3.jpg',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 180,
+          child: PageView.builder(
+            controller: _controller,
+            itemCount: tips.length,
+            onPageChanged: (i) => setState(() => currentIndex = i),
+            itemBuilder: (context, index) {
+              final item = tips[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.asset(
+                          item['image']!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.5),
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 16,
+                        right: 16,
+                        bottom: 16,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item['title']!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              item['desc']!,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        /// DOT INDICATOR
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            tips.length,
+            (index) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: currentIndex == index ? 10 : 6,
+              height: 6,
+              decoration: BoxDecoration(
+                color: currentIndex == index
+                    ? Colors.pink
+                    : Colors.pink.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _QuickAccessItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _QuickAccessItem({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundColor: color.withOpacity(0.2),
+              child: Icon(icon, color: color),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 class _StatCard extends StatelessWidget {
   final String value;
@@ -236,80 +407,32 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                label,
-                style: const TextStyle(fontSize: 12, color: Colors.black54),
-              ),
-            ],
-          ),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(20),
         ),
-      ),
-    );
-  }
-}
-
-class _FeatureCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color bgColor;
-  final Color iconColor;
-  final VoidCallback onTap;
-
-  const _FeatureCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.bgColor,
-    required this.iconColor,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(20),
-      onTap: onTap,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(icon, color: iconColor),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
               ),
-              const SizedBox(height: 12),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: const TextStyle(fontSize: 12, color: Colors.black54),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.putih,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

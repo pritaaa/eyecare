@@ -1,11 +1,20 @@
+import 'package:eye_care_app/chatbot/controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/tips_screen.dart';
 import 'screens/profile_screen.dart';
+import 'package:eye_care_app/theme/app_colors.dart';
+import 'package:eye_care_app/theme/app_text.dart';
 
 void main() {
-  runApp(const EyeCareApp());
+  runApp(
+   ChangeNotifierProvider(
+      create: (_) => ChatbotController(),
+      child: const EyeCareApp(),
+    ),
+  );
 }
 
 class EyeCareApp extends StatelessWidget {
@@ -18,7 +27,8 @@ class EyeCareApp extends StatelessWidget {
       title: 'Eye Care',
       theme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'Roboto',
+        fontFamily: 'Poppins',
+        scaffoldBackgroundColor: AppColors.putih,
       ),
       home: const MainScreen(),
     );
@@ -35,11 +45,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
+  final List<Widget> _screens = [
+    const HomeScreen(),
     ChatbotScreen(),
-    TipsScreen(),
-    ProfileScreen(),
+    const TipsScreen(),
+    const ProfileScreen(),
   ];
 
   @override
