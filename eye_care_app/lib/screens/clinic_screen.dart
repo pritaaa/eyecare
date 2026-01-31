@@ -259,7 +259,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                                       Icons.navigation,
                                       size: 16,
                                     ),
-                                    label: const Text('Directions'),
+                                    label: const Text('Buka Google Maps'),
                                   ),
                                 ),
                               ],
