@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:eye_care_app/screens/clinic_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:eye_care_app/screens/test_screen.dart';
 import 'package:eye_care_app/screens/timers_screen.dart';
 import 'tips_screen.dart';
@@ -17,7 +17,6 @@ class HomeScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
               /// ================= HEADER =================
               Container(
                 width: double.infinity,
@@ -261,8 +260,7 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        const ClinicScreen(),
+                                    builder: (_) => const ClinicFinderScreen(),
                                   ),
                                 );
                               },
@@ -283,7 +281,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
 
 class TipsCarousel extends StatefulWidget {
   const TipsCarousel({super.key});
@@ -310,7 +307,7 @@ class _TipsCarouselState extends State<TipsCarousel> {
     {
       'title': 'Adjust Brightness',
       'desc': 'Match your environment',
-      'image': 'assets/image/banner3.png'
+      'image': 'assets/image/banner3.png',
     },
   ];
 
@@ -333,10 +330,7 @@ class _TipsCarouselState extends State<TipsCarousel> {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: Image.asset(
-                          item['image']!,
-                          fit: BoxFit.cover,
-                        ),
+                        child: Image.asset(item['image']!, fit: BoxFit.cover),
                       ),
                       Positioned.fill(
                         child: Container(
@@ -456,10 +450,7 @@ class _QuickAccessItem extends StatelessWidget {
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Colors.black54,
-                    ),
+                    style: const TextStyle(fontSize: 11, color: Colors.black54),
                   ),
                 ],
               ),
@@ -470,7 +461,6 @@ class _QuickAccessItem extends StatelessWidget {
     );
   }
 }
-
 
 class _StatCard extends StatelessWidget {
   final String value;
@@ -506,11 +496,7 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 12,
-                color: 
-                Colors.teal,
-              ),
+              style: const TextStyle(fontSize: 12, color: Colors.teal),
             ),
           ],
         ),

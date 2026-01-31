@@ -11,7 +11,7 @@ import 'screens/splash_screen.dart';
 
 void main() {
   runApp(
-   ChangeNotifierProvider(
+    ChangeNotifierProvider(
       create: (_) => ChatbotController(),
       child: const EyeCareApp(),
     ),
@@ -68,22 +68,10 @@ class _MainScreenState extends State<MainScreen> {
         selectedItemColor: AppColors.oren, // Clay
         unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Chat Dokter',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb),
-            label: 'Tips',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat Dokter'),
+          BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: 'Tips'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
         ],
       ),
     );
