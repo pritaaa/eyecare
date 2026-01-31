@@ -13,6 +13,8 @@ class ClinicModel {
     this.address,
   });
 
-  String get gmapsUrl =>
+  String get gmapsGeo => "geo:$lat,$lng?q=$lat,$lng";
+
+  String get gmapsWeb =>
       "https://www.google.com/maps/search/?api=1&query=$lat,$lng";
 }

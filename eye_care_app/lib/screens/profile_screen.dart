@@ -58,12 +58,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Profile",
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text(
+                      "Profile",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(height: 4),
-                    Text("Manage your eye care habits",
-                        style: TextStyle(color: Colors.grey)),
+                    Text(
+                      "Manage your eye care habits",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ],
                 ),
               ),
@@ -76,13 +82,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       radius: 32,
                       backgroundColor: const Color(0xFF11DF8C),
                       child: Text(
-                        username.isNotEmpty
-                            ? username[0].toUpperCase()
-                            : 'U',
+                        username.isNotEmpty ? username[0].toUpperCase() : 'U',
                         style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold),
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -90,37 +95,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(username,
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600)),
+                          Text(
+                            username,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                           const SizedBox(height: 4),
-                          Text(email,
-                              style:
-                                  const TextStyle(color: Colors.grey)),
+                          Text(
+                            email,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
                           const SizedBox(height: 4),
                           const Text(
                             "Eye Care Level: Healthy",
                             style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF11DF8C)),
+                              fontSize: 12,
+                              color: Color(0xFF11DF8C),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const Icon(Icons.chevron_right,
-                        color: Colors.grey),
+                    const Icon(Icons.chevron_right, color: Colors.grey),
                   ],
                 ),
               ),
 
               /// ===== EYE HABIT SUMMARY =====
               const Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text("Eye Habit Summary",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  "Eye Habit Summary",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
 
               Padding(
@@ -137,9 +146,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               /// ===== QUICK SETTINGS =====
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text("Quick Settings",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text(
+                  "Quick Settings",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
 
               _card(
@@ -149,17 +159,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: "Reminder",
                   subtitle: "Break & sleep notifications",
                   value: reminderEnabled,
-                  onChanged: (v) =>
-                      setState(() => reminderEnabled = v),
+                  onChanged: (v) => setState(() => reminderEnabled = v),
                 ),
               ),
 
               /// ===== SETTINGS =====
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text("Settings",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text(
+                  "Settings",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
 
               _card(
@@ -192,16 +202,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      border:
-                          Border.all(color: Colors.red.shade200),
+                      border: Border.all(color: Colors.red.shade200),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.logout, color: Colors.red),
                         SizedBox(width: 8),
-                        Text("Log Out",
-                            style: TextStyle(color: Colors.red)),
+                        Text("Log Out", style: TextStyle(color: Colors.red)),
                       ],
                     ),
                   ),
@@ -226,15 +234,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Reminder Schedule",
-                style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              "Reminder Schedule",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
               value: breakInterval,
               items: [15, 20, 30]
-                  .map((e) =>
-                      DropdownMenuItem(value: e, child: Text("$e minutes")))
+                  .map(
+                    (e) =>
+                        DropdownMenuItem(value: e, child: Text("$e minutes")),
+                  )
                   .toList(),
               onChanged: (v) => setState(() => breakInterval = v!),
             ),
@@ -250,48 +261,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (_) => const AlertDialog(
         title: Text("EyeCare App"),
         content: Text(
-            "Version 1.0.0\nDeveloped by Prita Ayu\n\nBuild healthy screen & sleep habits"),
+          "Version 1.0.0\nDeveloped by Prita Ayu\n\nBuild healthy screen & sleep habits",
+        ),
       ),
     );
   }
 
   /// ===== REUSABLE =====
   static Widget _card({required Widget child}) => Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20)),
-          child: child,
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: child,
+    ),
+  );
 
-  static Widget _statCard(
-          String value, String label, Color color) =>
-      Expanded(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16)),
-          child: Column(
-            children: [
-              Text(value,
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: color)),
-              const SizedBox(height: 4),
-              Text(label,
-                  style: const TextStyle(
-                      fontSize: 12, color: Colors.grey)),
-            ],
+  static Widget _statCard(String value, String label, Color color) => Expanded(
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
-        ),
-      );
+          const SizedBox(height: 4),
+          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        ],
+      ),
+    ),
+  );
 
   static Widget _switchTile({
     required IconData icon,
@@ -300,59 +312,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String subtitle,
     required bool value,
     required Function(bool) onChanged,
-  }) =>
-      Row(
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style:
-                        const TextStyle(fontWeight: FontWeight.w600)),
-                Text(subtitle,
-                    style: const TextStyle(
-                        fontSize: 12, color: Colors.grey)),
-              ],
+  }) => Row(
+    children: [
+      Icon(icon, color: color),
+      const SizedBox(width: 12),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
-          ),
-          Switch(value: value, onChanged: onChanged),
-        ],
-      );
+          ],
+        ),
+      ),
+      Switch(value: value, onChanged: onChanged),
+    ],
+  );
 
   static Widget _menuItem(
     IconData icon,
     String title,
     String subtitle, {
     required VoidCallback onTap,
-  }) =>
-      InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Row(
-            children: [
-              Icon(icon, color: Colors.grey),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600)),
-                    Text(subtitle,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.grey)),
-                  ],
+  }) => InkWell(
+    onTap: onTap,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.grey),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-              ),
-              const Icon(Icons.chevron_right,
-                  color: Colors.grey),
-            ],
+                Text(
+                  subtitle,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
+          const Icon(Icons.chevron_right, color: Colors.grey),
+        ],
+      ),
+    ),
+  );
 }
