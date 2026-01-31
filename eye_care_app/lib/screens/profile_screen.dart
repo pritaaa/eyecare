@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -8,8 +10,38 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool darkMode = false;
-  bool breakReminder = true;
+  bool reminderEnabled = true;
+
+  int breakInterval = 20;
+  TimeOfDay? sleepTime;
+  TimeOfDay? wakeTime;
+
+  String username = 'User';
+  String email = '-';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username') ?? 'User';
+      email = prefs.getString('email') ?? '-';
+    });
+  }
+
+  Future<void> _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +52,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               /// ===== HEADER =====
               const Padding(
                 padding: EdgeInsets.all(16),
@@ -31,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
                     SizedBox(height: 4),
-                    Text("Manage your account and preferences",
+                    Text("Manage your eye care habits",
                         style: TextStyle(color: Colors.grey)),
                   ],
                 ),
@@ -41,39 +72,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _card(
                 child: Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 32,
-                      backgroundColor: Colors.blue,
-                      child: Text("SC",
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 22)),
+                      backgroundColor: const Color(0xFF11DF8C),
+                      child: Text(
+                        username.isNotEmpty
+                            ? username[0].toUpperCase()
+                            : 'U',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     const SizedBox(width: 16),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Sarah Chen",
-                              style: TextStyle(
+                          Text(username,
+                              style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600)),
-                          SizedBox(height: 4),
-                          Text("sarah.chen@email.com",
-                              style: TextStyle(color: Colors.grey)),
-                          Text("Member since Jan 2026",
-                              style: TextStyle(color: Colors.grey)),
+                          const SizedBox(height: 4),
+                          Text(email,
+                              style:
+                                  const TextStyle(color: Colors.grey)),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "Eye Care Level: Healthy",
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF11DF8C)),
+                          ),
                         ],
                       ),
                     ),
-                    const Icon(Icons.chevron_right, color: Colors.grey),
+                    const Icon(Icons.chevron_right,
+                        color: Colors.grey),
                   ],
                 ),
               ),
 
-              /// ===== STATS =====
+              /// ===== EYE HABIT SUMMARY =====
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text("Your Stats",
+                padding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text("Eye Habit Summary",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
@@ -82,9 +127,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
-                    _statCard("24", "Tests taken", Colors.blue),
-                    _statCard("156", "Hours saved", Colors.teal),
-                    _statCard("8", "Visits", Colors.purple),
+                    _statCard("5h 20m", "Screen Time", Colors.teal),
+                    _statCard("7h", "Sleep", Colors.blue),
+                    _statCard("6", "Breaks", Colors.purple),
                   ],
                 ),
               ),
@@ -98,30 +143,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               _card(
-                child: Column(
-                  children: [
-                    _switchTile(
-                      icon: Icons.dark_mode,
-                      color: Colors.indigo,
-                      title: "Dark Mode",
-                      subtitle: "Reduce eye strain at night",
-                      value: darkMode,
-                      onChanged: (v) => setState(() => darkMode = v),
-                    ),
-                    const Divider(height: 1),
-                    _switchTile(
-                      icon: Icons.notifications,
-                      color: Colors.amber,
-                      title: "Break Reminders",
-                      subtitle: "Get notified to rest eyes",
-                      value: breakReminder,
-                      onChanged: (v) => setState(() => breakReminder = v),
-                    ),
-                  ],
+                child: _switchTile(
+                  icon: Icons.alarm,
+                  color: Colors.teal,
+                  title: "Reminder",
+                  subtitle: "Break & sleep notifications",
+                  value: reminderEnabled,
+                  onChanged: (v) =>
+                      setState(() => reminderEnabled = v),
                 ),
               ),
 
-              /// ===== SETTINGS MENU =====
+              /// ===== SETTINGS =====
               const Padding(
                 padding: EdgeInsets.all(16),
                 child: Text("Settings",
@@ -132,47 +165,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _card(
                 child: Column(
                   children: [
-                    _menuItem(Icons.person, "Account Settings",
-                        "Update your personal information"),
-                    _menuItem(Icons.notifications, "Notifications",
-                        "Manage your notification preferences"),
-                    _menuItem(Icons.shield, "Privacy & Security",
-                        "Control your privacy settings"),
-                    _menuItem(Icons.help, "Help & Support",
-                        "Get assistance and FAQs"),
-                    _menuItem(Icons.description, "Terms & Policies",
-                        "View our terms and privacy policy"),
+                    _menuItem(
+                      Icons.notifications,
+                      "Reminder Schedule",
+                      "Set break & sleep time",
+                      onTap: _showReminderSheet,
+                    ),
+                    const Divider(height: 1),
+                    _menuItem(
+                      Icons.info_outline,
+                      "App Info",
+                      "Version and developer info",
+                      onTap: _showAppInfo,
+                    ),
                   ],
-                ),
-              ),
-
-              /// ===== APP INFO =====
-              _card(
-                color: Colors.grey.shade100,
-                child: const Center(
-                  child: Column(
-                    children: [
-                      Text("EyeCare App",
-                          style: TextStyle(color: Colors.grey)),
-                      SizedBox(height: 4),
-                      Text("Version 1.0.0",
-                          style: TextStyle(color: Colors.grey)),
-                    ],
-                  ),
                 ),
               ),
 
               /// ===== LOGOUT =====
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: GestureDetector(
-                  onTap: () {},
+                child: InkWell(
+                  onTap: _logout,
+                  borderRadius: BorderRadius.circular(16),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.red.shade50,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.red.shade200),
+                      border:
+                          Border.all(color: Colors.red.shade200),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -193,32 +214,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  /// ===== REUSABLE WIDGETS =====
-
-  Widget _card({required Widget child, Color? color}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color ?? Colors.white,
-          borderRadius: BorderRadius.circular(20),
+  /// ===== REMINDER SHEET =====
+  void _showReminderSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("Reminder Schedule",
+                style:
+                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<int>(
+              value: breakInterval,
+              items: [15, 20, 30]
+                  .map((e) =>
+                      DropdownMenuItem(value: e, child: Text("$e minutes")))
+                  .toList(),
+              onChanged: (v) => setState(() => breakInterval = v!),
+            ),
+          ],
         ),
-        child: child,
       ),
     );
   }
 
-  Widget _statCard(String value, String label, Color color) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+  void _showAppInfo() {
+    showDialog(
+      context: context,
+      builder: (_) => const AlertDialog(
+        title: Text("EyeCare App"),
+        content: Text(
+            "Version 1.0.0\nDeveloped by Prita Ayu\n\nBuild healthy screen & sleep habits"),
+      ),
+    );
+  }
+
+  /// ===== REUSABLE =====
+  static Widget _card({required Widget child}) => Padding(
+        padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20)),
+          child: child,
+        ),
+      );
+
+  static Widget _statCard(
+          String value, String label, Color color) =>
+      Expanded(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16)),
           child: Column(
             children: [
               Text(value,
@@ -228,85 +286,73 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: color)),
               const SizedBox(height: 4),
               Text(label,
-                  textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 12, color: Colors.grey)),
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _switchTile({
+  static Widget _switchTile({
     required IconData icon,
     required Color color,
     required String title,
     required String subtitle,
     required bool value,
     required Function(bool) onChanged,
-  }) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+  }) =>
+      Row(
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style:
+                        const TextStyle(fontWeight: FontWeight.w600)),
+                Text(subtitle,
+                    style: const TextStyle(
+                        fontSize: 12, color: Colors.grey)),
+              ],
+            ),
           ),
-          child: Icon(icon, color: color),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Switch(value: value, onChanged: onChanged),
+        ],
+      );
+
+  static Widget _menuItem(
+    IconData icon,
+    String title,
+    String subtitle, {
+    required VoidCallback onTap,
+  }) =>
+      InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
             children: [
-              Text(title,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
-              Text(subtitle,
-                  style:
-                      const TextStyle(fontSize: 12, color: Colors.grey)),
+              Icon(icon, color: Colors.grey),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600)),
+                    Text(subtitle,
+                        style: const TextStyle(
+                            fontSize: 12, color: Colors.grey)),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right,
+                  color: Colors.grey),
             ],
           ),
         ),
-        Switch(value: value, onChanged: onChanged),
-      ],
-    );
-  }
-
-  Widget _menuItem(IconData icon, String title, String subtitle) {
-    return InkWell(
-      onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: Colors.grey),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title,
-                      style:
-                          const TextStyle(fontWeight: FontWeight.w600)),
-                  Text(subtitle,
-                      style: const TextStyle(
-                          fontSize: 12, color: Colors.grey)),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
-          ],
-        ),
-      ),
-    );
-  }
+      );
 }

@@ -4,6 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 
+import 'package:flutter/services.dart';
+
+class UsagePermission {
+  static const _channel = MethodChannel('usage_stats');
+
+  static Future<void> openSettings() async {
+    await _channel.invokeMethod('openUsageSettings');
+  }
+}
+
+
+
 class TimersScreen extends StatefulWidget {
   const TimersScreen({super.key});
 
@@ -162,15 +174,16 @@ class _TimersScreenState extends State<TimersScreen> {
                   title: 'Screen Time',
                   value: '5h 10m',
                   icon: Icons.phone_android,
-                  color: Colors.blue,
-                  backgroundImage: 'assets/bg_wave.png', // optional
+                  color: AppColors.putih,
+                  
+                  backgroundImage: '../assets/image/timers1.png', // optional
                 ),
                 StatCard(
                   title: 'Total Sleep',
                   value: '${sleepHours.toStringAsFixed(1)}h',
                   icon: Icons.nightlight_round,
-                  color: Colors.orange,
-                  backgroundImage: 'assets/bg_gradient.png', // optional
+                  color: Colors.teal.shade100,
+                  backgroundImage: '../assets/image/timers2.png', // optional
                 ),
               ],
             ),
@@ -422,7 +435,7 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140,
+      height: 80,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         color: color.withOpacity(0.9),
@@ -431,7 +444,7 @@ class StatCard extends StatelessWidget {
                 image: AssetImage(backgroundImage!),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  color.withOpacity(0.85),
+                  color.withOpacity(0.9),
                   BlendMode.overlay,
                 ),
               )
@@ -452,7 +465,7 @@ class StatCard extends StatelessWidget {
             right: 16,
             child: Icon(
               icon,
-              color: Colors.white.withOpacity(0.9),
+              color: AppColors.teksgelap.withOpacity(0.9),
               size: 28,
             ),
           ),
@@ -470,7 +483,7 @@ class StatCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppColors.teksgelap,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -478,7 +491,7 @@ class StatCard extends StatelessWidget {
                   title,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.white.withOpacity(0.9),
+                    color: AppColors.teksgelap.withOpacity(0.9),
                   ),
                 ),
               ],
