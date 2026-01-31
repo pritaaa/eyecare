@@ -4,13 +4,16 @@ class AppColors {
   AppColors._();
 
   /// 60% – DOMINANT
-  static const biru = Color(0xFF0D91af);
+  static const biru = Color(0xFF000249);
 
   /// 30% – SURFACE
-  static const putih = Color(0xFFF4F4FB);
+  static const putih = Color(0xFFFAF9F0);
 
   /// 10% – ACCENT
-  static const ijo = Color(0xFF11DF8C);
+  static const birumuda = Color(0xFF1DCED8);
+
+  static const oren = Color(0xFFF6490D);
+
 
   static const biruijo = Color(0xFF3D51FF);
   static const ijobiru = Color(0xFF14B5FF);

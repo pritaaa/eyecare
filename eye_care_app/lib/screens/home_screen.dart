@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'Welcome back 👋',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.putih,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
@@ -48,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'Take care of your eyes today',
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: Colors.white60,
                         fontSize: 14,
                       ),
                     ),
@@ -65,23 +65,101 @@ class HomeScreen extends StatelessWidget {
 
               /// ================= STATS =================
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: const [
-                    _StatCard(
-                      value: '4.2h',
-                      label: 'Screen time',
-                      color: AppColors.putih,
-                    ),
-                    SizedBox(width: 12),
-                    _StatCard(
-                      value: '12',
-                      label: 'Breaks',
-                      color: AppColors.putih,
-                    ),
-                  ],
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child: GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const TestScreen(),
+        ),
+      );
+    },
+    child: Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          /// ICON
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.birumuda.withOpacity(0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.remove_red_eye,
+              color: AppColors.biru,
+              size: 28,
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          /// TEXT
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Check Your Eye Health',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
+                SizedBox(height: 6),
+                Text(
+                  'Quick vision test in under 3 minutes',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          /// ARROW
+          Container(
+  height: 36,
+  width: 36,
+  decoration: BoxDecoration(
+    color: AppColors.oren,
+    shape: BoxShape.circle,
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.08),
+        blurRadius: 6,
+        offset: const Offset(0, 3),
+      ),
+    ],
+  ),
+  child: const Center(
+    child: Icon(
+      Icons.arrow_forward_ios,
+      size: 14,
+      color: AppColors.putih,
+    ),
+  ),
+),
+
+        ],
+      ),
+    ),
+  ),
+),
+
 
               const SizedBox(height: 24),
 
@@ -91,11 +169,11 @@ class HomeScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.putih,
                     borderRadius: BorderRadius.circular(28),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.biruijo.withOpacity(0.08),
+                        color: AppColors.birumuda.withOpacity(0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -109,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.biruijo
+                          color: AppColors.biru
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -121,7 +199,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.remove_red_eye,
                               title: 'Vision Test',
                               subtitle: 'Check eyes',
-                              color: AppColors.ijo,
+                              color: AppColors.oren,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -138,7 +216,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.schedule,
                               title: 'Screen Timer',
                               subtitle: 'Track time',
-                              color: AppColors.ijo,
+                              color: AppColors.oren,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -161,7 +239,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.lightbulb,
                               title: 'Eye Tips',
                               subtitle: 'Daily tips',
-                              color: AppColors.ijo,
+                              color: AppColors.oren,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -178,7 +256,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.location_on,
                               title: 'Clinics',
                               subtitle: 'Nearby',
-                              color: AppColors.ijo,
+                              color: AppColors.oren,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -267,7 +345,7 @@ class _TipsCarouselState extends State<TipsCarousel> {
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: [
-                                Colors.white.withOpacity(0.5),
+                                AppColors.teksgelap.withOpacity(0.5),
                                 Colors.transparent,
                               ],
                             ),
@@ -321,8 +399,8 @@ class _TipsCarouselState extends State<TipsCarousel> {
               height: 6,
               decoration: BoxDecoration(
                 color: currentIndex == index
-                    ? AppColors.biruijo
-                    : AppColors.teksabu.withOpacity(0.3),
+                    ? AppColors.putih
+                    : AppColors.putih.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(4),
               ),
             ),

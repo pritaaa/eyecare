@@ -89,9 +89,9 @@ class _TimersScreenState extends State<TimersScreen> {
       backgroundColor: AppColors.biru,
       appBar: AppBar(
         title: const Text('Sleep & Screen'),
-        backgroundColor: AppColors.ijo,
+        backgroundColor: AppColors.putih,
         foregroundColor: Colors.black,
-        elevation: 0,
+        elevation: 20,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -100,7 +100,7 @@ class _TimersScreenState extends State<TimersScreen> {
           children: [
             const Text(
               'Track your sleep & screen habits',
-              style: TextStyle(color: AppColors.teksabu),
+              style: TextStyle(color: Colors.white60),
             ),
             const SizedBox(height: 20),
 
@@ -182,7 +182,7 @@ class _TimersScreenState extends State<TimersScreen> {
                   title: 'Total Sleep',
                   value: '${sleepHours.toStringAsFixed(1)}h',
                   icon: Icons.nightlight_round,
-                  color: Colors.teal.shade100,
+                  color: AppColors.putih,
                   backgroundImage: '../assets/image/timers2.png', // optional
                 ),
               ],
@@ -251,6 +251,7 @@ class _TimersScreenState extends State<TimersScreen> {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
+                  color: Colors.white60,
                 ),
               ),
 
@@ -315,7 +316,7 @@ class SleepClockPainter extends CustomPainter {
     canvas.drawCircle(center, radius, basePaint);
 
     final sleepPaint = Paint()
-    ..color = AppColors.biruijo
+    ..color = AppColors.oren
     ..style = PaintingStyle.stroke
     ..strokeWidth = 26
     ..strokeCap = StrokeCap.round;
@@ -378,7 +379,7 @@ class WeeklyBarChart extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.putih,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -394,7 +395,7 @@ class WeeklyBarChart extends StatelessWidget {
                     width: 28,
                     height: hours[i] * 20,
                     decoration: const BoxDecoration(
-                      color: Colors.blue,
+                      color: AppColors.birumuda,
                       borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
                     ),
                   ),
@@ -405,11 +406,11 @@ class WeeklyBarChart extends StatelessWidget {
             }),
           ),
           const SizedBox(height: 16),
-          const Divider(),
-          Text(
-            '${average.toStringAsFixed(1)} hours',
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
-          ),
+          // const Divider(),
+          // Text(
+          //   '${average.toStringAsFixed(1)} hours',
+          //   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+          // ),
         ],
       ),
     );
@@ -473,7 +474,7 @@ class StatCard extends StatelessWidget {
           /// TEXT CONTENT
           Positioned(
             left: 16,
-            bottom: 16,
+            bottom: 150,
             right: 16,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -483,10 +484,10 @@ class StatCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.teksgelap,
+                    color: AppColors.oren,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   title,
                   style: TextStyle(

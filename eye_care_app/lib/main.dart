@@ -65,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.teksgelap, // Clay
+        selectedItemColor: AppColors.oren, // Clay
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(

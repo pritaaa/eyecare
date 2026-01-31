@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:eye_care_app/theme/app_colors.dart';
 
 class ClinicScreen extends StatelessWidget {
   const ClinicScreen({super.key});
@@ -42,7 +43,7 @@ class ClinicScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.putih,
       appBar: AppBar(
         title: const Text('Find Clinics'),
         backgroundColor: Colors.white,

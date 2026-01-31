@@ -11,8 +11,8 @@ class TipsScreen extends StatelessWidget {
 
       /// ================= APP BAR =================
       appBar: AppBar(
-        backgroundColor: AppColors.ijo,
-        elevation: 0,
+        backgroundColor: AppColors.putih,
+        elevation: 20,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           color: AppColors.teksgelap,
@@ -26,7 +26,7 @@ class TipsScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.teksputih,
+                color: AppColors.teksgelap,
               ),
             ),
             
@@ -54,7 +54,7 @@ class TipsScreen extends StatelessWidget {
                 child: Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0xFFECFEFF), Color(0xFFEFF6FF)],
+                      colors: [Color.fromARGB(255, 201, 243, 245), Color.fromARGB(255, 216, 227, 240)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -67,7 +67,7 @@ class TipsScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.teal,
+                          color: AppColors.oren,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: const Icon(Icons.water_drop,
@@ -115,6 +115,8 @@ class TipsScreen extends StatelessWidget {
             /// ================= CATEGORIES =================
             _sectionTitle('By Category'),
 
+            const SizedBox(height: 16),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -123,7 +125,7 @@ class TipsScreen extends StatelessWidget {
                     icon: Icons.monitor,
                     title: 'Screen Time',
                     iconBg: const Color(0xFFEFF6FF),
-                    iconColor: Colors.blue,
+                    iconColor: AppColors.biru,
                     tips: const [
                       'Follow the 20-20-20 rule',
                       'Reduce screen brightness',
@@ -133,8 +135,8 @@ class TipsScreen extends StatelessWidget {
                   _categoryCard(
                     icon: Icons.apple,
                     title: 'Nutrition',
-                    iconBg: const Color(0xFFECFDF5),
-                    iconColor: Colors.green,
+                    iconBg: const Color.fromARGB(255, 207, 236, 235),
+                    iconColor: AppColors.birumuda,
                     tips: const [
                       'Eat leafy greens and carrots',
                       'Include omega-3 fatty acids',
@@ -144,8 +146,8 @@ class TipsScreen extends StatelessWidget {
                   _categoryCard(
                     icon: Icons.visibility,
                     title: 'Protection',
-                    iconBg: const Color(0xFFF5F3FF),
-                    iconColor: Colors.purple,
+                    iconBg: const Color.fromARGB(255, 195, 234, 252),
+                    iconColor: AppColors.teksgelap,
                     tips: const [
                       'Wear UV-blocking sunglasses',
                       'Use blue light filters at night',
@@ -160,6 +162,8 @@ class TipsScreen extends StatelessWidget {
 
             /// ================= QUICK TIPS =================
             _sectionTitle('Quick Tips'),
+            const SizedBox(height: 20),
+
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -199,7 +203,7 @@ class TipsScreen extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Icon(Icons.lightbulb, color: AppColors.ijo),
+                      Icon(Icons.lightbulb, color: AppColors.biru),
                       SizedBox(width: 12),
                       Expanded(
                         child: Column(
