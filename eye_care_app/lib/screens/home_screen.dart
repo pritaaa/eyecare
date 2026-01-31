@@ -1,3 +1,5 @@
+import 'package:eye_care_app/app_usage/app_usage_view.dart';
+import 'package:eye_care_app/screen_time/screen_time_view.dart';
 import 'package:eye_care_app/screens/clinic_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eye_care_app/screens/test_screen.dart';
@@ -46,10 +48,7 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: 6),
                     Text(
                       'Take care of your eyes today',
-                      style: TextStyle(
-                        color: Colors.white60,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.white60, fontSize: 14),
                     ),
                   ],
                 ),
@@ -64,101 +63,97 @@ class HomeScreen extends StatelessWidget {
 
               /// ================= STATS =================
               Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const TestScreen(),
-        ),
-      );
-    },
-    child: Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          /// ICON
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.birumuda.withOpacity(0.12),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.remove_red_eye,
-              color: AppColors.biru,
-              size: 28,
-            ),
-          ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TestScreen()),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        /// ICON
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: AppColors.birumuda.withOpacity(0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.remove_red_eye,
+                            color: AppColors.biru,
+                            size: 28,
+                          ),
+                        ),
 
-          const SizedBox(width: 16),
+                        const SizedBox(width: 16),
 
-          /// TEXT
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Check Your Eye Health',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                        /// TEXT
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Check Your Eye Health',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text(
+                                'Quick vision test in under 3 minutes',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        /// ARROW
+                        Container(
+                          height: 36,
+                          width: 36,
+                          decoration: BoxDecoration(
+                            color: AppColors.oren,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14,
+                              color: AppColors.putih,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 6),
-                Text(
-                  'Quick vision test in under 3 minutes',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black54,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          /// ARROW
-          Container(
-  height: 36,
-  width: 36,
-  decoration: BoxDecoration(
-    color: AppColors.oren,
-    shape: BoxShape.circle,
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.08),
-        blurRadius: 6,
-        offset: const Offset(0, 3),
-      ),
-    ],
-  ),
-  child: const Center(
-    child: Icon(
-      Icons.arrow_forward_ios,
-      size: 14,
-      color: AppColors.putih,
-    ),
-  ),
-),
-
-        ],
-      ),
-    ),
-  ),
-),
-
+              ),
 
               const SizedBox(height: 24),
 
@@ -186,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.biru
+                          color: AppColors.biru,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -220,7 +215,7 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const TimersScreen(),
+                                    builder: (_) => TimersScreen(),
                                   ),
                                 );
                               },
