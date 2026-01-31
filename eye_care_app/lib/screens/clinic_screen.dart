@@ -1,53 +1,125 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 
-class ClinicFinderScreen extends StatelessWidget {
+import 'package:eye_care_app/clinic/clinic_data.dart';
+import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
+class ClinicFinderScreen extends StatefulWidget {
   const ClinicFinderScreen({super.key});
+  @override
+  State<ClinicFinderScreen> createState() => _ClinicFinderScreenState();
+}
+
+class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
+  bool _isLoading = false;
+  late List<Map<String, dynamic>> _clinics;
+
+  @override
+  void initState() {
+    super.initState();
+    // Konversi ClinicModel ke Map agar bisa diedit (misal: update jarak/alamat)
+    _clinics = clinics
+        .map(
+          (c) => {
+            'name': c.name,
+            'lat': c.lat,
+            'lng': c.lng,
+            'distance': c.distance,
+            'address': c.address,
+            'distanceValue': 0.0,
+          },
+        )
+        .toList();
+    _getCurrentLocation();
+  }
+
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const earthRadius = 6371;
+
+    final dLat = _deg2rad(lat2 - lat1);
+    final dLon = _deg2rad(lon2 - lon1);
+
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(_deg2rad(lat1)) *
+            cos(_deg2rad(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  double _deg2rad(double deg) => deg * (pi / 180);
+
+  Future<void> _getCurrentLocation() async {
+    setState(() => _isLoading = true);
+
+    try {
+      // 1. Cek apakah GPS/Layanan Lokasi aktif
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('Location services are disabled.');
+      }
+
+      // 2. Cek dan Request Izin
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('Location permissions are denied');
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception('Location permissions are permanently denied');
+      }
+
+      // 3. Ambil posisi
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      final userLat = position.latitude;
+      final userLng = position.longitude;
+
+      for (var clinic in _clinics) {
+        final dist = calculateDistance(
+          userLat,
+          userLng,
+          clinic['lat'],
+          clinic['lng'],
+        );
+        clinic['distanceValue'] = dist;
+        clinic['distance'] = dist;
+      }
+
+      _clinics.sort((a, b) => a['distanceValue'].compareTo(b['distanceValue']));
+    } catch (e) {
+      debugPrint("Error getting location: $e");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<String> _getAddressFromLatLng(double lat, double lng) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(lat, lng);
+
+      if (placemarks.isNotEmpty) {
+        final p = placemarks.first;
+        return "${p.street}, ${p.locality}";
+      }
+    } catch (e) {
+      debugPrint("Geocoding error: $e");
+    }
+
+    return "Address not available";
+  }
 
   @override
   Widget build(BuildContext context) {
-    final clinics = [
-      {
-        'name': 'VisionCare Center',
-        'address': '123 Main Street, Downtown',
-        'distance': '0.5 miles',
-        'rating': 4.8,
-        'reviews': 124,
-        'hours': 'Open until 6:00 PM',
-        'phone': '(555) 123-4567',
-        'isOpen': true,
-      },
-      {
-        'name': 'Clear Sight Clinic',
-        'address': '456 Oak Avenue, Westside',
-        'distance': '1.2 miles',
-        'rating': 4.6,
-        'reviews': 89,
-        'hours': 'Open until 7:00 PM',
-        'phone': '(555) 234-5678',
-        'isOpen': true,
-      },
-      {
-        'name': 'Eye Health Associates',
-        'address': '789 Pine Road, East District',
-        'distance': '2.1 miles',
-        'rating': 4.9,
-        'reviews': 203,
-        'hours': 'Closed • Opens at 9:00 AM',
-        'phone': '(555) 345-6789',
-        'isOpen': false,
-      },
-      {
-        'name': 'Premier Eye Clinic',
-        'address': '321 Elm Street, Northside',
-        'distance': '2.8 miles',
-        'rating': 4.7,
-        'reviews': 156,
-        'hours': 'Open until 8:00 PM',
-        'phone': '(555) 456-7890',
-        'isOpen': true,
-      },
-    ];
-
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -61,7 +133,6 @@ class ClinicFinderScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// ================= HEADER =================
             const Text(
               'Eye care centers near you',
@@ -93,10 +164,16 @@ class ClinicFinderScreen extends StatelessWidget {
                 minimumSize: const Size(double.infinity, 48),
                 side: const BorderSide(color: Colors.blue),
               ),
-              onPressed: () {},
-              icon: const Icon(Icons.navigation, color: Colors.blue),
-              label: const Text(
-                'Use Current Location',
+              onPressed: _isLoading ? null : _getCurrentLocation,
+              icon: _isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.navigation, color: Colors.blue),
+              label: Text(
+                _isLoading ? 'Locating...' : 'Use Current Location',
                 style: TextStyle(color: Colors.blue),
               ),
             ),
@@ -121,114 +198,116 @@ class ClinicFinderScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             /// ================= CLINIC LIST =================
-            ...clinics.map((clinic) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _iconBox(Icons.location_on, Colors.blue),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  clinic['name'] as String,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+            ..._clinics.map(
+              (clinic) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _iconBox(Icons.location_on, Colors.blue),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                clinic['name'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  clinic['address'] as String,
-                                  style: const TextStyle(
-                                      fontSize: 12, color: Colors.black54),
-                                ),
-
-                                const SizedBox(height: 8),
-
-                                Row(
-                                  children: [
-                                    const Icon(Icons.star,
-                                        size: 16, color: Colors.amber),
-                                    const SizedBox(width: 4),
-                                    Text('${clinic['rating']}'),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '(${clinic['reviews']})',
+                              ),
+                              const SizedBox(height: 4),
+                              clinic['address'] != null
+                                  ? Text(
+                                      clinic['address'],
                                       style: const TextStyle(
-                                          color: Colors.black54),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      '• ${clinic['distance']}',
-                                      style: const TextStyle(
-                                          color: Colors.black54),
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 6),
-
-                                Row(
-                                  children: [
-                                    const Icon(Icons.access_time,
-                                        size: 16, color: Colors.black54),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      clinic['hours'] as String,
-                                      style: TextStyle(
                                         fontSize: 12,
-                                        color: clinic['isOpen'] == true
-                                            ? Colors.green
-                                            : Colors.black54,
+                                        color: Colors.black54,
                                       ),
+                                    )
+                                  : FutureBuilder<String>(
+                                      future:
+                                          _getAddressFromLatLng(
+                                            clinic['lat'],
+                                            clinic['lng'],
+                                          ).then((val) {
+                                            clinic['address'] = val;
+                                            return val;
+                                          }),
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          snapshot.data ?? "Loading address...",
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.black54,
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  ],
-                                ),
 
-                                const SizedBox(height: 12),
+                              const SizedBox(height: 8),
 
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: OutlinedButton.icon(
-                                        style: OutlinedButton.styleFrom(
-                                          shape: const StadiumBorder(),
-                                        ),
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.phone, size: 16),
-                                        label: const Text('Call'),
-                                      ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    size: 16,
+                                    color: Colors.amber,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '• ${(clinic['distance'] as double?)?.toStringAsFixed(1) ?? '-'} km',
+                                    style: const TextStyle(
+                                      color: Colors.black54,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: ElevatedButton.icon(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blue,
-                                          shape: const StadiumBorder(),
-                                        ),
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.navigation,
-                                            size: 16),
-                                        label: const Text('Directions'),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      style: OutlinedButton.styleFrom(
+                                        shape: const StadiumBorder(),
                                       ),
+                                      onPressed: () {},
+                                      icon: const Icon(Icons.phone, size: 16),
+                                      label: const Text('Call'),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                        shape: const StadiumBorder(),
+                                      ),
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.navigation,
+                                        size: 16,
+                                      ),
+                                      label: const Text('Directions'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                )),
+                ),
+              ),
+            ),
 
             /// ================= INFO CARD =================
             Card(
