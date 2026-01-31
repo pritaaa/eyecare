@@ -109,7 +109,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
 
       if (placemarks.isNotEmpty) {
         final p = placemarks.first;
-        return "${p.street}, ${p.locality}";
+        return "${p.subLocality}, ${p.locality}";
       }
     } catch (e) {
       debugPrint("Geocoding error: $e");
