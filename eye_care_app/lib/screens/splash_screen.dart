@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
@@ -12,11 +13,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(const Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     });
   }
@@ -24,30 +24,52 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE3F2FD), // biru soft
+      backgroundColor: const Color(0xFFF6FBFA),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.remove_red_eye,
-              size: 80,
-              color: Colors.blue.shade700,
-            ),
-            const SizedBox(height: 16),
+            // LOGO
+            Container(
+  height: 120,
+  width: 120,
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(30),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 10,
+        offset: Offset(0, 6),
+      ),
+    ],
+  ),
+  padding: const EdgeInsets.all(16),
+  child: Image.asset(
+    'assets/image/logo.png',
+    fit: BoxFit.contain,
+  ),
+),
+
+
+            const SizedBox(height: 24),
+
             const Text(
-              'Eye Care',
+              "Healthy Habit",
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Colors.teal,
               ),
             ),
+
             const SizedBox(height: 8),
-            const Text(
-              'Care Your Eyes Every Day',
+
+            Text(
+              "Small steps, better life",
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.black54,
+                color: Colors.grey.shade600,
               ),
             ),
           ],

@@ -7,6 +7,7 @@ import 'screens/tips_screen.dart';
 import 'screens/profile_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(
@@ -64,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFFDCA278), // Clay
+        selectedItemColor: AppColors.teksgelap, // Clay
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(

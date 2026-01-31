@@ -95,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(28),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: AppColors.biruijo.withOpacity(0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -109,6 +109,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
+                          color: AppColors.biruijo
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -125,7 +126,7 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const VisionTestScreen(),
+                                    builder: (_) => const TestScreen(),
                                   ),
                                 );
                               },
@@ -183,7 +184,7 @@ class HomeScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) =>
-                                        const ClinicFinderScreen(),
+                                        const ClinicScreen(),
                                   ),
                                 );
                               },
@@ -221,17 +222,17 @@ class _TipsCarouselState extends State<TipsCarousel> {
     {
       'title': '20-20-20 Rule',
       'desc': 'Look 20 feet away every 20 minutes',
-      'image': 'assets/images/tip1.jpg',
+      'image': 'assets/image/banner1.png',
     },
     {
       'title': 'Blink More',
       'desc': 'Reduce dry eyes',
-      'image': 'assets/images/tip2.jpg',
+      'image': 'assets/image/banner2.png',
     },
     {
       'title': 'Adjust Brightness',
       'desc': 'Match your environment',
-      'image': 'assets/images/tip3.jpg',
+      'image': 'assets/image/banner3.png'
     },
   ];
 
@@ -266,7 +267,7 @@ class _TipsCarouselState extends State<TipsCarousel> {
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: [
-                                Colors.black.withOpacity(0.5),
+                                Colors.white.withOpacity(0.5),
                                 Colors.transparent,
                               ],
                             ),
@@ -320,8 +321,8 @@ class _TipsCarouselState extends State<TipsCarousel> {
               height: 6,
               decoration: BoxDecoration(
                 color: currentIndex == index
-                    ? Colors.pink
-                    : Colors.pink.withOpacity(0.3),
+                    ? AppColors.biruijo
+                    : AppColors.teksabu.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -410,7 +411,7 @@ class _StatCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
+          color: color.withOpacity(0.30),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -429,7 +430,8 @@ class _StatCard extends StatelessWidget {
               label,
               style: const TextStyle(
                 fontSize: 12,
-                color: AppColors.putih,
+                color: 
+                Colors.teal,
               ),
             ),
           ],
