@@ -1,4 +1,5 @@
 import 'package:eye_care_app/app_usage/app_usage_view.dart';
+import 'package:eye_care_app/auth/auth_provider.dart';
 import 'package:eye_care_app/screen_time/screen_time_view.dart';
 import 'package:eye_care_app/screens/clinic_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:eye_care_app/screens/timers_screen.dart';
 import 'tips_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
+import 'package:provider/provider.dart';
 
 
 // final textScale = MediaQuery.of(context).textScaleFactor;

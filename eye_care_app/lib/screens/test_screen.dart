@@ -70,8 +70,7 @@ class _TestScreenState extends State<TestScreen> {
             Slider(
               min: 0.6,
               max: 1.8,
-              
-              value: scale,
+              value: scale.clamp(0.6, 1.8),
               onChanged: (value) {
                 setState(() => scale = value);
               },
@@ -118,10 +117,7 @@ class _TestScreenState extends State<TestScreen> {
 class TestResultScreen extends StatelessWidget {
   final double scale;
 
-  const TestResultScreen({
-    super.key,
-    required this.scale,
-  });
+  const TestResultScreen({super.key, required this.scale});
 
   @override
   Widget build(BuildContext context) {
@@ -243,10 +239,7 @@ class TestResultScreen extends StatelessWidget {
             /// BACK HOME
             OutlinedButton(
               onPressed: () {
-                Navigator.popUntil(
-                  context,
-                  (route) => route.isFirst,
-                );
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: const Text(
                 'Back to Home',
@@ -273,16 +266,14 @@ class TestResultScreen extends StatelessWidget {
     } else if (scale <= 1.3) {
       return _ResultData(
         title: 'Mild Difficulty',
-        description:
-            'You may have slight difficulty seeing small details.',
+        description: 'You may have slight difficulty seeing small details.',
         color: AppColors.oren,
         icon: Icons.visibility,
       );
     } else {
       return _ResultData(
         title: 'Needs Attention',
-        description:
-            'Consider consulting an eye care professional.',
+        description: 'Consider consulting an eye care professional.',
         color: Colors.red,
         icon: Icons.warning_rounded,
       );
@@ -295,14 +286,8 @@ class TestResultScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: const TextStyle(color: Colors.black54),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(label, style: const TextStyle(color: Colors.black54)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -322,4 +307,3 @@ class _ResultData {
     required this.icon,
   });
 }
-

@@ -1,5 +1,8 @@
 import 'dart:math';
+import 'dart:async'; // Tambahkan import ini untuk Timer
+import 'dart:typed_data';
 import 'package:eye_care_app/app_usage/app_usage_provider.dart';
+import 'package:eye_care_app/screen_time/screen_time_model.dart';
 import 'package:eye_care_app/screen_time/screen_time_provider.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -7,14 +10,6 @@ import 'package:eye_care_app/theme/app_text.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/services.dart';
-
-class UsagePermission {
-  static const _channel = MethodChannel('usage_stats');
-
-  static Future<void> openSettings() async {
-    await _channel.invokeMethod('openUsageSettings');
-  }
-}
 
 class TimersScreen extends StatefulWidget {
   const TimersScreen({super.key});
@@ -24,18 +19,35 @@ class TimersScreen extends StatefulWidget {
 }
 
 class _TimersScreenState extends State<TimersScreen> {
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
+    _loadData();
+    _timer = Timer.periodic(
+      const Duration(minutes: 30),
+      (timer) => _loadData(),
+    );
+  }
+
+  void _loadData() {
     Future.microtask(() {
       context.read<ScreenTimeProvider>().loadTodayReport();
       final appUsageProvider = context.read<AppUsageProvider>();
-      appUsageProvider.checkPermission().then((_) {
+      appUsageProvider.checkPermission().then((_) async {
         if (appUsageProvider.hasPermission) {
+          await appUsageProvider.loadSelectedApps();
           appUsageProvider.loadUsageStats();
         }
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   TimeOfDay bedTime = const TimeOfDay(hour: 23, minute: 0);
@@ -88,7 +100,10 @@ class _TimersScreenState extends State<TimersScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text('Sleep & Screen',style: TextStyle(color: Colors.white),),
+        title: const Text(
+          'Sleep & Screen',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: AppColors.birumuda,
         foregroundColor: Colors.black,
         elevation: 20,
@@ -163,27 +178,31 @@ class _TimersScreenState extends State<TimersScreen> {
 
             const SizedBox(height: 12),
 
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+            Row(
               children: [
-                StatCard(
-                  title: 'Screen Time',
-                  value: '5h 10m',
-                  icon: Icons.phone_android,
-                  color: AppColors.putih,
-                  
-                  // backgroundImage: '../assets/image/timers1.png', // optional
+                Expanded(
+                  child: Consumer<ScreenTimeProvider>(
+                    builder: (context, provider, _) {
+                      final ms = provider.report?.screenOnMs ?? 0;
+                      final duration = Duration(milliseconds: ms);
+                      return StatCard(
+                        title: 'Screen Time',
+                        value:
+                            '${duration.inHours}h ${duration.inMinutes % 60}m',
+                        icon: Icons.phone_android,
+                        color: Colors.white,
+                      );
+                    },
+                  ),
                 ),
-                StatCard(
-                  title: 'Total Sleep',
-                  value: '${sleepHours.toStringAsFixed(1)}h',
-                  icon: Icons.nightlight_round,
-                  color: AppColors.putih,
-                  // backgroundImage: 'assets/image/timer2.png', // optional
+                const SizedBox(width: 12),
+                Expanded(
+                  child: StatCard(
+                    title: 'Total Sleep',
+                    value: '${sleepHours.toStringAsFixed(1)}h',
+                    icon: Icons.nightlight_round,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
@@ -194,7 +213,8 @@ class _TimersScreenState extends State<TimersScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.biru),
+                color: AppColors.biru,
+              ),
             ),
             const SizedBox(height: 12),
 
@@ -220,7 +240,9 @@ class _TimersScreenState extends State<TimersScreen> {
                           style: TextStyle(color: Colors.white70),
                         ),
                         TextButton(
-                          onPressed: () => UsagePermission.openSettings(),
+                          onPressed: () => context
+                              .read<AppUsageProvider>()
+                              .requestPermission(),
                           child: const Text("Buka Pengaturan"),
                         ),
                       ],
@@ -256,20 +278,67 @@ class _TimersScreenState extends State<TimersScreen> {
         if (provider.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (!provider.hasPermission || provider.apps.isEmpty) {
-          return const SizedBox.shrink();
+
+        // FIX: Tampilkan tombol izin jika belum ada akses
+        if (!provider.hasPermission) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Column(
+                children: [
+                  const Text(
+                    "Izin akses penggunaan diperlukan\nuntuk menampilkan daftar aplikasi.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () => provider.requestPermission(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.biru,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text("Izinkan Akses"),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (provider.apps.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: Text(
+                "Belum ada data penggunaan hari ini.",
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+          );
         }
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'App Usage (Top 5)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.teksputih,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  provider.selectedApps.isNotEmpty
+                      ? 'App Usage (Custom)'
+                      : 'App Usage (Top 5)',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.biru,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => _showSelectionDialog(context),
+                  child: const Text("Edit"),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             ListView.separated(
@@ -294,7 +363,7 @@ class _TimersScreenState extends State<TimersScreen> {
                           else
                             const Icon(
                               Icons.apps,
-                              color: Colors.white60,
+                              color: AppColors.biru,
                               size: 28,
                             ),
                           const SizedBox(width: 12),
@@ -304,7 +373,7 @@ class _TimersScreenState extends State<TimersScreen> {
                               style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white60,
+                                color: Colors.black87,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -317,7 +386,7 @@ class _TimersScreenState extends State<TimersScreen> {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.teksputih,
+                        color: AppColors.biru,
                       ),
                     ),
                   ],
@@ -328,6 +397,86 @@ class _TimersScreenState extends State<TimersScreen> {
         );
       },
     );
+  }
+
+  void _showSelectionDialog(BuildContext context) async {
+    final provider = context.read<AppUsageProvider>();
+    // Tampilkan loading sementara mengambil daftar aplikasi
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    final installedApps = await provider.getInstalledApps();
+    final selected = List<String>.from(provider.selectedApps);
+
+    if (context.mounted) Navigator.pop(context); // Tutup loading
+
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (ctx) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Pilih Aplikasi (Max 5)'),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  height: 400,
+                  child: ListView.builder(
+                    itemCount: installedApps.length,
+                    itemBuilder: (context, index) {
+                      final app = installedApps[index];
+                      final pkg = app['packageName'] as String;
+                      final name = app['appName'] as String;
+                      final icon = app['appIcon'] as Uint8List?;
+                      final isSelected = selected.contains(pkg);
+
+                      return CheckboxListTile(
+                        secondary: icon != null
+                            ? Image.memory(icon, width: 32, height: 32)
+                            : const Icon(
+                                Icons.android,
+                                size: 32,
+                                color: Colors.grey,
+                              ),
+                        title: Text(name),
+                        value: isSelected,
+                        onChanged: (val) {
+                          setState(() {
+                            if (val == true) {
+                              if (selected.length < 5) {
+                                selected.add(pkg);
+                              }
+                            } else {
+                              selected.remove(pkg);
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Batal'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      provider.saveSelectedApps(selected);
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Simpan'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
   }
 
   Widget _timeInfo({
@@ -366,12 +515,7 @@ class SleepClockPainter extends CustomPainter {
   final double startAngle;
   final double sweepAngle;
 
-  SleepClockPainter({
-    required this.startAngle,
-    required this.sweepAngle,
-  });
-
-  
+  SleepClockPainter({required this.startAngle, required this.sweepAngle});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -386,10 +530,10 @@ class SleepClockPainter extends CustomPainter {
     canvas.drawCircle(center, radius, basePaint);
 
     final sleepPaint = Paint()
-    ..color = AppColors.oren
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 26
-    ..strokeCap = StrokeCap.round;
+      ..color = AppColors.oren
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 26
+      ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -426,8 +570,6 @@ class SleepClockPainter extends CustomPainter {
   bool shouldRepaint(_) => true;
 }
 
-/// ================= WEEKLY BAR CHART =================
-
 class WeeklyBarChart extends StatelessWidget {
   final List<double> hours;
   final List<String> labels;
@@ -447,43 +589,51 @@ class WeeklyBarChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.grey.shade200),
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(hours.length, (i) {
-              // Normalisasi tinggi bar agar tidak overflow jika jamnya > 10
-              // Kita asumsikan max bar height = 100 pixel untuk 12 jam
-              double barHeight = (hours[i] / 12) * 120;
-              if (barHeight > 120) barHeight = 120;
-              if (barHeight < 5 && hours[i] > 0) barHeight = 5; // Min height
+          SizedBox(
+            height: 150,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List.generate(hours.length, (i) {
+                double barHeight = (hours[i] / 24) * 120;
+                if (barHeight > 120) barHeight = 120;
+                if (barHeight < 5 && hours[i] > 0) barHeight = 5;
 
-              return Column(
-                children: [
-                  Container(
-                    width: 28,
-                    height: barHeight,
-                    decoration: const BoxDecoration(
-                      color: AppColors.birumuda,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(8),
+                final isToday = i == hours.length - 1;
+
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 28,
+                      height: barHeight,
+                      decoration: BoxDecoration(
+                        color: isToday ? AppColors.oren : AppColors.birumuda,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    labels[i],
-                    style: const TextStyle(fontSize: 12, color: Colors.black54),
-                  ),
-                ],
-              );
-            }),
+                    const SizedBox(height: 8),
+                    Text(
+                      labels[i],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isToday ? AppColors.oren : Colors.black54,
+                        fontWeight: isToday
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -495,7 +645,6 @@ class StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
-  final String? backgroundImage;
 
   const StatCard({
     super.key,
@@ -503,7 +652,6 @@ class StatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.color,
-    this.backgroundImage,
   });
 
   @override
@@ -511,40 +659,20 @@ class StatCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: color.withOpacity(0.9),
-        image: backgroundImage != null
-            ? DecorationImage(
-                image: AssetImage(backgroundImage!),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  color.withOpacity(0.85),
-                  BlendMode.overlay,
-                ),
-              )
-            : null,
+        color: color,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.25),
+            color: Colors.grey.withOpacity(0.15),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
       ),
       padding: const EdgeInsets.all(16),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          /// ICON
-          Align(
-            alignment: Alignment.topRight,
-            child: Icon(
-              icon,
-              size: 26,
-              color: AppColors.teksgelap.withOpacity(0.9),
-            ),
-          ),
-
           /// TEXT
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -566,6 +694,16 @@ class StatCard extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+
+          /// ICON
+          Align(
+            alignment: Alignment.topRight,
+            child: Icon(
+              icon,
+              size: 26,
+              color: AppColors.teksgelap.withOpacity(0.9),
+            ),
           ),
         ],
       ),
