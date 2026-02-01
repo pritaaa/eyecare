@@ -86,10 +86,10 @@ class _TimersScreenState extends State<TimersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.biru,
+      backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text('Sleep & Screen'),
-        backgroundColor: AppColors.putih,
+        title: const Text('Sleep & Screen',style: TextStyle(color: Colors.white),),
+        backgroundColor: AppColors.birumuda,
         foregroundColor: Colors.black,
         elevation: 20,
       ),
@@ -100,7 +100,7 @@ class _TimersScreenState extends State<TimersScreen> {
           children: [
             const Text(
               'Track your sleep & screen habits',
-              style: TextStyle(color: Colors.white60),
+              style: TextStyle(color: AppColors.biru),
             ),
             const SizedBox(height: 20),
 
@@ -157,7 +157,7 @@ class _TimersScreenState extends State<TimersScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.teksputih,
+                color: AppColors.biru,
               ),
             ),
 
@@ -174,16 +174,16 @@ class _TimersScreenState extends State<TimersScreen> {
                   title: 'Screen Time',
                   value: '5h 10m',
                   icon: Icons.phone_android,
-                  color: AppColors.putih,
+                  color: Colors.white,
                   
-                  backgroundImage: '../assets/image/timers1.png', // optional
+                  // backgroundImage: '../assets/image/timers1.png', // optional
                 ),
                 StatCard(
                   title: 'Total Sleep',
                   value: '${sleepHours.toStringAsFixed(1)}h',
                   icon: Icons.nightlight_round,
-                  color: AppColors.putih,
-                  backgroundImage: '../assets/image/timers2.png', // optional
+                  color: Colors.white,
+                  // backgroundImage: '../assets/image/timers2.png', // optional
                 ),
               ],
             ),
@@ -194,7 +194,7 @@ class _TimersScreenState extends State<TimersScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.teksputih),
+                color: AppColors.biru),
             ),
             const SizedBox(height: 12),
 
@@ -224,7 +224,7 @@ class _TimersScreenState extends State<TimersScreen> {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: AppColors.teksputih,
+          color: AppColors.biru,
         ),
       ),
 
@@ -237,7 +237,7 @@ class _TimersScreenState extends State<TimersScreen> {
         separatorBuilder: (_, __) => Divider(
           height: 16,
           thickness: 0.8,
-          color: Colors.grey.shade300,
+          color: Colors.blueGrey,
         ),
         itemBuilder: (context, index) {
           final app = appUsage[index];
@@ -251,7 +251,7 @@ class _TimersScreenState extends State<TimersScreen> {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white60,
+                  color: AppColors.birumuda,
                 ),
               ),
 
@@ -261,7 +261,7 @@ class _TimersScreenState extends State<TimersScreen> {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.teksputih,
+                  color: AppColors.birugelap,
                 ),
               ),
             ],
@@ -303,6 +303,8 @@ class SleepClockPainter extends CustomPainter {
     required this.sweepAngle,
   });
 
+  
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -316,7 +318,7 @@ class SleepClockPainter extends CustomPainter {
     canvas.drawCircle(center, radius, basePaint);
 
     final sleepPaint = Paint()
-    ..color = AppColors.oren
+    ..color = AppColors.birugelap
     ..style = PaintingStyle.stroke
     ..strokeWidth = 26
     ..strokeCap = StrokeCap.round;
@@ -379,9 +381,10 @@ class WeeklyBarChart extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.putih,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(
+          color: Colors.grey.shade200),
       ),
       child: Column(
         children: [
@@ -392,7 +395,7 @@ class WeeklyBarChart extends StatelessWidget {
               return Column(
                 children: [
                   Container(
-                    width: 28,
+                    width: 46,
                     height: hours[i] * 20,
                     decoration: const BoxDecoration(
                       color: AppColors.birumuda,
@@ -405,7 +408,7 @@ class WeeklyBarChart extends StatelessWidget {
               );
             }),
           ),
-          const SizedBox(height: 16),
+          // const SizedBox(height: 16),
           // const Divider(),
           // Text(
           //   '${average.toStringAsFixed(1)} hours',
@@ -436,16 +439,15 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         color: color.withOpacity(0.9),
         image: backgroundImage != null
             ? DecorationImage(
                 image: AssetImage(backgroundImage!),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  color.withOpacity(0.9),
+                  color.withOpacity(0.85),
                   BlendMode.overlay,
                 ),
               )
@@ -453,50 +455,47 @@ class StatCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: color.withOpacity(0.25),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: Stack(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          /// ICON POJOK
-          Positioned(
-            top: 16,
-            right: 16,
+          /// ICON
+          Align(
+            alignment: Alignment.topRight,
             child: Icon(
               icon,
+              size: 26,
               color: AppColors.teksgelap.withOpacity(0.9),
-              size: 28,
             ),
           ),
 
-          /// TEXT CONTENT
-          Positioned(
-            left: 16,
-            bottom: 150,
-            right: 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.oren,
-                  ),
+          /// TEXT
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.birugelap,
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.teksgelap.withOpacity(0.9),
-                  ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.teksgelap.withOpacity(0.85),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

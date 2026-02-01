@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.biru,
+      backgroundColor: AppColors.putih,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.biru, AppColors.biru],
+                    colors: [AppColors.putih, AppColors.putih],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -36,9 +36,9 @@ class HomeScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Welcome back 👋',
+                      'Welcome back',
                       style: TextStyle(
-                        color: AppColors.putih,
+                        color: AppColors.birugelap,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
@@ -47,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'Take care of your eyes today',
                       style: TextStyle(
-                        color: Colors.white60,
+                        color: AppColors.birumuda,
                         fontSize: 14,
                       ),
                     ),
@@ -77,11 +77,11 @@ class HomeScreen extends StatelessWidget {
     child: Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.birumuda,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.2),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -93,12 +93,12 @@ class HomeScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.birumuda.withOpacity(0.12),
+              color: AppColors.biru.withOpacity(0.8),
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.remove_red_eye,
-              color: AppColors.biru,
+              color: Colors.white,
               size: 28,
             ),
           ),
@@ -115,6 +115,7 @@ class HomeScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    color:Colors.white
                   ),
                 ),
                 SizedBox(height: 6),
@@ -122,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                   'Quick vision test in under 3 minutes',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.black54,
+                    color: Colors.white70,
                   ),
                 ),
               ],
@@ -134,11 +135,11 @@ class HomeScreen extends StatelessWidget {
   height: 36,
   width: 36,
   decoration: BoxDecoration(
-    color: AppColors.oren,
+    color: AppColors.birugelap,
     shape: BoxShape.circle,
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.08),
+        color: Colors.black.withOpacity(0.1),
         blurRadius: 6,
         offset: const Offset(0, 3),
       ),
@@ -168,11 +169,11 @@ class HomeScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.putih,
+                    color: AppColors.birumuda,
                     borderRadius: BorderRadius.circular(28),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.birumuda.withOpacity(0.08),
+                        color: Colors.white.withOpacity(0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -186,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.biru
+                          color: Colors.white
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -198,7 +199,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.remove_red_eye,
                               title: 'Vision Test',
                               subtitle: 'Check eyes',
-                              color: AppColors.oren,
+                              color: Colors.white,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -215,7 +216,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.schedule,
                               title: 'Screen Timer',
                               subtitle: 'Track time',
-                              color: AppColors.oren,
+                              color: Colors.white,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -238,7 +239,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.lightbulb,
                               title: 'Eye Tips',
                               subtitle: 'Daily tips',
-                              color: AppColors.oren,
+                              color: Colors.white,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -255,7 +256,7 @@ class HomeScreen extends StatelessWidget {
                               icon: Icons.location_on,
                               title: 'Clinics',
                               subtitle: 'Nearby',
-                              color: AppColors.oren,
+                              color: Colors.white,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -330,7 +331,9 @@ class _TipsCarouselState extends State<TipsCarousel> {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: Image.asset(item['image']!, fit: BoxFit.cover),
+                        child: Image.asset(item['image']!, 
+                        fit: BoxFit.cover
+                        ),
                       ),
                       Positioned.fill(
                         child: Container(
@@ -339,7 +342,7 @@ class _TipsCarouselState extends State<TipsCarousel> {
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: [
-                                AppColors.teksgelap.withOpacity(0.5),
+                                AppColors.birugelap.withOpacity(0.5),
                                 Colors.transparent,
                               ],
                             ),
@@ -347,17 +350,17 @@ class _TipsCarouselState extends State<TipsCarousel> {
                         ),
                       ),
                       Positioned(
-                        left: 16,
-                        right: 16,
-                        bottom: 16,
-                        child: Column(
+                        top: 16,
+  left: 16,
+  right: 16,
+  child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               item['title']!,
                               style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
+                                color: AppColors.birugelap,
+                                fontSize: 26,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -393,8 +396,8 @@ class _TipsCarouselState extends State<TipsCarousel> {
               height: 6,
               decoration: BoxDecoration(
                 color: currentIndex == index
-                    ? AppColors.putih
-                    : AppColors.putih.withOpacity(0.3),
+                    ? AppColors.biru
+                    : Colors.blueGrey.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -427,14 +430,16 @@ class _QuickAccessItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withOpacity(0.2),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           children: [
             CircleAvatar(
               backgroundColor: color.withOpacity(0.2),
-              child: Icon(icon, color: color),
+              child: Icon(
+                icon, 
+                color: AppColors.birugelap),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -446,11 +451,14 @@ class _QuickAccessItem extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
+                      color: AppColors.birugelap,
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(fontSize: 11, color: Colors.black54),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.black54),
                   ),
                 ],
               ),

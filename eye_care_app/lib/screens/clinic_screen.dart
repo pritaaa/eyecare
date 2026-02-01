@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:eye_care_app/clinic/clinic_data.dart';
+import 'package:eye_care_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -137,11 +138,21 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text('Klinik Terdekat'),
-        backgroundColor: Colors.white,
+        title: const Text('Klinik Terdekat',
+        style: TextStyle(
+          color:Colors.white,
+        ),),
+        backgroundColor: AppColors.birumuda,
         foregroundColor: Colors.black,
-        elevation: 0,
-        leading: BackButton(onPressed: () => Navigator.pop(context)),
+        elevation: 20,
+        leading: BackButton(
+          onPressed: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        ),
+        ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -155,7 +166,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                 style: OutlinedButton.styleFrom(
                   shape: const StadiumBorder(),
                   minimumSize: const Size(double.infinity, 48),
-                  side: const BorderSide(color: Colors.blue),
+                  side: const BorderSide(color: AppColors.birugelap),
                 ),
                 onPressed: _isLoading ? null : _getCurrentLocation,
                 icon: _isLoading
@@ -164,10 +175,10 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Icon(Icons.navigation, color: Colors.blue),
+                    : const Icon(Icons.navigation, color: AppColors.birugelap),
                 label: Text(
                   _isLoading ? 'Locating...' : 'Refresh lokasi',
-                  style: TextStyle(color: Colors.blue),
+                  style: TextStyle(color: AppColors.birugelap),
                 ),
               ),
 
@@ -192,7 +203,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.location_on, color: Colors.blue),
+                      Icon(Icons.location_on, color: AppColors.birugelap),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -203,7 +214,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
-                                color: Colors.black87,
+                                color: AppColors.biru,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -251,7 +262,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
+                                      backgroundColor: AppColors.birugelap,
                                       shape: const StadiumBorder(),
                                     ),
                                     onPressed: () =>
@@ -260,7 +271,11 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                                       Icons.navigation,
                                       size: 16,
                                     ),
-                                    label: const Text('Buka Google Maps'),
+                                    label: const Text('Buka Google Maps',
+                                    style: TextStyle(
+                                      color:Colors.white,
+                                    ),
+                                    ),
                                   ),
                                 ),
                               ],

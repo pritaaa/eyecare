@@ -15,10 +15,12 @@ class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.biru,
+      backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text('Vision Test'),
-        backgroundColor: Colors.white,
+        title: const Text('Vision Test',
+        style: TextStyle(
+          ),),
+        backgroundColor: AppColors.birumuda,
         foregroundColor: Colors.black,
         elevation: 20,
       ),
@@ -44,7 +46,7 @@ class _TestScreenState extends State<TestScreen> {
             /// SLIDER
             const Text(
               'Adjust until letters are just readable',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.biru),
             ),
 
             Slider(
@@ -60,25 +62,34 @@ class _TestScreenState extends State<TestScreen> {
 
             /// FINISH BUTTON
             SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TestResultScreen(scale: scale),
-                    ),
-                  );
-                },
-                child: const Text('Finish Test',
-                style: TextStyle(
-                        color: AppColors.oren,
-                        
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ),
-            ),
+  width: double.infinity,
+  child: ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.birugelap, // ✅ WARNA BUTTON
+      foregroundColor: Colors.white,        // warna teks & icon
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 4,
+    ),
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => TestResultScreen(scale: scale),
+        ),
+      );
+    },
+    child: const Text(
+      'Finish Test',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+),
+
           ],
         ),
       ),
@@ -99,10 +110,10 @@ class TestResultScreen extends StatelessWidget {
     final result = _getResult(scale);
 
     return Scaffold(
-      backgroundColor: AppColors.biru,
+      backgroundColor: AppColors.putih,
       appBar: AppBar(
         title: const Text('Test Result'),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.birumuda,
         foregroundColor: Colors.black,
         elevation: 20,
       ),
@@ -152,7 +163,7 @@ class TestResultScreen extends StatelessWidget {
                       result.description,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        color: Colors.black54,
+                        color: AppColors.teksgelap,
                         fontSize: 14,
                       ),
                     ),
@@ -177,20 +188,29 @@ class TestResultScreen extends StatelessWidget {
 
             /// RETAKE
             SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Retake Test',
-                  style: TextStyle(
-                    color: AppColors.oren,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
+  width: double.infinity,
+  child: ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.birugelap,
+      foregroundColor: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 4,
+    ),
+    onPressed: () {
+      Navigator.pop(context);
+    },
+    child: const Text(
+      'Retake Test',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+),
+
 
             const SizedBox(height: 8),
 
@@ -204,7 +224,7 @@ class TestResultScreen extends StatelessWidget {
               },
               child: const Text(
                 'Back to Home',
-                style: TextStyle(color: AppColors.birumuda),
+                style: TextStyle(color: AppColors.biru),
               ),
             ),
           ],

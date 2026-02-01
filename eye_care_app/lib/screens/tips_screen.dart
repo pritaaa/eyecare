@@ -1,3 +1,4 @@
+import 'package:eye_care_app/screens/home_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -7,16 +8,22 @@ class TipsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.biru,
+      backgroundColor: AppColors.putih,
 
       /// ================= APP BAR =================
       appBar: AppBar(
-        backgroundColor: AppColors.putih,
+        backgroundColor: AppColors.birumuda,
+        foregroundColor: AppColors.birugelap,
         elevation: 20,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           color: AppColors.teksgelap,
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        ),
+      ),
         ),
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +33,7 @@ class TipsScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.teksgelap,
+                color: AppColors.birugelap,
               ),
             ),
             
@@ -54,7 +61,7 @@ class TipsScreen extends StatelessWidget {
                 child: Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color.fromARGB(255, 201, 243, 245), Color.fromARGB(255, 216, 227, 240)],
+                      colors: [AppColors.birumuda, Colors.lightBlue],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -67,7 +74,7 @@ class TipsScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.oren,
+                          color: AppColors.birugelap,
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: const Icon(Icons.water_drop,
@@ -82,7 +89,7 @@ class TipsScreen extends StatelessWidget {
                               'TIP OF THE DAY',
                               style: TextStyle(
                                 fontSize: 10,
-                                color: Colors.teal,
+                                color: AppColors.putih,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -91,6 +98,7 @@ class TipsScreen extends StatelessWidget {
                               'Stay Hydrated',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
+                                color:Colors.white
                               ),
                             ),
                             SizedBox(height: 6),
@@ -98,7 +106,7 @@ class TipsScreen extends StatelessWidget {
                               'Drink plenty of water to keep your eyes moist and reduce dryness. Aim for 8 glasses a day.',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.black54,
+                                color: Colors.white70,
                               ),
                             ),
                           ],
@@ -124,8 +132,8 @@ class TipsScreen extends StatelessWidget {
                   _categoryCard(
                     icon: Icons.monitor,
                     title: 'Screen Time',
-                    iconBg: const Color(0xFFEFF6FF),
-                    iconColor: AppColors.biru,
+                    iconBg: AppColors.birugelap,
+                    iconColor: Colors.white,
                     tips: const [
                       'Follow the 20-20-20 rule',
                       'Reduce screen brightness',
@@ -135,8 +143,8 @@ class TipsScreen extends StatelessWidget {
                   _categoryCard(
                     icon: Icons.apple,
                     title: 'Nutrition',
-                    iconBg: const Color.fromARGB(255, 207, 236, 235),
-                    iconColor: AppColors.birumuda,
+                    iconBg: AppColors.birugelap,
+                    iconColor: Colors.white,
                     tips: const [
                       'Eat leafy greens and carrots',
                       'Include omega-3 fatty acids',
@@ -146,8 +154,8 @@ class TipsScreen extends StatelessWidget {
                   _categoryCard(
                     icon: Icons.visibility,
                     title: 'Protection',
-                    iconBg: const Color.fromARGB(255, 195, 234, 252),
-                    iconColor: AppColors.teksgelap,
+                    iconBg: AppColors.birugelap,
+                    iconColor: Colors.white,
                     tips: const [
                       'Wear UV-blocking sunglasses',
                       'Use blue light filters at night',
@@ -174,27 +182,28 @@ class TipsScreen extends StatelessWidget {
                     title: 'Blink More Often',
                     description:
                         'When staring at screens, we blink less. Make a conscious effort to blink regularly.',
-                    bgColor: const Color(0xFFFFFBEB),
-                    borderColor: const Color(0xFFFDE68A),
+                    bgColor: const Color(0xFFBBE0EF),
+                    borderColor: AppColors.birumuda,
                   ),
                   _quickTipCard(
                     icon: Icons.nightlight_round,
                     title: 'Rest Before Bed',
                     description:
                         'Avoid screens 1 hour before sleep to reduce eye strain and improve sleep quality.',
-                    bgColor: const Color(0xFFEEF2FF),
-                    borderColor: const Color(0xFFC7D2FE),
+                    bgColor: const Color(0xFFACBAC4),
+                    borderColor: AppColors.biru,
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
             /// ================= GENERAL ADVICE =================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Card(
+                color:AppColors.birumuda,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -203,7 +212,8 @@ class TipsScreen extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Icon(Icons.lightbulb, color: AppColors.biru),
+                      Icon(Icons.lightbulb,
+                      color: AppColors.birugelap),
                       SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -211,14 +221,17 @@ class TipsScreen extends StatelessWidget {
                           children: [
                             Text(
                               'Remember',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color:AppColors.birugelap,
+                                ),
                             ),
                             SizedBox(height: 6),
                             Text(
                               'Regular eye exams are essential. Visit an eye care professional at least once a year.',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.black54,
+                                color: Colors.white70,
                               ),
                             ),
                           ],
@@ -245,7 +258,7 @@ class TipsScreen extends StatelessWidget {
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: AppColors.putih
+          color: AppColors.biru
         ),
       ),
     );
@@ -259,6 +272,8 @@ class TipsScreen extends StatelessWidget {
     required List<String> tips,
   }) {
     return Card(
+      color:Colors.white70,
+      shadowColor: AppColors.birugelap,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -281,7 +296,9 @@ class TipsScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Text(
                   title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.biru),
                 ),
               ],
             ),
@@ -291,13 +308,16 @@ class TipsScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Row(
                   children: [
-                    const Text('• '),
+                    const Text('• ',
+                    style:TextStyle(
+                      color:Colors.black54
+                    )),
                     Expanded(
                       child: Text(
                         tip,
                         style: const TextStyle(
                           fontSize: 12,
-                          color: Colors.black54,
+                          color: AppColors.birumuda,
                         ),
                       ),
                     ),
@@ -328,7 +348,8 @@ class TipsScreen extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon),
+          Icon(icon,
+          color:AppColors.biru),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
