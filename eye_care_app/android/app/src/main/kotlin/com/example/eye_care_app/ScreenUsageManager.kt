@@ -41,6 +41,12 @@ object ScreenUsageManager {
     private fun checkDateReset(pref: SharedPreferences, today: String) {
         val lastDate = pref.getString("last_date", "")
         if (lastDate != today) {
+            // Simpan data hari sebelumnya ke history (format key: history_YYYY-MM-DD)
+            if (lastDate != "") {
+                val previousTotal = pref.getLong("screen_on_ms", 0)
+                pref.edit().putLong("history_$lastDate", previousTotal).apply()
+            }
+
             pref.edit()
                 .putLong("screen_on_ms", 0)
                 .putInt("screen_on_count", 0)

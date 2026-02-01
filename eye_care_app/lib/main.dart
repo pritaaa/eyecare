@@ -1,6 +1,8 @@
 import 'package:eye_care_app/app_usage/app_usage_provider.dart';
+import 'package:eye_care_app/auth/auth_provider.dart';
 import 'package:eye_care_app/chatbot/controller.dart';
 import 'package:eye_care_app/screen_time/screen_time_provider.dart';
+import 'package:eye_care_app/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eye_care_app/screens/home_screen.dart';
@@ -16,6 +18,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ChatbotController()),
         ChangeNotifierProvider(create: (_) => ScreenTimeProvider()),
         ChangeNotifierProvider(create: (_) => AppUsageProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: const EyeCareApp(),
     ),
@@ -35,7 +38,7 @@ class EyeCareApp extends StatelessWidget {
         fontFamily: 'Poppins',
         scaffoldBackgroundColor: AppColors.putih,
       ),
-      home: const MainScreen(),
+      home: const SplashScreen(),
     );
   }
 }

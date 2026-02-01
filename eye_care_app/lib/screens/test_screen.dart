@@ -17,9 +17,7 @@ class _TestScreenState extends State<TestScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text('Vision Test',
-        style: TextStyle(
-          ),),
+        title: const Text('Vision Test', style: TextStyle()),
         backgroundColor: AppColors.birumuda,
         foregroundColor: Colors.black,
         elevation: 20,
@@ -52,7 +50,7 @@ class _TestScreenState extends State<TestScreen> {
             Slider(
               min: 0.6,
               max: 1.8,
-              value: scale,
+              value: scale.clamp(0.6, 1.8),
               onChanged: (value) {
                 setState(() => scale = value);
               },
@@ -62,34 +60,31 @@ class _TestScreenState extends State<TestScreen> {
 
             /// FINISH BUTTON
             SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.birugelap, // ✅ WARNA BUTTON
-      foregroundColor: Colors.white,        // warna teks & icon
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      elevation: 4,
-    ),
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => TestResultScreen(scale: scale),
-        ),
-      );
-    },
-    child: const Text(
-      'Finish Test',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-),
-
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.birugelap, // ✅ WARNA BUTTON
+                  foregroundColor: Colors.white, // warna teks & icon
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 4,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TestResultScreen(scale: scale),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Finish Test',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -100,10 +95,7 @@ class _TestScreenState extends State<TestScreen> {
 class TestResultScreen extends StatelessWidget {
   final double scale;
 
-  const TestResultScreen({
-    super.key,
-    required this.scale,
-  });
+  const TestResultScreen({super.key, required this.scale});
 
   @override
   Widget build(BuildContext context) {
@@ -137,11 +129,7 @@ class TestResultScreen extends StatelessWidget {
                         color: result.color.withOpacity(0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        result.icon,
-                        size: 56,
-                        color: result.color,
-                      ),
+                      child: Icon(result.icon, size: 56, color: result.color),
                     ),
 
                     const SizedBox(height: 20),
@@ -174,10 +162,7 @@ class TestResultScreen extends StatelessWidget {
 
                     /// INFO
                     _infoRow('Test Type', 'Visual Acuity'),
-                    _infoRow(
-                      'Scale Value',
-                      scale.toStringAsFixed(2),
-                    ),
+                    _infoRow('Scale Value', scale.toStringAsFixed(2)),
                     _infoRow('Test Date', 'Today'),
                   ],
                 ),
@@ -188,39 +173,33 @@ class TestResultScreen extends StatelessWidget {
 
             /// RETAKE
             SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.birugelap,
-      foregroundColor: Colors.white,
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      elevation: 4,
-    ),
-    onPressed: () {
-      Navigator.pop(context);
-    },
-    child: const Text(
-      'Retake Test',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-),
-
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.birugelap,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 4,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Retake Test',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
 
             const SizedBox(height: 8),
 
             /// BACK HOME
             OutlinedButton(
               onPressed: () {
-                Navigator.popUntil(
-                  context,
-                  (route) => route.isFirst,
-                );
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: const Text(
                 'Back to Home',
@@ -245,16 +224,14 @@ class TestResultScreen extends StatelessWidget {
     } else if (scale <= 1.3) {
       return _ResultData(
         title: 'Mild Difficulty',
-        description:
-            'You may have slight difficulty seeing small details.',
+        description: 'You may have slight difficulty seeing small details.',
         color: AppColors.oren,
         icon: Icons.visibility,
       );
     } else {
       return _ResultData(
         title: 'Needs Attention',
-        description:
-            'Consider consulting an eye care professional.',
+        description: 'Consider consulting an eye care professional.',
         color: Colors.red,
         icon: Icons.warning_rounded,
       );
@@ -267,14 +244,8 @@ class TestResultScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: const TextStyle(color: Colors.black54),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(label, style: const TextStyle(color: Colors.black54)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -294,4 +265,3 @@ class _ResultData {
     required this.icon,
   });
 }
-

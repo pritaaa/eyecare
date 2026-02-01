@@ -2,7 +2,7 @@ import 'package:eye_care_app/screen_time/screen_time_model.dart';
 import 'package:flutter/services.dart';
 
 class ScreenTimeService {
-  static const _channel = MethodChannel('screen_usage');
+  static const _channel = MethodChannel('eye_care/screen_usage');
 
   static Future<ScreenTimeModel> fetchTodayReport() async {
     final result = await _channel.invokeMethod('getTodayReport');

@@ -1,6 +1,8 @@
+import 'package:eye_care_app/auth/auth_provider.dart';
+import 'package:eye_care_app/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'profile_screen.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,17 +16,6 @@ class _LoginScreenState extends State<LoginScreen> {
   // ===== CONTROLLERS =====
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  // ===== SAVE LOGIN (LOCAL STORAGE) =====
-  Future<void> saveLogin(String email) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', true);
-    await prefs.setString('email', email);
-    await prefs.setString(
-      'username',
-      email.split('@')[0], // auto username
-    );
-  }
 
   @override
   void dispose() {
@@ -114,14 +105,48 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 52,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await saveLogin(emailController.text);
+                      final email = emailController.text;
+                      final password = passwordController.text;
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ProfileScreen(),
-                        ),
-                      );
+                      if (email.isEmpty || password.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please fill all fields"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final prefs = await SharedPreferences.getInstance();
+                      final storedEmail = prefs.getString('email');
+                      final storedPassword = prefs.getString('password');
+                      final storedUsername = prefs.getString('username');
+
+                      if (storedEmail != null &&
+                          storedEmail == email &&
+                          storedPassword == password) {
+                        // Login berhasil: Gunakan username yang tersimpan, bukan email
+                        await context.read<AuthProvider>().login(
+                          storedUsername ?? 'User',
+                        );
+
+                        if (context.mounted) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const MainScreen(),
+                            ),
+                          );
+                        }
+                      } else {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Invalid email or password"),
+                            ),
+                          );
+                        }
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.teal,

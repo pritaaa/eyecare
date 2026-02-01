@@ -13,6 +13,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
+import java.util.AbstractMap
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -41,6 +42,7 @@ class MainActivity : FlutterActivity() {
                 }
 
                 "getUsageStats" -> {
+                    val targetPackages = call.argument<List<String>>("targetPackages")
                     if (!hasUsagePermission()) {
                         result.error(
                             "NO_PERMISSION",
@@ -48,8 +50,12 @@ class MainActivity : FlutterActivity() {
                             null
                         )
                     } else {
-                        result.success(getUsageStats())
+                        result.success(getUsageStats(targetPackages))
                     }
+                }
+
+                "getInstalledApps" -> {
+                    result.success(getInstalledApps())
                 }
 
                 else -> result.notImplemented()
@@ -67,9 +73,15 @@ class MainActivity : FlutterActivity() {
                 "getTodayReport" -> {
                     var totalMs = pref.getLong("screen_on_ms", 0)
                     val isScreenOn = pref.getBoolean("is_screen_on", true)
+                    var lastOn = pref.getLong("last_on_time", 0)
+
+                    // FIX: Jika baru install (lastOn 0) tapi layar nyala, set waktu mulai sekarang
+                    if (isScreenOn && lastOn == 0L) {
+                        lastOn = System.currentTimeMillis()
+                        pref.edit().putLong("last_on_time", lastOn).apply()
+                    }
 
                     if (isScreenOn) {
-                        val lastOn = pref.getLong("last_on_time", 0)
                         if (lastOn > 0) {
                             totalMs += (System.currentTimeMillis() - lastOn)
                         }
@@ -101,7 +113,22 @@ class MainActivity : FlutterActivity() {
         return mode == AppOpsManager.MODE_ALLOWED
     }
 
-    private fun getUsageStats(): List<Map<String, Any?>> {
+    private fun getInstalledApps(): List<Map<String, Any?>> {
+        val pm = packageManager
+        val intent = Intent(Intent.ACTION_MAIN, null)
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+        val apps = pm.queryIntentActivities(intent, 0)
+
+        return apps.map { resolveInfo ->
+            val activityInfo = resolveInfo.activityInfo
+            val packageName = activityInfo.packageName
+            val label = resolveInfo.loadLabel(pm).toString()
+            val icon = getAppIcon(packageName)
+            mapOf("appName" to label, "packageName" to packageName, "appIcon" to icon)
+        }.distinctBy { it["packageName"] as String }.sortedBy { it["appName"] as String }
+    }
+
+    private fun getUsageStats(targetPackages: List<String>?): List<Map<String, Any?>> {
         val usageStatsManager =
             getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
@@ -113,32 +140,37 @@ class MainActivity : FlutterActivity() {
         val startTime = calendar.timeInMillis
         val endTime = System.currentTimeMillis()
 
-        val stats = usageStatsManager.queryUsageStats(
-            UsageStatsManager.INTERVAL_DAILY,
+        val stats = usageStatsManager.queryAndAggregateUsageStats(
             startTime,
             endTime
         )
 
-        val usageMap = HashMap<String, Long>()
-
-        for (usage in stats) {
-            val total = usage.totalTimeInForeground
-            val pkg = usage.packageName
-
-            if (total > 0 &&
-                !pkg.startsWith("com.android") &&
-                pkg != packageName
-            ) {
-                usageMap[pkg] =
-                    usageMap.getOrDefault(pkg, 0L) + total
+        val resultList = if (targetPackages != null && targetPackages.isNotEmpty()) {
+            // Jika user memilih aplikasi spesifik
+            targetPackages.map { pkg ->
+                val usage = stats[pkg]
+                val total = usage?.totalTimeInForeground ?: 0L
+                AbstractMap.SimpleEntry(pkg, total)
             }
+        } else {
+            // Default: Top 5 aplikasi hari ini
+            val usageMap = HashMap<String, Long>()
+            for ((pkg, usage) in stats) {
+                val total = usage.totalTimeInForeground
+                if (total > 0 &&
+                    usage.lastTimeUsed >= startTime &&
+                    !pkg.startsWith("com.android") &&
+                    pkg != packageName
+                ) {
+                    usageMap[pkg] = total
+                }
+            }
+            usageMap.entries.sortedByDescending { it.value }.take(5).toList()
         }
 
         val packageManager = applicationContext.packageManager
 
-        return usageMap.entries
-            .sortedByDescending { it.value }
-            .take(5)
+        return resultList
             .map {
                 val appName = try {
                     packageManager.getApplicationLabel(packageManager.getApplicationInfo(it.key, 0)).toString()
@@ -146,27 +178,7 @@ class MainActivity : FlutterActivity() {
                     it.key
                 }
 
-                val appIcon = try {
-                    val drawable = packageManager.getApplicationIcon(it.key)
-                    val bitmap = if (drawable is BitmapDrawable) {
-                        drawable.bitmap
-                    } else {
-                        val bmp = Bitmap.createBitmap(
-                            drawable.intrinsicWidth,
-                            drawable.intrinsicHeight,
-                            Bitmap.Config.ARGB_8888
-                        )
-                        val canvas = Canvas(bmp)
-                        drawable.setBounds(0, 0, canvas.width, canvas.height)
-                        drawable.draw(canvas)
-                        bmp
-                    }
-                    val stream = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                    stream.toByteArray()
-                } catch (e: Exception) {
-                    null
-                }
+                val appIcon = getAppIcon(it.key)
 
                 mapOf(
                     "package" to it.key,
@@ -176,43 +188,71 @@ class MainActivity : FlutterActivity() {
                 )
             }
     }
-    private fun getWeeklyScreenTime(): List<Map<String, Any>> {
-        val usageStatsManager =
-            getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-        val calendar = Calendar.getInstance()
+    private fun getAppIcon(packageName: String): ByteArray? {
+        return try {
+            val drawable = packageManager.getApplicationIcon(packageName)
+            val bitmap = if (drawable is BitmapDrawable) {
+                drawable.bitmap
+            } else {
+                val bmp = Bitmap.createBitmap(
+                    drawable.intrinsicWidth,
+                    drawable.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bmp)
+                drawable.setBounds(0, 0, canvas.width, canvas.height)
+                drawable.draw(canvas)
+                bmp
+            }
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            stream.toByteArray()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun getWeeklyScreenTime(): List<Map<String, Any>> {
+        val pref = getSharedPreferences("screen_usage", Context.MODE_PRIVATE)
         val weeklyData = ArrayList<Map<String, Any>>()
-        val dayFormat = SimpleDateFormat("E", Locale.getDefault())
+        
+        val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val sdfDay = SimpleDateFormat("E", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        // Ambil data live hari ini
+        val currentMs = pref.getLong("screen_on_ms", 0)
+        val isScreenOn = pref.getBoolean("is_screen_on", false)
+        val lastOn = pref.getLong("last_on_time", 0)
+        
+        // Hitung tambahan waktu real-time jika layar sedang nyala
+        val liveAddition = if (isScreenOn && lastOn > 0L) {
+            System.currentTimeMillis() - lastOn
+        } else {
+            0L
+        }
 
         for (i in 6 downTo 0) {
             calendar.time = Date()
             calendar.add(Calendar.DAY_OF_YEAR, -i)
-
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            val start = calendar.timeInMillis
-
-            calendar.set(Calendar.HOUR_OF_DAY, 23)
-            calendar.set(Calendar.MINUTE, 59)
-            calendar.set(Calendar.SECOND, 59)
-            val end = calendar.timeInMillis
-
-            val stats = usageStatsManager.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY,
-                start,
-                end
-            )
-
-            var totalDayMs = 0L
-            for (usage in stats) {
-                totalDayMs += usage.totalTimeInForeground
+            val dateString = sdfDate.format(calendar.time)
+            
+            var totalMs = 0L
+            
+            if (i == 0) {
+                // Hari ini: Ambil dari screen_on_ms + live duration
+                totalMs = currentMs + liveAddition
+            } else {
+                // Hari lalu: Ambil dari history yang disimpan ScreenUsageManager
+                // Jika tidak ada data (sebelum install), otomatis 0
+                totalMs = pref.getLong("history_$dateString", 0)
             }
 
             weeklyData.add(
                 mapOf(
-                    "label" to dayFormat.format(calendar.time).substring(0, 1),
-                    "usageMs" to totalDayMs
+                    "label" to sdfDay.format(calendar.time).substring(0, 1),
+                    "usageMs" to totalMs
                 )
             )
         }

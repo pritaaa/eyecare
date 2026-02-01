@@ -1,4 +1,5 @@
 import 'package:eye_care_app/app_usage/app_usage_view.dart';
+import 'package:eye_care_app/auth/auth_provider.dart';
 import 'package:eye_care_app/screen_time/screen_time_view.dart';
 import 'package:eye_care_app/screens/clinic_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:eye_care_app/screens/timers_screen.dart';
 import 'tips_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -34,24 +36,25 @@ class HomeScreen extends StatelessWidget {
                     bottomRight: Radius.circular(32),
                   ),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Welcome back',
-                      style: TextStyle(
-                        color: AppColors.birugelap,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Consumer<AuthProvider>(
+                      builder: (context, auth, _) {
+                        return Text(
+                          'Halo, ${auth.username} 👋',
+                          style: const TextStyle(
+                            color: AppColors.birugelap,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
-                    SizedBox(height: 6),
-                    Text(
+                    const SizedBox(height: 6),
+                    const Text(
                       'Take care of your eyes today',
-                      style: TextStyle(
-                        color: AppColors.birumuda,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: AppColors.birumuda, fontSize: 14),
                     ),
                   ],
                 ),
@@ -66,102 +69,98 @@ class HomeScreen extends StatelessWidget {
 
               /// ================= STATS =================
               Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const TestScreen(),
-        ),
-      );
-    },
-    child: Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.birumuda,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          /// ICON
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.biru.withOpacity(0.8),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.remove_red_eye,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TestScreen()),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: AppColors.birumuda,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        /// ICON
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: AppColors.biru.withOpacity(0.8),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
 
                         const SizedBox(width: 16),
 
-          /// TEXT
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Check Your Eye Health',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color:Colors.white
+                        /// TEXT
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Check Your Eye Health',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text(
+                                'Quick vision test in under 3 minutes',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        /// ARROW
+                        Container(
+                          height: 36,
+                          width: 36,
+                          decoration: BoxDecoration(
+                            color: AppColors.birugelap,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14,
+                              color: AppColors.putih,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 6),
-                Text(
-                  'Quick vision test in under 3 minutes',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white70,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          /// ARROW
-          Container(
-  height: 36,
-  width: 36,
-  decoration: BoxDecoration(
-    color: AppColors.birugelap,
-    shape: BoxShape.circle,
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 6,
-        offset: const Offset(0, 3),
-      ),
-    ],
-  ),
-  child: const Center(
-    child: Icon(
-      Icons.arrow_forward_ios,
-      size: 14,
-      color: AppColors.putih,
-    ),
-  ),
-),
-
-        ],
-      ),
-    ),
-  ),
-),
-
+              ),
 
               const SizedBox(height: 24),
 
@@ -189,7 +188,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white
+                          color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -333,9 +332,7 @@ class _TipsCarouselState extends State<TipsCarousel> {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: Image.asset(item['image']!, 
-                        fit: BoxFit.cover
-                        ),
+                        child: Image.asset(item['image']!, fit: BoxFit.cover),
                       ),
                       Positioned.fill(
                         child: Container(
@@ -353,9 +350,9 @@ class _TipsCarouselState extends State<TipsCarousel> {
                       ),
                       Positioned(
                         top: 16,
-  left: 16,
-  right: 16,
-  child: Column(
+                        left: 16,
+                        right: 16,
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -439,9 +436,7 @@ class _QuickAccessItem extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: color.withOpacity(0.2),
-              child: Icon(
-                icon, 
-                color: AppColors.birugelap),
+              child: Icon(icon, color: AppColors.birugelap),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -458,9 +453,7 @@ class _QuickAccessItem extends StatelessWidget {
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Colors.black54),
+                    style: const TextStyle(fontSize: 11, color: Colors.black54),
                   ),
                 ],
               ),
