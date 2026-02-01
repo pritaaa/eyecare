@@ -7,6 +7,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
+
 class ClinicFinderScreen extends StatefulWidget {
   const ClinicFinderScreen({super.key});
 
@@ -22,16 +23,19 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
   void initState() {
     super.initState();
     _clinics = clinics
-        .map((c) => {
-              'name': c.name,
-              'lat': c.lat,
-              'lng': c.lng,
-              'distance': c.distance,
-              'address': c.address,
-              'distanceValue': 0.0,
-            })
+        .map(
+          (c) => {
+            'name': c.name,
+            'lat': c.lat,
+            'lng': c.lng,
+            'distance': c.distance,
+            'address': c.address,
+            'distanceValue': 0.0,
+          },
+        )
         .toList();
     _getCurrentLocation();
+    _fetchClinicAddresses();
   }
 
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -39,7 +43,8 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
     final dLat = _deg2rad(lat2 - lat1);
     final dLon = _deg2rad(lon2 - lon1);
 
-    final a = sin(dLat / 2) * sin(dLat / 2) +
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
         cos(_deg2rad(lat1)) *
             cos(_deg2rad(lat2)) *
             sin(dLon / 2) *
@@ -85,13 +90,44 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
         clinic['distance'] = dist;
       }
 
-      _clinics.sort(
-        (a, b) => a['distanceValue'].compareTo(b['distanceValue']),
-      );
+      _clinics.sort((a, b) => a['distanceValue'].compareTo(b['distanceValue']));
     } catch (e) {
       debugPrint(e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _fetchClinicAddresses() async {
+    for (var clinic in _clinics) {
+      // Cek jika alamat kosong atau default '-', maka cari via Geocoding
+      if (clinic['address'] == null ||
+          clinic['address'] == '-' ||
+          clinic['address'].toString().isEmpty) {
+        try {
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+            clinic['lat'],
+            clinic['lng'],
+          );
+
+          if (placemarks.isNotEmpty) {
+            final place = placemarks.first;
+            final address = [
+              place.street,
+              place.subLocality,
+              place.locality,
+            ].where((e) => e != null && e.isNotEmpty).join(', ');
+
+            if (mounted) {
+              setState(() {
+                clinic['address'] = address;
+              });
+            }
+          }
+        } catch (e) {
+          debugPrint('Error fetching address: $e');
+        }
+      }
     }
   }
 
@@ -112,10 +148,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
         foregroundColor: Colors.black,
         title: Text(
           'Klinik Terdekat',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
         ),
       ),
       body: Padding(
@@ -136,8 +169,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.navigation,
-                      color: AppColors.birugelap),
+                  : const Icon(Icons.navigation, color: AppColors.birugelap),
               label: Text(
                 _isLoading ? 'Locating...' : 'Refresh lokasi',
                 style: const TextStyle(color: AppColors.birugelap),
@@ -169,8 +201,10 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.location_on,
-                            color: AppColors.birugelap),
+                        const Icon(
+                          Icons.location_on,
+                          color: AppColors.birugelap,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -212,10 +246,8 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                                     backgroundColor: AppColors.birugelap,
                                     shape: const StadiumBorder(),
                                   ),
-                                  onPressed: () => openMaps(
-                                    clinic['lat'],
-                                    clinic['lng'],
-                                  ),
+                                  onPressed: () =>
+                                      openMaps(clinic['lat'], clinic['lng']),
                                   icon: const Icon(Icons.navigation, size: 16),
                                   label: const Text(
                                     'Buka Google Maps',

@@ -1,7 +1,8 @@
+import 'package:eye_care_app/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
-import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -36,10 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 4),
               const Text(
                 'Kelola kebiasaan kesehatan mata Anda',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Color(0xFF7A9CC6),
-                ),
+                style: TextStyle(fontSize: 15, color: Color(0xFF7A9CC6)),
               ),
 
               const SizedBox(height: 28),
@@ -50,30 +48,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 32),
 
               /// EYE HABIT SUMMARY
-              const Text(
-                'Ringkasan Kebiasaan Mata',
-                style: _sectionTitle,
-              ),
+              const Text('Ringkasan Kebiasaan Mata', style: _sectionTitle),
               const SizedBox(height: 20),
               _statsGrid(),
 
               const SizedBox(height: 32),
 
               /// QUICK SETTINGS
-              const Text(
-                'Pengaturan Cepat',
-                style: _sectionTitle,
-              ),
+              const Text('Pengaturan Cepat', style: _sectionTitle),
               const SizedBox(height: 20),
               _quickSettingCard(),
 
               const SizedBox(height: 32),
 
               /// SETTINGS
-              const Text(
-                'Pengaturan',
-                style: _sectionTitle,
-              ),
+              const Text('Pengaturan', style: _sectionTitle),
               const SizedBox(height: 20),
               _settingsCard(),
 
@@ -81,8 +70,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               /// LOGOUT
               OutlinedButton(
-                onPressed: () {
-                  // TODO: logout logic
+                onPressed: () async {
+                  await context.read<AuthProvider>().logout();
+                  if (context.mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      (route) => false,
+                    );
+                  }
                 },
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(52),
@@ -125,6 +121,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // ================= WIDGETS =================
 
   Widget _profileCard() {
+    final username = context.select((AuthProvider p) => p.username);
+    final initial = username.isNotEmpty ? username[0].toUpperCase() : 'U';
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: _cardDecoration,
@@ -136,16 +135,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF5EA1DF),
-                  Color(0xFF7FB8E8),
-                ],
+                colors: [Color(0xFF5EA1DF), Color(0xFF7FB8E8)],
               ),
             ),
-            child: const Center(
+            child: Center(
               child: Text(
-                'U',
-                style: TextStyle(
+                initial,
+                style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -154,25 +150,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           const SizedBox(width: 16),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Pengguna',
-                  style: TextStyle(
+                  username.isNotEmpty ? username : 'Pengguna',
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1E3A5F),
                   ),
                 ),
-                SizedBox(height: 4),
-                Text(
+                const SizedBox(height: 4),
+                const Text(
                   'Tingkat Kesehatan Mata: Sehat',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF5EA1DF),
-                  ),
+                  style: TextStyle(fontSize: 14, color: Color(0xFF5EA1DF)),
                 ),
               ],
             ),
@@ -186,11 +179,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _statsGrid() {
     return Row(
       children: const [
-        Expanded(child: _StatCard(value: '5j\n20m', label: 'Waktu Layar')),
+        Expanded(
+          child: _StatCard(value: '5j\n20m', label: 'Waktu Layar'),
+        ),
         SizedBox(width: 16),
-        Expanded(child: _StatCard(value: '7j', label: 'Tidur')),
+        Expanded(
+          child: _StatCard(value: '7j', label: 'Tidur'),
+        ),
         SizedBox(width: 16),
-        Expanded(child: _StatCard(value: '6', label: 'Istirahat')),
+        Expanded(
+          child: _StatCard(value: '6', label: 'Istirahat'),
+        ),
       ],
     );
   }
@@ -221,9 +220,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ListTile(
             leading: _settingIcon(Icons.schedule),
             title: const Text('Jadwal Pengingat'),
-            subtitle: Text(
-              'Waktu istirahat: ${breakTime.format(context)}',
-            ),
+            subtitle: Text('Waktu istirahat: ${breakTime.format(context)}'),
             trailing: const Icon(Icons.chevron_right),
             onTap: _pickBreakTime,
           ),
@@ -253,10 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFFE8F4FF),
-            Color(0xFFD4EBFF),
-          ],
+          colors: [Color(0xFFE8F4FF), Color(0xFFD4EBFF)],
         ),
       ),
       child: Icon(icon, color: Color(0xFF5EA1DF)),
@@ -281,10 +275,7 @@ class _StatCard extends StatelessWidget {
   final String value;
   final String label;
 
-  const _StatCard({
-    required this.value,
-    required this.label,
-  });
+  const _StatCard({required this.value, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -305,10 +296,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Color(0xFF7A9CC6),
-            ),
+            style: const TextStyle(fontSize: 13, color: Color(0xFF7A9CC6)),
           ),
         ],
       ),
@@ -329,10 +317,6 @@ final _cardDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(20),
   border: Border.all(color: Color(0xFFE8F4FF)),
   boxShadow: [
-    BoxShadow(
-      color: Color(0x145EA1DF),
-      blurRadius: 20,
-      offset: Offset(0, 6),
-    ),
+    BoxShadow(color: Color(0x145EA1DF), blurRadius: 20, offset: Offset(0, 6)),
   ],
 );

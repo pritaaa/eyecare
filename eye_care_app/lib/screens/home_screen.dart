@@ -10,10 +10,8 @@ import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 import 'package:provider/provider.dart';
 
-
 // final textScale = MediaQuery.of(context).textScaleFactor;
 // double sp(double size) => size * textScale.clamp(1.0, 1.2);
-
 
 final tips = [
   {
@@ -32,6 +30,7 @@ final tips = [
     'color': AppColors.blueLight,
   },
 ];
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -39,6 +38,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final textScale = MediaQuery.of(context).textScaleFactor;
+    final username = context.select((AuthProvider p) => p.username);
 
     double sp(double size) => size * textScale.clamp(1.0, 1.2);
 
@@ -48,7 +48,6 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// ================= HEADER =================
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
@@ -56,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Selamat Datang Kembali',
+                    'Selamat Datang Kembali $username',
                     style: TextStyle(
                       fontSize: sp(width * 0.075), // adaptif
                       fontWeight: FontWeight.bold,
@@ -109,10 +108,7 @@ class HomeScreen extends StatelessWidget {
                         width: 48,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [
-                              AppColors.bluePrimary,
-                              AppColors.blueDark,
-                            ],
+                            colors: [AppColors.bluePrimary, AppColors.blueDark],
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -328,10 +324,7 @@ class _QuickCard extends StatelessWidget {
                 subtitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: sp(12),
-                  color: AppColors.textLight,
-                ),
+                style: TextStyle(fontSize: sp(12), color: AppColors.textLight),
               ),
             ),
           ],
@@ -399,7 +392,6 @@ class _EyeCareTipsSectionState extends State<EyeCareTipsSection> {
   }
 }
 
-
 class _TipItem extends StatelessWidget {
   final Map<String, dynamic> tip;
 
@@ -430,8 +422,7 @@ class _TipItem extends StatelessWidget {
           children: [
             /// BADGE
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(20),
@@ -468,18 +459,14 @@ class _TipItem extends StatelessWidget {
               tip['desc'],
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: sp(14),
-                color: AppColors.blueDark,
-              ),
+              style: TextStyle(fontSize: sp(14), color: AppColors.blueDark),
             ),
 
             const Spacer(),
 
             /// TIMER
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color: AppColors.bluePrimary,
                 borderRadius: BorderRadius.circular(12),
