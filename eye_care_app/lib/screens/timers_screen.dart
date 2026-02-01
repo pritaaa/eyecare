@@ -176,14 +176,14 @@ class _TimersScreenState extends State<TimersScreen> {
                   icon: Icons.phone_android,
                   color: AppColors.putih,
                   
-                  backgroundImage: '../assets/image/timers1.png', // optional
+                  // backgroundImage: '../assets/image/timers1.png', // optional
                 ),
                 StatCard(
                   title: 'Total Sleep',
                   value: '${sleepHours.toStringAsFixed(1)}h',
                   icon: Icons.nightlight_round,
                   color: AppColors.putih,
-                  backgroundImage: 'assets/image/timer2.png', // optional
+                  // backgroundImage: 'assets/image/timer2.png', // optional
                 ),
               ],
             ),

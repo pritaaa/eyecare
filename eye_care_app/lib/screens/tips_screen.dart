@@ -2,369 +2,301 @@ import 'package:eye_care_app/screens/home_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
+class TipOfTheDayCard extends StatelessWidget {
+  const TipOfTheDayCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          colors: [
+            AppColors.bluePrimary,
+            AppColors.blueDark,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.bluePrimary.withOpacity(0.25),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 56,
+                width: 56,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(
+                  Icons.water_drop,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'TIP OF THE DAY',
+                    style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 0.5,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Stay Hydrated',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          const Text(
+            'Drink plenty of water to keep your eyes moist and reduce dryness. Aim for 8 glasses a day.',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+              height: 1.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class TipsScreen extends StatelessWidget {
   const TipsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.putih,
+      backgroundColor: Colors.white,
 
-      /// ================= APP BAR =================
       appBar: AppBar(
-        backgroundColor: AppColors.birumuda,
-        foregroundColor: AppColors.birugelap,
-        elevation: 20,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          color: AppColors.teksgelap,
-          onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => HomeScreen(),
-        ),
-      ),
-        ),
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Eye Care Tips',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.birugelap,
+        elevation: 2,
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blueLight,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: AppColors.bluePrimary,
               ),
             ),
-            
-            
-          ],
+          ),
+        ),
+        title: const Text(
+          'Eye Care Tips',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
         ),
       ),
 
-      /// ================= BODY =================
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 32),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
+            // _SearchBar(),
+            SizedBox(height: 24),
 
-            const SizedBox(height: 16),
+            TipOfTheDayCard(),
+            SizedBox(height: 32),
 
-            /// ================= DAILY TIP =================
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [AppColors.birumuda, Colors.lightBlue],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: AppColors.birugelap,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const Icon(Icons.water_drop,
-                            color: Colors.white),
-                      ),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'TIP OF THE DAY',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: AppColors.putih,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Stay Hydrated',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color:Colors.white
-                              ),
-                            ),
-                            SizedBox(height: 6),
-                            Text(
-                              'Drink plenty of water to keep your eyes moist and reduce dryness. Aim for 8 glasses a day.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white70,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            Text(
+              'By Category',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
               ),
             ),
+            SizedBox(height: 16),
 
-            const SizedBox(height: 24),
-
-            /// ================= CATEGORIES =================
-            _sectionTitle('By Category'),
-
-            const SizedBox(height: 16),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  _categoryCard(
-                    icon: Icons.monitor,
-                    title: 'Screen Time',
-                    iconBg: AppColors.birugelap,
-                    iconColor: Colors.white,
-                    tips: const [
-                      'Follow the 20-20-20 rule',
-                      'Reduce screen brightness',
-                      'Position screen 20-26 inches away',
-                    ],
-                  ),
-                  _categoryCard(
-                    icon: Icons.apple,
-                    title: 'Nutrition',
-                    iconBg: AppColors.birugelap,
-                    iconColor: Colors.white,
-                    tips: const [
-                      'Eat leafy greens and carrots',
-                      'Include omega-3 fatty acids',
-                      'Take vitamin A supplements',
-                    ],
-                  ),
-                  _categoryCard(
-                    icon: Icons.visibility,
-                    title: 'Protection',
-                    iconBg: AppColors.birugelap,
-                    iconColor: Colors.white,
-                    tips: const [
-                      'Wear UV-blocking sunglasses',
-                      'Use blue light filters at night',
-                      'Avoid rubbing your eyes',
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            /// ================= QUICK TIPS =================
-            _sectionTitle('Quick Tips'),
-            const SizedBox(height: 20),
-
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  _quickTipCard(
-                    icon: Icons.sunny,
-                    title: 'Blink More Often',
-                    description:
-                        'When staring at screens, we blink less. Make a conscious effort to blink regularly.',
-                    bgColor: const Color(0xFFBBE0EF),
-                    borderColor: AppColors.birumuda,
-                  ),
-                  _quickTipCard(
-                    icon: Icons.nightlight_round,
-                    title: 'Rest Before Bed',
-                    description:
-                        'Avoid screens 1 hour before sleep to reduce eye strain and improve sleep quality.',
-                    bgColor: const Color(0xFFACBAC4),
-                    borderColor: AppColors.biru,
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            /// ================= GENERAL ADVICE =================
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Card(
-                color:AppColors.birumuda,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Icon(Icons.lightbulb,
-                      color: AppColors.birugelap),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Remember',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color:AppColors.birugelap,
-                                ),
-                            ),
-                            SizedBox(height: 6),
-                            Text(
-                              'Regular eye exams are essential. Visit an eye care professional at least once a year.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white70,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// ================= COMPONENTS =================
-
-  static Widget _sectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: AppColors.biru
-        ),
-      ),
-    );
-  }
-
-  static Widget _categoryCard({
-    required IconData icon,
-    required String title,
-    required Color iconBg,
-    required Color iconColor,
-    required List<String> tips,
-  }) {
-    return Card(
-      color:Colors.white70,
-      shadowColor: AppColors.birugelap,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: iconBg,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: iconColor),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.biru),
-                ),
+            CategoryCard(
+              icon: Icons.computer,
+              iconBg: AppColors.blueLight,
+              title: 'Screen Time',
+              tips: [
+                'Follow the 20-20-20 rule',
+                'Reduce screen brightness',
+                'Position screen 20–26 inches away',
               ],
             ),
-            const SizedBox(height: 12),
-            ...tips.map(
-              (tip) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Row(
-                  children: [
-                    const Text('• ',
-                    style:TextStyle(
-                      color:Colors.black54
-                    )),
-                    Expanded(
-                      child: Text(
-                        tip,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.birumuda,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
+            CategoryCard(
+              icon: Icons.restaurant,
+              iconBg: AppColors.blueLight2,
+              title: 'Nutrition',
+              tips: [
+                'Eat leafy greens and carrots',
+                'Include omega-3 fatty acids',
+                'Take vitamin A supplements',
+              ],
+            ),
+
+            CategoryCard(
+              icon: Icons.wb_sunny,
+              iconBg: AppColors.blueAccent,
+              title: 'Protection',
+              tips: [
+                'Wear UV-blocking sunglasses',
+                'Use blue light filters at night',
+                'Avoid rubbing your eyes',
+              ],
+            ),
+
+            CategoryCard(
+              icon: Icons.remove_red_eye,
+              iconBg: AppColors.bluePrimary,
+              iconColor: Colors.white,
+              title: 'Eye Exercises',
+              tips: [
+                'Practice eye rolling exercises',
+                'Do focus shifting regularly',
+                'Blink frequently to moisturize',
+              ],
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  static Widget _quickTipCard({
-    required IconData icon,
-    required String title,
-    required String description,
-    required Color bgColor,
-    required Color borderColor,
-  }) {
+class CategoryCard extends StatelessWidget {
+  final IconData icon;
+  final Color iconBg;
+  final Color iconColor;
+  final String title;
+  final List<String> tips;
+
+  const CategoryCard({
+    super.key,
+    required this.icon,
+    required this.iconBg,
+    this.iconColor = AppColors.bluePrimary,
+    required this.title,
+    required this.tips,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.bluePrimary.withOpacity(0.1),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon,
-          color:AppColors.biru),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
+          Row(
+            children: [
+              Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                  color: iconBg,
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: Icon(icon, color: iconColor, size: 24),
+              ),
+              const SizedBox(width: 14),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          ...tips.map(
+            (tip) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 20,
+                    width: 20,
+                    decoration: BoxDecoration(
+                      color: AppColors.blueLight,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Icon(
+                      Icons.check,
+                      size: 12,
+                      color: AppColors.bluePrimary,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      tip,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          TextButton(
+            onPressed: () {
+              // navigate to detail
+            },
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('View more tips'),
+                SizedBox(width: 6),
+                Icon(Icons.arrow_forward, size: 16),
               ],
             ),
           ),

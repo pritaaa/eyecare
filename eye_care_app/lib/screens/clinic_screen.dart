@@ -7,9 +7,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
-
 class ClinicFinderScreen extends StatefulWidget {
   const ClinicFinderScreen({super.key});
+
   @override
   State<ClinicFinderScreen> createState() => _ClinicFinderScreenState();
 }
@@ -22,28 +22,24 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
   void initState() {
     super.initState();
     _clinics = clinics
-        .map(
-          (c) => {
-            'name': c.name,
-            'lat': c.lat,
-            'lng': c.lng,
-            'distance': c.distance,
-            'address': c.address,
-            'distanceValue': 0.0,
-          },
-        )
+        .map((c) => {
+              'name': c.name,
+              'lat': c.lat,
+              'lng': c.lng,
+              'distance': c.distance,
+              'address': c.address,
+              'distanceValue': 0.0,
+            })
         .toList();
     _getCurrentLocation();
   }
 
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const earthRadius = 6371;
-
     final dLat = _deg2rad(lat2 - lat1);
     final dLon = _deg2rad(lon2 - lon1);
 
-    final a =
-        sin(dLat / 2) * sin(dLat / 2) +
+    final a = sin(dLat / 2) * sin(dLat / 2) +
         cos(_deg2rad(lat1)) *
             cos(_deg2rad(lat2)) *
             sin(dLon / 2) *
@@ -59,37 +55,29 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // 1. Cek apakah GPS/Layanan Lokasi aktif
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        throw Exception('Location services are disabled.');
-      }
+      if (!serviceEnabled) throw Exception('Location disabled');
 
-      // 2. Cek dan Request Izin
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          throw Exception('Location permissions are denied');
+          throw Exception('Permission denied');
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        throw Exception('Location permissions are permanently denied');
+        throw Exception('Permission permanently denied');
       }
 
-      // 3. Ambil posisi
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      final userLat = position.latitude;
-      final userLng = position.longitude;
-
       for (var clinic in _clinics) {
         final dist = calculateDistance(
-          userLat,
-          userLng,
+          position.latitude,
+          position.longitude,
           clinic['lat'],
           clinic['lng'],
         );
@@ -97,40 +85,21 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
         clinic['distance'] = dist;
       }
 
-      _clinics.sort((a, b) => a['distanceValue'].compareTo(b['distanceValue']));
+      _clinics.sort(
+        (a, b) => a['distanceValue'].compareTo(b['distanceValue']),
+      );
     } catch (e) {
-      debugPrint("Error getting location: $e");
+      debugPrint(e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  Future<String> _getAddressFromLatLng(double lat, double lng) async {
-    try {
-      final placemarks = await placemarkFromCoordinates(lat, lng);
-
-      if (placemarks.isNotEmpty) {
-        final p = placemarks.first;
-        return "${p.subLocality}, ${p.locality}";
-      }
-    } catch (e) {
-      debugPrint("Geocoding error: $e");
-    }
-
-    return "Address not available";
-  }
-
   Future<void> openMaps(double lat, double lng) async {
-    final googleMapsUri = Uri.parse('geo:$lat,$lng?q=$lat,$lng');
-    final webUri = Uri.parse(
+    final uri = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
     );
-
-    if (await canLaunchUrl(googleMapsUri)) {
-      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
-    } else {
-      await launchUrl(webUri, mode: LaunchMode.externalApplication);
-    }
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   @override
@@ -138,158 +107,133 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text('Klinik Terdekat',
-        style: TextStyle(
-          color:Colors.white,
-        ),),
-        backgroundColor: AppColors.birumuda,
-        foregroundColor: Colors.black,
         elevation: 20,
-        leading: BackButton(
-          onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => HomeScreen(),
-        ),
-        ),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        title: Text(
+          'Klinik Terdekat',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(16),
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-
-              OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  minimumSize: const Size(double.infinity, 48),
-                  side: const BorderSide(color: AppColors.birugelap),
-                ),
-                onPressed: _isLoading ? null : _getCurrentLocation,
-                icon: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.navigation, color: AppColors.birugelap),
-                label: Text(
-                  _isLoading ? 'Locating...' : 'Refresh lokasi',
-                  style: TextStyle(color: AppColors.birugelap),
-                ),
+        child: Column(
+          children: [
+            /// BUTTON REFRESH
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                shape: const StadiumBorder(),
+                minimumSize: const Size(double.infinity, 48),
+                side: const BorderSide(color: AppColors.birugelap),
               ),
+              onPressed: _isLoading ? null : _getCurrentLocation,
+              icon: _isLoading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.navigation,
+                      color: AppColors.birugelap),
+              label: Text(
+                _isLoading ? 'Locating...' : 'Refresh lokasi',
+                style: const TextStyle(color: AppColors.birugelap),
+              ),
+            ),
 
-              const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
-              const SizedBox(height: 12),
-              ..._clinics.map(
-                (clinic) => Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.location_on, color: AppColors.birugelap),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              clinic['name'],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: AppColors.biru,
+            /// LIST KLINIK (NGISI SISA LAYAR)
+            Expanded(
+              child: ListView.builder(
+                itemCount: _clinics.length,
+                itemBuilder: (context, index) {
+                  final clinic = _clinics[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.location_on,
+                            color: AppColors.birugelap),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                clinic['name'],
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.biru,
+                                ),
                               ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            clinic['address'] != null
-                                ? Text(
-                                    clinic['address'],
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black54,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  )
-                                : FutureBuilder<String>(
-                                    future:
-                                        _getAddressFromLatLng(
-                                          clinic['lat'],
-                                          clinic['lng'],
-                                        ).then((val) {
-                                          clinic['address'] = val;
-                                          return val;
-                                        }),
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? "Loading address...",
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.black54,
-                                        ),
-                                      );
-                                    },
+                              const SizedBox(height: 4),
+                              Text(
+                                clinic['address'] ?? '-',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Jarak: ${clinic['distance']?.toStringAsFixed(1) ?? '-'} km',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.birugelap,
+                                    shape: const StadiumBorder(),
                                   ),
-
-                            const SizedBox(height: 8),
-
-                            Text(
-                              'Jarak: ${(clinic['distance'] as double?)?.toStringAsFixed(1) ?? '-'} km',
-                              style: const TextStyle(color: Colors.black54),
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.birugelap,
-                                      shape: const StadiumBorder(),
-                                    ),
-                                    onPressed: () =>
-                                        openMaps(clinic['lat'], clinic['lng']),
-                                    icon: const Icon(
-                                      Icons.navigation,
-                                      size: 16,
-                                    ),
-                                    label: const Text('Buka Google Maps',
-                                    style: TextStyle(
-                                      color:Colors.white,
-                                    ),
-                                    ),
+                                  onPressed: () => openMaps(
+                                    clinic['lat'],
+                                    clinic['lng'],
+                                  ),
+                                  icon: const Icon(Icons.navigation, size: 16),
+                                  label: const Text(
+                                    'Buka Google Maps',
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

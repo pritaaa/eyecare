@@ -8,461 +8,328 @@ import 'tips_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 
+
+// final textScale = MediaQuery.of(context).textScaleFactor;
+// double sp(double size) => size * textScale.clamp(1.0, 1.2);
+
+
+final tips = [
+  {
+    'title': '20-20-20 Rule',
+    'desc': 'Look 20 feet away every 20 minutes',
+    'color': AppColors.blueLight2,
+  },
+  {
+    'title': 'Blink More',
+    'desc': 'Reduce dry eyes and eye strain',
+    'color': AppColors.blueAccent,
+  },
+  {
+    'title': 'Adjust Brightness',
+    'desc': 'Match screen with environment',
+    'color': AppColors.blueLight,
+  },
+];
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.putih,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              /// ================= HEADER =================
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.putih, AppColors.putih],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(32),
-                    bottomRight: Radius.circular(32),
-                  ),
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Welcome back',
-                      style: TextStyle(
-                        color: AppColors.birugelap,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+    final width = MediaQuery.of(context).size.width;
+    final textScale = MediaQuery.of(context).textScaleFactor;
+
+    double sp(double size) => size * textScale.clamp(1.0, 1.2);
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 140),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            /// ================= HEADER =================
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Selamat Datang Kembali',
+                    style: TextStyle(
+                      fontSize: sp(width * 0.075), // adaptif
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                      height: 1.2,
                     ),
-                    SizedBox(height: 6),
-                    Text(
-                      'Take care of your eyes today',
-                      style: TextStyle(
-                        color: AppColors.birumuda,
-                        fontSize: 14,
-                      ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Mari jaga kesehatan mata hari ini',
+                    style: TextStyle(
+                      fontSize: sp(14),
+                      color: AppColors.textSecondary,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-
-              const SizedBox(height: 20),
-
-              /// ================= TIPS CAROUSEL =================
-              const TipsCarousel(),
-
-              const SizedBox(height: 20),
-
-              /// ================= STATS =================
-              Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const TestScreen(),
-        ),
-      );
-    },
-    child: Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.birumuda,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          /// ICON
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.biru.withOpacity(0.8),
-              shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.remove_red_eye,
-              color: Colors.white,
-              size: 28,
+
+            /// ================= TIPS SLIDER =================
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: EyeCareTipsSection(),
             ),
-          ),
 
-                        const SizedBox(width: 16),
+            const SizedBox(height: 28),
 
-          /// TEXT
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  'Check Your Eye Health',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color:Colors.white
-                  ),
-                ),
-                SizedBox(height: 6),
-                Text(
-                  'Quick vision test in under 3 minutes',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white70,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          /// ARROW
-          Container(
-  height: 36,
-  width: 36,
-  decoration: BoxDecoration(
-    color: AppColors.birugelap,
-    shape: BoxShape.circle,
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 6,
-        offset: const Offset(0, 3),
-      ),
-    ],
-  ),
-  child: const Center(
-    child: Icon(
-      Icons.arrow_forward_ios,
-      size: 14,
-      color: AppColors.putih,
-    ),
-  ),
-),
-
-        ],
-      ),
-    ),
-  ),
-),
-
-
-              const SizedBox(height: 24),
-
-              /// ================= QUICK ACCESS CARD =================
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+            /// ================= PRIMARY CTA =================
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const TestScreen()),
+                  );
+                },
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: AppColors.birumuda,
-                    borderRadius: BorderRadius.circular(28),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.white.withOpacity(0.08),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+                    color: AppColors.blueLight,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.blueAccent),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      const Text(
-                        'Quick Access',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
+                      Container(
+                        height: 48,
+                        width: 48,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              AppColors.bluePrimary,
+                              AppColors.blueDark,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.remove_red_eye,
+                          color: Colors.white,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(width: 16),
 
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _QuickAccessItem(
-                              icon: Icons.remove_red_eye,
-                              title: 'Vision Test',
-                              subtitle: 'Check eyes',
-                              color: Colors.white,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const TestScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _QuickAccessItem(
-                              icon: Icons.schedule,
-                              title: 'Screen Timer',
-                              subtitle: 'Track time',
-                              color: Colors.white,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => TimersScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _QuickAccessItem(
-                              icon: Icons.lightbulb,
-                              title: 'Eye Tips',
-                              subtitle: 'Daily tips',
-                              color: Colors.white,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const TipsScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _QuickAccessItem(
-                              icon: Icons.location_on,
-                              title: 'Clinics',
-                              subtitle: 'Nearby',
-                              color: Colors.white,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const ClinicFinderScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 40),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TipsCarousel extends StatefulWidget {
-  const TipsCarousel({super.key});
-
-  @override
-  State<TipsCarousel> createState() => _TipsCarouselState();
-}
-
-class _TipsCarouselState extends State<TipsCarousel> {
-  final PageController _controller = PageController();
-  int currentIndex = 0;
-
-  final tips = [
-    {
-      'title': '20-20-20 Rule',
-      'desc': 'Look 20 feet away every 20 minutes',
-      'image': 'assets/image/banner1.png',
-    },
-    {
-      'title': 'Blink More',
-      'desc': 'Reduce dry eyes',
-      'image': 'assets/image/banner2.png',
-    },
-    {
-      'title': 'Adjust Brightness',
-      'desc': 'Match your environment',
-      'image': 'assets/image/banner3.png',
-    },
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 180,
-          child: PageView.builder(
-            controller: _controller,
-            itemCount: tips.length,
-            onPageChanged: (i) => setState(() => currentIndex = i),
-            itemBuilder: (context, index) {
-              final item = tips[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.asset(item['image']!, 
-                        fit: BoxFit.cover
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                AppColors.birugelap.withOpacity(0.5),
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 16,
-  left: 16,
-  right: 16,
-  child: Column(
+                      /// BIAR AMAN DI LAYAR KECIL
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              item['title']!,
-                              style: const TextStyle(
-                                color: AppColors.birugelap,
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
+                              'Tes Kesehatan Mata',
+                              style: TextStyle(
+                                fontSize: sp(16),
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
                               ),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 4),
                             Text(
-                              item['desc']!,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 13,
+                              'Tes singkat • Kurang dari 3 menit',
+                              style: TextStyle(
+                                fontSize: sp(13),
+                                color: AppColors.textSecondary,
                               ),
                             ),
                           ],
                         ),
                       ),
+
+                      const Icon(
+                        Icons.arrow_forward,
+                        color: AppColors.bluePrimary,
+                      ),
                     ],
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-
-        const SizedBox(height: 8),
-
-        /// DOT INDICATOR
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            tips.length,
-            (index) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: currentIndex == index ? 10 : 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: currentIndex == index
-                    ? AppColors.biru
-                    : Colors.blueGrey.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(4),
               ),
             ),
-          ),
+
+            const SizedBox(height: 28),
+
+            /// ================= QUICK ACCESS =================
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Akses Cepat',
+                style: TextStyle(
+                  fontSize: sp(18),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: width < 360 ? 1 : 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.15,
+                ),
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  final items = [
+                    _QuickCard(
+                      icon: Icons.remove_red_eye,
+                      title: 'Tes Mata',
+                      subtitle: 'Cek penglihatan',
+                      bg: AppColors.blueLight,
+                      iconColor: AppColors.bluePrimary,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const TestScreen()),
+                      ),
+                    ),
+                    _QuickCard(
+                      icon: Icons.schedule,
+                      title: 'Timer Layar',
+                      subtitle: 'Pantau durasi',
+                      bg: AppColors.blueLight2,
+                      iconColor: AppColors.blueDark,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const TimersScreen()),
+                      ),
+                    ),
+                    _QuickCard(
+                      icon: Icons.lightbulb,
+                      title: 'Tips Mata',
+                      subtitle: 'Perawatan terbaik',
+                      bg: AppColors.blueAccent,
+                      iconColor: AppColors.bluePrimary,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const TipsScreen()),
+                      ),
+                    ),
+                    _QuickCard(
+                      icon: Icons.local_hospital,
+                      title: 'Klinik Terdekat',
+                      subtitle: 'Perawatan profesional',
+                      bg: AppColors.bluePrimary,
+                      iconColor: Colors.white,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ClinicFinderScreen(),
+                        ),
+                      ),
+                    ),
+                  ];
+
+                  return items[index];
+                },
+              ),
+            ),
+
+            const SizedBox(height: 40),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
 
-class _QuickAccessItem extends StatelessWidget {
+class _QuickCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color color;
-  final VoidCallback onTap;
+  final Color bg;
+  final Color iconColor;
+  final VoidCallback? onTap;
 
-  const _QuickAccessItem({
+  const _QuickCard({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.color,
-    required this.onTap,
+    required this.bg,
+    required this.iconColor,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final textScale = MediaQuery.of(context).textScaleFactor;
+    double sp(double size) => size * textScale.clamp(1.0, 1.2);
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: color.withOpacity(0.2),
-              child: Icon(
-                icon, 
-                color: AppColors.birugelap),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.bluePrimary.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
-            const SizedBox(width: 10),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /// ICON
+            Container(
+              height: 44,
+              width: 44,
+              decoration: BoxDecoration(
+                color: bg,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: iconColor, size: 22),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// TITLE
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: sp(15),
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
+
+            const SizedBox(height: 4),
+
+            /// SUBTITLE
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      color: AppColors.birugelap,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Colors.black54),
-                  ),
-                ],
+              child: Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: sp(12),
+                  color: AppColors.textLight,
+                ),
               ),
             ),
           ],
@@ -472,41 +339,164 @@ class _QuickAccessItem extends StatelessWidget {
   }
 }
 
-class _StatCard extends StatelessWidget {
-  final String value;
-  final String label;
-  final Color color;
+class EyeCareTipsSection extends StatefulWidget {
+  const EyeCareTipsSection({super.key});
 
-  const _StatCard({
-    required this.value,
-    required this.label,
-    required this.color,
-  });
+  @override
+  State<EyeCareTipsSection> createState() => _EyeCareTipsSectionState();
+}
+
+class _EyeCareTipsSectionState extends State<EyeCareTipsSection> {
+  final PageController _controller = PageController();
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    final height = MediaQuery.of(context).size.height;
+
+    return Column(
+      children: [
+        /// CARD SLIDER
+        SizedBox(
+          height: height * 0.28, // adaptif layar
+          child: PageView.builder(
+            controller: _controller,
+            itemCount: tips.length,
+            onPageChanged: (index) {
+              setState(() => currentIndex = index);
+            },
+            itemBuilder: (context, index) {
+              return _TipItem(tip: tips[index]);
+            },
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        /// DOT INDICATOR
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(
+            tips.length,
+            (index) => AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: currentIndex == index ? 18 : 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: currentIndex == index
+                    ? AppColors.birugelap
+                    : AppColors.bluePrimary.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+class _TipItem extends StatelessWidget {
+  final Map<String, dynamic> tip;
+
+  const _TipItem({required this.tip});
+
+  @override
+  Widget build(BuildContext context) {
+    final textScale = MediaQuery.of(context).textScaleFactor;
+    double sp(double size) => size * textScale.clamp(1.0, 1.2);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.30),
-          borderRadius: BorderRadius.circular(20),
+          color: tip['color'],
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.bluePrimary.withOpacity(0.15),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: color,
+            /// BADGE
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '✨ Eye Care Tip',
+                style: TextStyle(
+                  fontSize: sp(12),
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.bluePrimary,
+                ),
               ),
             ),
-            const SizedBox(height: 6),
+
+            const SizedBox(height: 12),
+
+            /// TITLE
             Text(
-              label,
-              style: const TextStyle(fontSize: 12, color: Colors.teal),
+              tip['title'],
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: sp(22),
+                fontWeight: FontWeight.bold,
+                color: AppColors.bluePrimary,
+                height: 1.2,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            /// DESC
+            Text(
+              tip['desc'],
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: sp(14),
+                color: AppColors.blueDark,
+              ),
+            ),
+
+            const Spacer(),
+
+            /// TIMER
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.bluePrimary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.timer, size: 16, color: Colors.white),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Next break in 18:45',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: sp(13),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

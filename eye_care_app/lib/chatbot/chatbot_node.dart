@@ -1,57 +1,96 @@
 import 'models.dart';
 
 final Map<String, ChatbotNode> eyeChatbotFlow = {
+  // START
   "start": ChatbotNode(
     id: "start",
-    message: "Halo 👋 Aku akan bantu cek keluhan matamu. Apa keluhan utamamu?",
-    options: [
-      ChatbotOption(text: "Mata terasa perih", nextNodeId: "perih"),
-      ChatbotOption(text: "Mata kering", nextNodeId: "kering"),
-      ChatbotOption(text: "Mata merah", nextNodeId: "merah"),
-      ChatbotOption(text: "Penglihatan buram", nextNodeId: "buram"),
-    ],
-  ),
-
-  "perih": ChatbotNode(
-    id: "perih",
-    message: "Mata perih biasanya disebabkan iritasi atau kelelahan. Apakah kamu sering menatap layar?",
-    options: [
-      ChatbotOption(text: "Iya, sering", nextNodeId: "screen_fatigue"),
-      ChatbotOption(text: "Tidak", nextNodeId: "perih_lain"),
-    ],
-  ),
-
-  "screen_fatigue": ChatbotNode(
-    id: "screen_fatigue",
     message:
-        "Kemungkinan kamu mengalami kelelahan mata digital (Computer Vision Syndrome).\n\nSaran:\n• Istirahatkan mata tiap 20 menit\n• Atur pencahayaan\n• Gunakan aturan 20-20-20",
+        "Halo 👋\nSaya adalah asisten pemeriksaan kesehatan mata.\n\nSilakan pilih keluhan utama yang sedang Anda alami:",
+    options: [
+      ChatbotOption(text: "Mata terasa perih / panas", nextNodeId: "confirm_screen"),
+      ChatbotOption(text: "Mata terasa kering", nextNodeId: "confirm_screen"),
+      ChatbotOption(text: "Mata sering berair", nextNodeId: "confirm_screen"),
+      ChatbotOption(text: "Mata terasa berat / pegal", nextNodeId: "confirm_screen"),
+      ChatbotOption(text: "Mata merah", nextNodeId: "confirm_screen"),
+      ChatbotOption(text: "Penglihatan buram", nextNodeId: "confirm_screen"),
+      ChatbotOption(text: "Sulit fokus saat membaca", nextNodeId: "confirm_screen"),
+      ChatbotOption(text: "Silau berlebihan (malam hari)", nextNodeId: "confirm_screen"),
+    ],
+  ),
+
+  // KONFIRMASI 1
+  "confirm_screen": ChatbotNode(
+    id: "confirm_screen",
+    message:
+        "Apakah keluhan tersebut sering muncul setelah menatap layar dalam waktu lama?",
+    options: [
+      ChatbotOption(text: "Ya", nextNodeId: "confirm_time"),
+      ChatbotOption(text: "Tidak", nextNodeId: "confirm_time"),
+    ],
+  ),
+
+  // KONFIRMASI 2
+  "confirm_time": ChatbotNode(
+    id: "confirm_time",
+    message:
+        "Apakah keluhan terasa lebih berat pada sore atau malam hari?",
+    options: [
+      ChatbotOption(text: "Ya", nextNodeId: "confirm_environment"),
+      ChatbotOption(text: "Tidak", nextNodeId: "confirm_environment"),
+    ],
+  ),
+
+  // KONFIRMASI 3
+  "confirm_environment": ChatbotNode(
+    id: "confirm_environment",
+    message:
+        "Apakah Anda sering berada di ruangan ber-AC atau jarang berkedip saat bekerja?",
+    options: [
+      ChatbotOption(text: "Ya", nextNodeId: "result_digital_eye_strain"),
+      ChatbotOption(text: "Tidak", nextNodeId: "result_eye_fatigue"),
+    ],
+  ),
+
+  // HASIL A
+  "result_digital_eye_strain": ChatbotNode(
+    id: "result_digital_eye_strain",
+    message:
+        "Berdasarkan jawaban Anda, keluhan kemungkinan berkaitan dengan:\n\n"
+        "🟢 Kelelahan mata digital dan mata kering ringan.\n\n"
+        "Saran:\n"
+        "• Terapkan aturan 20-20-20\n"
+        "• Sadar berkedip saat menatap layar\n"
+        "• Gunakan tetes air mata buatan\n"
+        "• Hindari AC langsung ke wajah\n"
+        "• Atur posisi layar sejajar mata",
     options: [
       ChatbotOption(text: "Selesai", nextNodeId: "end"),
+      ChatbotOption(text: "Ulangi Pemeriksaan", nextNodeId: "start"),
     ],
   ),
 
-  "kering": ChatbotNode(
-    id: "kering",
-    message: "Apakah mata terasa kering disertai rasa mengganjal?",
-    options: [
-      ChatbotOption(text: "Iya", nextNodeId: "dry_eye"),
-      ChatbotOption(text: "Tidak", nextNodeId: "kering_ringan"),
-    ],
-  ),
-
-  "dry_eye": ChatbotNode(
-    id: "dry_eye",
+  // HASIL B
+  "result_eye_fatigue": ChatbotNode(
+    id: "result_eye_fatigue",
     message:
-        "Kemungkinan kamu mengalami Dry Eye Syndrome.\n\nSaran:\n• Gunakan tetes mata\n• Kurangi screen time\n• Perbanyak minum air",
+        "Keluhan Anda kemungkinan disebabkan oleh kelelahan otot mata sementara.\n\n"
+        "Saran:\n"
+        "• Istirahatkan mata secara berkala\n"
+        "• Atur jarak dan tinggi layar\n"
+        "• Lakukan peregangan mata ringan\n\n"
+        "Kondisi ini umumnya tidak berbahaya.",
     options: [
       ChatbotOption(text: "Selesai", nextNodeId: "end"),
+      ChatbotOption(text: "Ulangi Pemeriksaan", nextNodeId: "start"),
     ],
   ),
 
+  // END
   "end": ChatbotNode(
     id: "end",
     message:
-        "Terima kasih sudah menggunakan pengecekan mata 😊\nJika keluhan berlanjut, disarankan ke dokter mata.",
+        "Terima kasih telah menggunakan pemeriksaan mata 😊\n"
+        "Jaga kesehatan mata Anda dengan istirahat yang cukup dan penggunaan layar yang bijak.",
     options: [],
   ),
 };

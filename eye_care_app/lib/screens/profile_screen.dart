@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
+import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,207 +12,106 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool reminderEnabled = true;
-
-  int breakInterval = 20;
-  TimeOfDay? sleepTime;
-  TimeOfDay? wakeTime;
-
-  String username = 'User';
-  String email = '-';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      username = prefs.getString('username') ?? 'User';
-      email = prefs.getString('email') ?? '-';
-    });
-  }
-
-  Future<void> _logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
-  }
+  TimeOfDay breakTime = const TimeOfDay(hour: 10, minute: 0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7F9),
+      backgroundColor: const Color(0xFFF8FBFF),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// ===== HEADER =====
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Profile",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      "Manage your eye care habits",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
+              /// HEADER
+              const Text(
+                'Profil',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1E3A5F),
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Kelola kebiasaan kesehatan mata Anda',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Color(0xFF7A9CC6),
                 ),
               ),
 
-              /// ===== PROFILE CARD =====
-              _card(
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 32,
-                      backgroundColor: const Color(0xFF11DF8C),
-                      child: Text(
-                        username.isNotEmpty ? username[0].toUpperCase() : 'U',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            username,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            email,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            "Eye Care Level: Healthy",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF11DF8C),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Icon(Icons.chevron_right, color: Colors.grey),
-                  ],
+              const SizedBox(height: 28),
+
+              /// PROFILE CARD
+              _profileCard(),
+
+              const SizedBox(height: 32),
+
+              /// EYE HABIT SUMMARY
+              const Text(
+                'Ringkasan Kebiasaan Mata',
+                style: _sectionTitle,
+              ),
+              const SizedBox(height: 20),
+              _statsGrid(),
+
+              const SizedBox(height: 32),
+
+              /// QUICK SETTINGS
+              const Text(
+                'Pengaturan Cepat',
+                style: _sectionTitle,
+              ),
+              const SizedBox(height: 20),
+              _quickSettingCard(),
+
+              const SizedBox(height: 32),
+
+              /// SETTINGS
+              const Text(
+                'Pengaturan',
+                style: _sectionTitle,
+              ),
+              const SizedBox(height: 20),
+              _settingsCard(),
+
+              const SizedBox(height: 32),
+
+              /// LOGOUT
+              OutlinedButton(
+                onPressed: () {
+                  // TODO: logout logic
+                },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(52),
+                  side: const BorderSide(color: Color(0xFF1E3A5F)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text(
+                  'Keluar',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1E3A5F),
+                  ),
                 ),
               ),
 
-              /// ===== EYE HABIT SUMMARY =====
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              const SizedBox(height: 12),
+
+              /// APP INFO
+              const Center(
                 child: Text(
-                  "Eye Habit Summary",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    _statCard("5h 20m", "Screen Time", Colors.teal),
-                    _statCard("7h", "Sleep", Colors.blue),
-                    _statCard("6", "Breaks", Colors.purple),
-                  ],
-                ),
-              ),
-
-              /// ===== QUICK SETTINGS =====
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "Quick Settings",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-
-              _card(
-                child: _switchTile(
-                  icon: Icons.alarm,
-                  color: Colors.teal,
-                  title: "Reminder",
-                  subtitle: "Break & sleep notifications",
-                  value: reminderEnabled,
-                  onChanged: (v) => setState(() => reminderEnabled = v),
-                ),
-              ),
-
-              /// ===== SETTINGS =====
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "Settings",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-
-              _card(
-                child: Column(
-                  children: [
-                    _menuItem(
-                      Icons.notifications,
-                      "Reminder Schedule",
-                      "Set break & sleep time",
-                      onTap: _showReminderSheet,
-                    ),
-                    const Divider(height: 1),
-                    _menuItem(
-                      Icons.info_outline,
-                      "App Info",
-                      "Version and developer info",
-                      onTap: _showAppInfo,
-                    ),
-                  ],
-                ),
-              ),
-
-              /// ===== LOGOUT =====
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: InkWell(
-                  onTap: _logout,
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.red.shade200),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.logout, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text("Log Out", style: TextStyle(color: Colors.red)),
-                      ],
-                    ),
+                  'Eye Care App\nVersi 1.0.0\nDikembangkan oleh Tim Eye Care',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF7A9CC6),
+                    height: 1.5,
                   ),
                 ),
               ),
@@ -222,147 +122,217 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  /// ===== REMINDER SHEET =====
-  void _showReminderSheet() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "Reminder Schedule",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<int>(
-              value: breakInterval,
-              items: [15, 20, 30]
-                  .map(
-                    (e) =>
-                        DropdownMenuItem(value: e, child: Text("$e minutes")),
-                  )
-                  .toList(),
-              onChanged: (v) => setState(() => breakInterval = v!),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // ================= WIDGETS =================
 
-  void _showAppInfo() {
-    showDialog(
-      context: context,
-      builder: (_) => const AlertDialog(
-        title: Text("EyeCare App"),
-        content: Text(
-          "Version 1.0.0\nDeveloped by Prita Ayu\n\nBuild healthy screen & sleep habits",
-        ),
-      ),
-    );
-  }
-
-  /// ===== REUSABLE =====
-  static Widget _card({required Widget child}) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-    child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: child,
-    ),
-  );
-
-  static Widget _statCard(String value, String label, Color color) => Expanded(
-    child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-        ],
-      ),
-    ),
-  );
-
-  static Widget _switchTile({
-    required IconData icon,
-    required Color color,
-    required String title,
-    required String subtitle,
-    required bool value,
-    required Function(bool) onChanged,
-  }) => Row(
-    children: [
-      Icon(icon, color: color),
-      const SizedBox(width: 12),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-            Text(
-              subtitle,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-      Switch(value: value, onChanged: onChanged),
-    ],
-  );
-
-  static Widget _menuItem(
-    IconData icon,
-    String title,
-    String subtitle, {
-    required VoidCallback onTap,
-  }) => InkWell(
-    onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+  Widget _profileCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: _cardDecoration,
       child: Row(
         children: [
-          Icon(icon, color: Colors.grey),
-          const SizedBox(width: 12),
-          Expanded(
+          Container(
+            height: 64,
+            width: 64,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF5EA1DF),
+                  Color(0xFF7FB8E8),
+                ],
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'U',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  'Pengguna',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1E3A5F),
+                  ),
                 ),
+                SizedBox(height: 4),
                 Text(
-                  subtitle,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  'Tingkat Kesehatan Mata: Sehat',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF5EA1DF),
+                  ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: Colors.grey),
+          const Icon(Icons.chevron_right, size: 28, color: Colors.black38),
         ],
       ),
-    ),
-  );
+    );
+  }
+
+  Widget _statsGrid() {
+    return Row(
+      children: const [
+        Expanded(child: _StatCard(value: '5j\n20m', label: 'Waktu Layar')),
+        SizedBox(width: 16),
+        Expanded(child: _StatCard(value: '7j', label: 'Tidur')),
+        SizedBox(width: 16),
+        Expanded(child: _StatCard(value: '6', label: 'Istirahat')),
+      ],
+    );
+  }
+
+  Widget _quickSettingCard() {
+    return Container(
+      decoration: _cardDecoration,
+      child: ListTile(
+        leading: _settingIcon(Icons.alarm),
+        title: const Text('Pengingat'),
+        subtitle: const Text('Notifikasi istirahat & tidur'),
+        trailing: Switch(
+          value: reminderEnabled,
+          activeColor: const Color(0xFF1E3A5F),
+          onChanged: (val) {
+            setState(() => reminderEnabled = val);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _settingsCard() {
+    return Container(
+      decoration: _cardDecoration,
+      child: Column(
+        children: [
+          ListTile(
+            leading: _settingIcon(Icons.schedule),
+            title: const Text('Jadwal Pengingat'),
+            subtitle: Text(
+              'Waktu istirahat: ${breakTime.format(context)}',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: _pickBreakTime,
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: _settingIcon(Icons.info_outline),
+            title: const Text('Informasi Aplikasi'),
+            subtitle: const Text('Versi dan pengembang'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              showAboutDialog(
+                context: context,
+                applicationName: 'Eye Care App',
+                applicationVersion: '1.0.0',
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _settingIcon(IconData icon) {
+    return Container(
+      height: 44,
+      width: 44,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFFE8F4FF),
+            Color(0xFFD4EBFF),
+          ],
+        ),
+      ),
+      child: Icon(icon, color: Color(0xFF5EA1DF)),
+    );
+  }
+
+  Future<void> _pickBreakTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: breakTime,
+    );
+
+    if (picked != null) {
+      setState(() => breakTime = picked);
+    }
+  }
 }
+
+// ================= SMALL WIDGET =================
+
+class _StatCard extends StatelessWidget {
+  final String value;
+  final String label;
+
+  const _StatCard({
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      decoration: _cardDecoration,
+      child: Column(
+        children: [
+          Text(
+            value,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF5EA1DF),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              color: Color(0xFF7A9CC6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ================= STYLES =================
+
+const _sectionTitle = TextStyle(
+  fontSize: 22,
+  fontWeight: FontWeight.w700,
+  color: Color(0xFF1E3A5F),
+);
+
+final _cardDecoration = BoxDecoration(
+  color: Colors.white,
+  borderRadius: BorderRadius.circular(20),
+  border: Border.all(color: Color(0xFFE8F4FF)),
+  boxShadow: [
+    BoxShadow(
+      color: Color(0x145EA1DF),
+      blurRadius: 20,
+      offset: Offset(0, 6),
+    ),
+  ],
+);

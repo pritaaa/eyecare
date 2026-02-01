@@ -27,4 +27,26 @@ class AppColors {
 
   /// BORDER / DIVIDER
   static const border = Color(0xFFE2E8F0);
+
+
+  static const bg = Colors.white;
+
+  // Light blue (30%)
+  static const blueLight = Color(0xFFE3F2FD);
+  static const blueLight2 = Color(0xFFBBDEFB);
+  static const blueAccent = Color(0xFF90CAF9);
+
+  // Dark blue (10%)
+  static const bluePrimary = Color(0xFF1565C0);
+  static const blueDark = Color(0xFF0D47A1);
+
+  static const textPrimary = Color(0xFF1A1D29);
+  static const textSecondary = Color(0xFF5F6368);
+  static const textLight = Color(0xFF9AA0A6);
+
+
+
+
+
+
 }
