@@ -1,3 +1,5 @@
+import 'package:eye_care_app/app_usage/app_usage_view.dart';
+import 'package:eye_care_app/screen_time/screen_time_view.dart';
 import 'package:eye_care_app/screens/clinic_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eye_care_app/screens/test_screen.dart';
@@ -103,7 +105,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 16),
+                        const SizedBox(width: 16),
 
           /// TEXT
           Expanded(
@@ -221,7 +223,7 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const TimersScreen(),
+                                    builder: (_) => TimersScreen(),
                                   ),
                                 );
                               },

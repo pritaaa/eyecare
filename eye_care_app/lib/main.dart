@@ -1,18 +1,22 @@
+import 'package:eye_care_app/app_usage/app_usage_provider.dart';
 import 'package:eye_care_app/chatbot/controller.dart';
+import 'package:eye_care_app/screen_time/screen_time_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'screens/home_screen.dart';
-import 'screens/chat_screen.dart';
-import 'screens/tips_screen.dart';
-import 'screens/profile_screen.dart';
+import 'package:eye_care_app/screens/home_screen.dart';
+import 'package:eye_care_app/screens/chat_screen.dart';
+import 'package:eye_care_app/screens/tips_screen.dart';
+import 'package:eye_care_app/screens/profile_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
-import 'package:eye_care_app/theme/app_text.dart';
-import 'screens/splash_screen.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ChatbotController(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ChatbotController()),
+        ChangeNotifierProvider(create: (_) => ScreenTimeProvider()),
+        ChangeNotifierProvider(create: (_) => AppUsageProvider()),
+      ],
       child: const EyeCareApp(),
     ),
   );
