@@ -9,8 +9,14 @@ import 'package:eye_care_app/screens/home_screen.dart';
 import 'package:eye_care_app/screens/chat_screen.dart';
 import 'package:eye_care_app/screens/profile_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
+import 'package:firebase_core/firebase_core.dart';
+// 1. IMPORT SCREENUTIL
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(
     MultiProvider(
       providers: [
@@ -29,19 +35,33 @@ class EyeCareApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Eye Care',
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Poppins',
-        scaffoldBackgroundColor: AppColors.putih,
-      ),
-      home: const SplashScreen(),
+    // 2. BUNGKUS DENGAN SCREENUTILINIT
+    return ScreenUtilInit(
+      designSize: const Size(360, 800), // Ukuran standar desain (Lebar, Tinggi)
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Eye Care',
+          theme: ThemeData(
+            useMaterial3: true,
+            fontFamily: 'Poppins',
+            scaffoldBackgroundColor: AppColors.putih,
+          ),
+          // Menggunakan child yang dilempar dari builder
+          home: child,
+        );
+      },
+      // Halaman pertama aplikasi
+      child: const SplashScreen(),
     );
   }
 }
 
+/// =======================
+/// MAIN SCREEN (Navigasi)
+/// =======================
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -63,49 +83,44 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          /// SCREEN CONTENT
           _screens[_currentIndex],
-
-          /// FLOATING NAVBAR
           Positioned(
-            left: 20,
-            right: 20,
-            bottom: 20,
-            child: _FloatingNavBar(),
+            left: 20.w,   // Menggunakan .w untuk margin kiri responsif
+            right: 20.w,  // Menggunakan .w untuk margin kanan responsif
+            bottom: 20.h, // Menggunakan .h untuk jarak bawah responsif
+            child: _floatingNavBar(),
           ),
         ],
       ),
     );
   }
 
-  /// ================= FLOATING NAV BAR =================
-  Widget _FloatingNavBar() {
+  Widget _floatingNavBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
+      padding: EdgeInsets.symmetric(vertical: 14.h), // Responsif vertikal
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24.r), // Menggunakan .r untuk radius responsif
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            blurRadius: 20.r,
+            offset: Offset(0, 8.h),
           ),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _NavItem(icon: Icons.home, index: 0),
-          _NavItem(icon: Icons.chat_bubble_outline, index: 1),
-          _NavItem(icon: Icons.person_outline, index: 2),
+          _navItem(icon: Icons.home, index: 0),
+          _navItem(icon: Icons.chat_bubble_outline, index: 1),
+          _navItem(icon: Icons.person_outline, index: 2),
         ],
       ),
     );
   }
 
-  /// ================= NAV ITEM =================
-  Widget _NavItem({required IconData icon, required int index}) {
+  Widget _navItem({required IconData icon, required int index}) {
     final bool isActive = _currentIndex == index;
 
     return GestureDetector(
@@ -119,17 +134,17 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Icon(
             icon,
-            size: 26,
+            size: 26.sp, // Ukuran Icon sekarang responsif menggunakan .sp
             color: isActive ? AppColors.birugelap : Colors.grey,
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: 4,
-            width: isActive ? 18 : 0,
+            height: 4.h,
+            width: isActive ? 18.w : 0,
             decoration: BoxDecoration(
               color: AppColors.birugelap,
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(2.r),
             ),
           ),
         ],

@@ -50,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const Text(
                 'Profil',
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 22,
                   fontWeight: FontWeight.w700,
                   color: AppColors.blueDark,
                 ),
@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 18),
               _statsGrid(),
 
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
 
               /// QUICK SETTINGS
               // const Text('Pengaturan Cepat', style: _sectionTitle),
@@ -218,14 +218,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 label: 'Waktu Layar',
               ),
             ),
-            const SizedBox(width: 16),
-            const Expanded(
-              child: _StatCard(value: '7j', label: 'Tidur'),
-            ),
-            const SizedBox(width: 16),
-            const Expanded(
-              child: _StatCard(value: '6', label: 'Istirahat'),
-            ),
+            // const SizedBox(width: 16),
+            // const Expanded(
+            //   child: _StatCard(value: '7j', label: 'Tidur'),
+            // ),
+            // const SizedBox(width: 16),
+            // const Expanded(
+            //   child: _StatCard(value: '6', label: 'Istirahat'),
+            // ),
           ],
         );
       },
@@ -318,9 +318,11 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: _cardDecoration,
       child: Column(
+        
         children: [
           Text(
             value,
@@ -328,13 +330,14 @@ class _StatCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF5EA1DF),
+              color: AppColors.birugelap,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF7A9CC6)),
+            style: const TextStyle(
+              fontSize: 13, color: Color(0xFF7A9CC6)),
           ),
         ],
       ),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "4679555738",
+    "project_id": "eye-care-app-caa23",
+    "storage_bucket": "eye-care-app-caa23.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4679555738:android:767ba8609211e591835d23",
+        "android_client_info": {
+          "package_name": "com.example.eye_care_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcl17AU_eChzMd9kP8fsQz31EW7bdFqag"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

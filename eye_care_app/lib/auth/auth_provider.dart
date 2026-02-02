@@ -30,11 +30,17 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// Fungsi Logout (Hapus data)
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear(); // Hapus semua data
-    _isLoggedIn = false;
-    _username = '';
-    notifyListeners();
-  }
+  /// Fungsi Logout (Hapus HANYA status login)
+Future<void> logout() async {
+  final prefs = await SharedPreferences.getInstance();
+  
+  // HANYA hapus status login, JANGAN clear() semua
+  await prefs.remove('is_logged_in');
+  
+  // Reset state di provider
+  _isLoggedIn = false;
+  _username = '';
+  
+  notifyListeners();
+}
 }
