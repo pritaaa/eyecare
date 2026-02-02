@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:eye_care_app/theme/app_colors.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -31,11 +32,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7F9),
+      backgroundColor: const Color(0xFFF6FBFA),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -44,7 +45,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 /// BACK
                 IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back, color: Colors.teal),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: AppColors.birugelap),
                 ),
 
                 const SizedBox(height: 24),
@@ -77,18 +80,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 /// TITLE
                 const Text(
-                  "Create Account",
+                  "Buat Akun",
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.teal,
+                    color: AppColors.biru,
                   ),
                 ),
 
                 const SizedBox(height: 8),
 
                 const Text(
-                  "Start building healthy screen & sleep habits",
+                  "Mulailah membangun kebiasaan sehat dalam penggunaan layar dan tidur.",
                   style: TextStyle(color: Colors.grey),
                 ),
 
@@ -133,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           passwordController.text.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text("Please fill all fields"),
+                            content: Text("Silakan isi semua kolom."),
                           ),
                         );
                         return;
@@ -143,21 +146,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text("Account created successfully"),
+                          content: Text("Akun telah dibuat dengan sukses"),
                         ),
                       );
 
                       Navigator.pop(context); // balik ke Login
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
+                      backgroundColor: AppColors.birugelap,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                     child: const Text(
-                      "Sign Up",
-                      style: TextStyle(fontSize: 16),
+                      "Daftar",
+                      style: TextStyle(fontSize: 16,
+                      color: Colors.white),
                     ),
                   ),
                 ),
@@ -166,16 +170,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 /// LOGIN LINK
                 Center(
-                  child: GestureDetector(
+                  child : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Sudah punya akun? ",
+                        style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                      ),
+                        ),
+
+                      GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: const Text(
-                      "Already have an account? Sign In",
+                      "Masuk",
                       style: TextStyle(
-                        color: Colors.teal,
+                        color: AppColors.birugelap,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
+
+                    ],
+                  )
+                  
                 ),
 
                 const SizedBox(height: 40),

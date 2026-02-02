@@ -23,14 +23,31 @@ class _TestScreenState extends State<TestScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
+        elevation: 2,
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 20,
-        title: Text(
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blueLight,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: AppColors.bluePrimary,
+              ),
+            ),
+          ),
+        ),
+        title: const Text(
           'Tes Mata',
           style: TextStyle(
-            fontSize: sp(20),
+            fontSize: 22,
             fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
           ),
         ),
       ),
@@ -68,6 +85,7 @@ class _TestScreenState extends State<TestScreen> {
 
             /// ================= SLIDER =================
             Slider(
+              
               min: 0.6,
               max: 1.8,
               value: scale.clamp(0.6, 1.8),
@@ -108,6 +126,10 @@ class _TestScreenState extends State<TestScreen> {
                 ),
               ),
             ),
+
+            const SizedBox(height: 22),
+
+
           ],
         ),
       ),
@@ -126,15 +148,33 @@ class TestResultScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text('Hasil Tes',
-        style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
+        elevation: 2,
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blueLight,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: AppColors.bluePrimary,
+              ),
+            ),
           ),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 20,
+        title: const Text(
+          'Hasil Tes',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -144,6 +184,8 @@ class TestResultScreen extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Card(
+                  elevation: 3,
+                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -246,8 +288,11 @@ class TestResultScreen extends StatelessWidget {
                 style: TextStyle(color: AppColors.biru),
               ),
             ),
+            const SizedBox(height: 24),
           ],
+          
         ),
+        
       ),
     );
   }

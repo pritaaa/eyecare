@@ -1,5 +1,8 @@
+
+
+
 import 'dart:math';
-import 'dart:async'; // Tambahkan import ini untuk Timer
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:eye_care_app/app_usage/app_usage_provider.dart';
 import 'package:eye_care_app/screen_time/screen_time_model.dart';
@@ -8,7 +11,6 @@ import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 import 'package:provider/provider.dart';
-
 import 'package:flutter/services.dart';
 
 class TimersScreen extends StatefulWidget {
@@ -33,7 +35,12 @@ class _TimersScreenState extends State<TimersScreen> {
 
   void _loadData() {
     Future.microtask(() {
+      // LOAD TODAY REPORT
       context.read<ScreenTimeProvider>().loadTodayReport();
+      
+      // LOAD WEEKLY REPORT (INI YANG DITAMBAH)
+      // context.read<ScreenTimeProvider>().loadWeeklyReport();
+      
       final appUsageProvider = context.read<AppUsageProvider>();
       appUsageProvider.checkPermission().then((_) async {
         if (appUsageProvider.hasPermission) {
@@ -100,13 +107,33 @@ class _TimersScreenState extends State<TimersScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text(
-          'Sleep & Screen',
-          style: TextStyle(color: Colors.white),
+        elevation: 2,
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blueLight,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: AppColors.bluePrimary,
+              ),
+            ),
+          ),
         ),
-        backgroundColor: AppColors.birumuda,
-        foregroundColor: Colors.black,
-        elevation: 20,
+        title: const Text(
+          'Durasi layar',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -114,13 +141,14 @@ class _TimersScreenState extends State<TimersScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Track your sleep & screen habits',
+              'Pantau kebiasaan tidur dan penggunaan layar Anda',
               style: TextStyle(color: AppColors.biru),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             /// Sleep Clock
             Card(
+              color: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
@@ -129,8 +157,11 @@ class _TimersScreenState extends State<TimersScreen> {
                 child: Column(
                   children: [
                     const Text(
-                      'Sleep Schedule',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      'Jadwal Tidur',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -148,12 +179,12 @@ class _TimersScreenState extends State<TimersScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _timeInfo(
-                          label: 'Bedtime',
+                          label: 'Waktu Tidur',
                           time: formatTime(bedTime),
                           onTap: () => pickTime(isBedTime: true),
                         ),
                         _timeInfo(
-                          label: 'Wake up',
+                          label: 'Bangun',
                           time: formatTime(wakeTime),
                           onTap: () => pickTime(isBedTime: false),
                         ),
@@ -166,9 +197,9 @@ class _TimersScreenState extends State<TimersScreen> {
 
             const SizedBox(height: 20),
 
-            /// ================= YESTERDAY STATS =================
+            /// ================= STATS HARI INI =================
             const Text(
-              'Today',
+              'Hari Ini',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -180,36 +211,19 @@ class _TimersScreenState extends State<TimersScreen> {
 
             Row(
               children: [
-                Expanded(
-                  child: Consumer<ScreenTimeProvider>(
-                    builder: (context, provider, _) {
-                      final ms = provider.report?.screenOnMs ?? 0;
-                      final duration = Duration(milliseconds: ms);
-                      return StatCard(
-                        title: 'Screen Time',
-                        value:
-                            '${duration.inHours}h ${duration.inMinutes % 60}m',
-                        icon: Icons.phone_android,
-                        color: Colors.white,
-                      );
-                    },
-                  ),
+                const Expanded(
+                  child: ScreenTimeStatCard(),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: StatCard(
-                    title: 'Total Sleep',
-                    value: '${sleepHours.toStringAsFixed(1)}h',
-                    icon: Icons.nightlight_round,
-                    color: Colors.white,
-                  ),
+                  child: SleepStatCard(sleepHours: sleepHours),
                 ),
               ],
             ),
 
             const SizedBox(height: 32),
             const Text(
-              'This Week',
+              'Minggu Ini',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -229,7 +243,6 @@ class _TimersScreenState extends State<TimersScreen> {
                   );
                 }
 
-                // Jika loading selesai tapi data kosong (Izin belum diberikan)
                 if (provider.weeklyReport.isEmpty) {
                   return Center(
                     child: Column(
@@ -237,7 +250,7 @@ class _TimersScreenState extends State<TimersScreen> {
                         const Text(
                           "Data tidak tersedia.\nIzinkan akses penggunaan aplikasi.",
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white70),
+                          style: TextStyle(color: Colors.grey),
                         ),
                         TextButton(
                           onPressed: () => context
@@ -250,10 +263,9 @@ class _TimersScreenState extends State<TimersScreen> {
                   );
                 }
 
-                // Konversi data dari Provider (ms) ke Jam (double)
                 final List<double> hours = provider.weeklyReport.map((data) {
                   final ms = data['usageMs'] as int;
-                  return ms / (1000 * 60 * 60); // ms ke jam
+                  return ms / (1000 * 60 * 60);
                 }).toList();
 
                 final List<String> labels = provider.weeklyReport
@@ -279,7 +291,6 @@ class _TimersScreenState extends State<TimersScreen> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // FIX: Tampilkan tombol izin jika belum ada akses
         if (!provider.hasPermission) {
           return Center(
             child: Padding(
@@ -295,7 +306,7 @@ class _TimersScreenState extends State<TimersScreen> {
                   ElevatedButton(
                     onPressed: () => provider.requestPermission(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.biru,
+                      backgroundColor: AppColors.blueDark,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text("Izinkan Akses"),
@@ -336,6 +347,11 @@ class _TimersScreenState extends State<TimersScreen> {
                 ),
                 TextButton(
                   onPressed: () => _showSelectionDialog(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: const Text("Edit"),
                 ),
               ],
@@ -401,7 +417,6 @@ class _TimersScreenState extends State<TimersScreen> {
 
   void _showSelectionDialog(BuildContext context) async {
     final provider = context.read<AppUsageProvider>();
-    // Tampilkan loading sementara mengambil daftar aplikasi
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -411,7 +426,7 @@ class _TimersScreenState extends State<TimersScreen> {
     final installedApps = await provider.getInstalledApps();
     final selected = List<String>.from(provider.selectedApps);
 
-    if (context.mounted) Navigator.pop(context); // Tutup loading
+    if (context.mounted) Navigator.pop(context);
 
     if (context.mounted) {
       showDialog(
@@ -509,8 +524,56 @@ class _TimersScreenState extends State<TimersScreen> {
   }
 }
 
-/// ================= CLOCK PAINTER =================
+/// ================= SCREEN TIME STAT CARD =================
+/// Widget ini bisa dipanggil dari halaman lain (ProfileScreen, dll)
+class ScreenTimeStatCard extends StatelessWidget {
+  const ScreenTimeStatCard({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ScreenTimeProvider>(
+      builder: (context, provider, _) {
+        final ms = provider.report?.screenOnMs ?? 0;
+        final duration = Duration(milliseconds: ms);
+        
+        // DEBUG - Print untuk cek nilai
+        print('🔍 DEBUG Screen Time MS: $ms');
+        print('🔍 DEBUG Hours: ${duration.inHours}');
+        print('🔍 DEBUG Minutes: ${duration.inMinutes % 60}');
+        
+        return StatCard(
+          title: 'Durasi Layar',
+          value: '${duration.inHours}h ${duration.inMinutes % 60}m',
+          icon: Icons.phone_android,
+          color: Colors.white,
+        );
+      },
+    );
+  }
+}
+
+/// ================= SLEEP STAT CARD =================
+/// Widget ini bisa dipanggil dari halaman lain dengan parameter sleepHours
+class SleepStatCard extends StatelessWidget {
+  final double sleepHours;
+
+  const SleepStatCard({
+    super.key,
+    required this.sleepHours,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StatCard(
+      title: 'Lama Tidur',
+      value: '${sleepHours.toStringAsFixed(1)}h',
+      icon: Icons.nightlight_round,
+      color: Colors.white,
+    );
+  }
+}
+
+/// ================= CLOCK PAINTER =================
 class SleepClockPainter extends CustomPainter {
   final double startAngle;
   final double sweepAngle;
@@ -530,9 +593,9 @@ class SleepClockPainter extends CustomPainter {
     canvas.drawCircle(center, radius, basePaint);
 
     final sleepPaint = Paint()
-      ..color = AppColors.oren
+      ..color = AppColors.birugelap
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 26
+      ..strokeWidth = 28
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
@@ -570,12 +633,13 @@ class SleepClockPainter extends CustomPainter {
   bool shouldRepaint(_) => true;
 }
 
+/// ================= WEEKLY BAR CHART =================
 class WeeklyBarChart extends StatelessWidget {
   final List<double> hours;
   final List<String> labels;
 
   const WeeklyBarChart({super.key, required this.hours, required this.labels})
-    : assert(hours.length == labels.length);
+      : assert(hours.length == labels.length);
 
   double get average {
     if (hours.isEmpty) return 0;
@@ -612,7 +676,9 @@ class WeeklyBarChart extends StatelessWidget {
                       width: 28,
                       height: barHeight,
                       decoration: BoxDecoration(
-                        color: isToday ? AppColors.oren : AppColors.birumuda,
+                        color: isToday
+                            ? AppColors.birugelap
+                            : AppColors.birumuda,
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(8),
                         ),
@@ -623,10 +689,10 @@ class WeeklyBarChart extends StatelessWidget {
                       labels[i],
                       style: TextStyle(
                         fontSize: 12,
-                        color: isToday ? AppColors.oren : Colors.black54,
-                        fontWeight: isToday
-                            ? FontWeight.bold
-                            : FontWeight.normal,
+                        color:
+                            isToday ? AppColors.birugelap : Colors.black54,
+                        fontWeight:
+                            isToday ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
                   ],
@@ -640,6 +706,7 @@ class WeeklyBarChart extends StatelessWidget {
   }
 }
 
+/// ================= STAT CARD =================
 class StatCard extends StatelessWidget {
   final String title;
   final String value;
@@ -673,7 +740,6 @@ class StatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          /// TEXT
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -695,8 +761,6 @@ class StatCard extends StatelessWidget {
               ),
             ],
           ),
-
-          /// ICON
           Align(
             alignment: Alignment.topRight,
             child: Icon(

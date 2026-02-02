@@ -58,7 +58,7 @@ class TipOfTheDayCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Stay Hydrated',
+                    'Tetap Terhidrasi',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -71,7 +71,7 @@ class TipOfTheDayCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           const Text(
-            'Drink plenty of water to keep your eyes moist and reduce dryness. Aim for 8 glasses a day.',
+            'Minumlah banyak air untuk menjaga kelembapan mata dan mengurangi kekeringan. Usahakan minum 8 gelas sehari.',
             style: TextStyle(
               fontSize: 14,
               color: Colors.white,
@@ -90,7 +90,7 @@ class TipsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.putih,
 
       appBar: AppBar(
         elevation: 2,
@@ -113,7 +113,7 @@ class TipsScreen extends StatelessWidget {
           ),
         ),
         title: const Text(
-          'Eye Care Tips',
+          'Tips Perawatan Mata',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -128,13 +128,13 @@ class TipsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             // _SearchBar(),
-            SizedBox(height: 24),
+            SizedBox(height: 10),
 
             TipOfTheDayCard(),
             SizedBox(height: 32),
 
             Text(
-              'By Category',
+              'Berdasarkan Kategori',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -145,29 +145,29 @@ class TipsScreen extends StatelessWidget {
             CategoryCard(
               icon: Icons.computer,
               iconBg: AppColors.blueLight,
-              title: 'Screen Time',
+              title: 'Durasi Layar',
               tips: [
-                'Follow the 20-20-20 rule',
-                'Reduce screen brightness',
-                'Position screen 20–26 inches away',
+                'Ikuti aturan 20-20-20',
+                'Kurangi kecerahan layar',
+                'Letakkan layar pada jarak 20–26 inci',
               ],
             ),
 
             CategoryCard(
               icon: Icons.restaurant,
               iconBg: AppColors.blueLight2,
-              title: 'Nutrition',
+              title: 'Nutrisi',
               tips: [
-                'Eat leafy greens and carrots',
-                'Include omega-3 fatty acids',
-                'Take vitamin A supplements',
+                'Makan sayuran berdaun hijau dan wortel',
+                'Tambahkan asam lemak omega-3',
+                'Konsumsi suplemen vitamin A',
               ],
             ),
 
             CategoryCard(
               icon: Icons.wb_sunny,
               iconBg: AppColors.blueAccent,
-              title: 'Protection',
+              title: 'Proteksi',
               tips: [
                 'Wear UV-blocking sunglasses',
                 'Use blue light filters at night',
@@ -179,11 +179,11 @@ class TipsScreen extends StatelessWidget {
               icon: Icons.remove_red_eye,
               iconBg: AppColors.bluePrimary,
               iconColor: Colors.white,
-              title: 'Eye Exercises',
+              title: 'Latihan Mata',
               tips: [
-                'Practice eye rolling exercises',
-                'Do focus shifting regularly',
-                'Blink frequently to moisturize',
+                'Gunakan kacamata hitam yang melindungi dari sinar UV',
+                'Gunakan filter cahaya biru pada malam hari',
+                'Hindari menggosok mata Anda',
               ],
             ),
           ],
@@ -287,19 +287,19 @@ class CategoryCard extends StatelessWidget {
             ),
           ),
 
-          TextButton(
-            onPressed: () {
-              // navigate to detail
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('View more tips'),
-                SizedBox(width: 6),
-                Icon(Icons.arrow_forward, size: 16),
-              ],
-            ),
-          ),
+          // TextButton(
+          //   onPressed: () {
+          //     // navigate to detail
+          //   },
+          //   // child: const Row(
+          //   //   mainAxisSize: MainAxisSize.min,
+          //   //   children: [
+          //   //     Text('View more tips'),
+          //   //     SizedBox(width: 6),
+          //   //     Icon(Icons.arrow_forward, size: 16),
+          //   //   ],
+          //   // ),
+          // ),
         ],
       ),
     );

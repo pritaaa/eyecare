@@ -10,23 +10,20 @@ import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 import 'package:provider/provider.dart';
 
-// final textScale = MediaQuery.of(context).textScaleFactor;
-// double sp(double size) => size * textScale.clamp(1.0, 1.2);
-
 final tips = [
   {
-    'title': '20-20-20 Rule',
-    'desc': 'Look 20 feet away every 20 minutes',
+    'title': 'Aturan 20-20-20',
+    'desc': 'Lihat objek sejauh 20 kaki setiap 20 menit',
     'color': AppColors.blueLight2,
   },
   {
-    'title': 'Blink More',
-    'desc': 'Reduce dry eyes and eye strain',
+    'title': 'Lebih Sering Berkedip',
+    'desc': 'Mengurangi mata kering dan kelelahan mata',
     'color': AppColors.blueAccent,
   },
   {
-    'title': 'Adjust Brightness',
-    'desc': 'Match screen with environment',
+    'title': 'Sesuaikan Kecerahan',
+    'desc': 'Samakan layar dengan pencahayaan sekitar',
     'color': AppColors.blueLight,
   },
 ];
@@ -40,11 +37,12 @@ class HomeScreen extends StatelessWidget {
     final textScale = MediaQuery.of(context).textScaleFactor;
     final username = context.select((AuthProvider p) => p.username);
 
+    // Fungsi helper .sp (scaled pixels)
     double sp(double size) => size * textScale.clamp(1.0, 1.2);
 
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 140),
+        padding: const EdgeInsets.only(bottom: 100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -55,12 +53,12 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Selamat Datang Kembali $username',
+                    'Halo, $username',
                     style: TextStyle(
-                      fontSize: sp(width * 0.075), // adaptif
+                      fontSize: sp(24), // Menggunakan sp tetap untuk konsistensi
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
-                      height: 1.2,
+                      // height: 1.2,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -76,10 +74,7 @@ class HomeScreen extends StatelessWidget {
             ),
 
             /// ================= TIPS SLIDER =================
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: EyeCareTipsSection(),
-            ),
+            const EyeCareTipsSection(),
 
             const SizedBox(height: 28),
 
@@ -100,6 +95,14 @@ class HomeScreen extends StatelessWidget {
                     color: AppColors.blueLight,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppColors.blueAccent),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blueGrey.withOpacity(0.1),
+                        spreadRadius: 7,
+                        blurRadius: 10,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
@@ -118,8 +121,6 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-
-                      /// BIAR AMAN DI LAYAR KECIL
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +145,6 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       const Icon(
                         Icons.arrow_forward,
                         color: AppColors.bluePrimary,
@@ -173,73 +173,67 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GridView.builder(
+              padding: 
+              const EdgeInsets.symmetric(
+                horizontal: 20),
+              child: GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: width < 360 ? 1 : 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.15,
-                ),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  final items = [
-                    _QuickCard(
-                      icon: Icons.remove_red_eye,
-                      title: 'Tes Mata',
-                      subtitle: 'Cek penglihatan',
-                      bg: AppColors.blueLight,
-                      iconColor: AppColors.bluePrimary,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const TestScreen()),
+                crossAxisCount: width < 360 ? 1 : 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                // Mengubah childAspectRatio agar lebih tinggi (menghindari teks terpotong)
+                childAspectRatio: width < 360 ? 2.5 : 1.0,
+                children: [
+                  _QuickCard(
+                    icon: Icons.remove_red_eye,
+                    title: 'Tes Mata',
+                    subtitle: 'Cek penglihatan rutin',
+                    bg: AppColors.blueLight,
+                    iconColor: AppColors.bluePrimary,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TestScreen()),
+                    ),
+                  ),
+                  _QuickCard(
+                    icon: Icons.schedule,
+                    title: 'Durasi Layar',
+                    subtitle: 'Pantau durasi harian',
+                    bg: AppColors.blueLight,
+                    iconColor: AppColors.bluePrimary,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TimersScreen()),
+                    ),
+                  ),
+                  _QuickCard(
+                    icon: Icons.lightbulb,
+                    title: 'Tips Mata',
+                    subtitle: 'Perawatan terbaik harian',
+                    bg: AppColors.blueLight,
+                    iconColor: AppColors.bluePrimary,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TipsScreen()),
+                    ),
+                  ),
+                  _QuickCard(
+                    icon: Icons.local_hospital,
+                    title: 'Klinik Terdekat',
+                    subtitle: 'Bantuan profesional',
+                    bg: AppColors.blueLight,
+                    iconColor: AppColors.bluePrimary,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ClinicFinderScreen(),
                       ),
                     ),
-                    _QuickCard(
-                      icon: Icons.schedule,
-                      title: 'Timer Layar',
-                      subtitle: 'Pantau durasi',
-                      bg: AppColors.blueLight2,
-                      iconColor: AppColors.blueDark,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const TimersScreen()),
-                      ),
-                    ),
-                    _QuickCard(
-                      icon: Icons.lightbulb,
-                      title: 'Tips Mata',
-                      subtitle: 'Perawatan terbaik',
-                      bg: AppColors.blueAccent,
-                      iconColor: AppColors.bluePrimary,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const TipsScreen()),
-                      ),
-                    ),
-                    _QuickCard(
-                      icon: Icons.local_hospital,
-                      title: 'Klinik Terdekat',
-                      subtitle: 'Perawatan profesional',
-                      bg: AppColors.bluePrimary,
-                      iconColor: Colors.white,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ClinicFinderScreen(),
-                        ),
-                      ),
-                    ),
-                  ];
-
-                  return items[index];
-                },
+                  ),
+                ],
               ),
             ),
-
-            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -256,7 +250,6 @@ class _QuickCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const _QuickCard({
-    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -289,42 +282,38 @@ class _QuickCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min, // Biar menyesuaikan isi
           children: [
-            /// ICON
             Container(
-              height: 44,
-              width: 44,
+              height: 40,
+              width: 40,
               decoration: BoxDecoration(
                 color: bg,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: iconColor, size: 22),
+              child: Icon(icon, color: iconColor, size: 20),
             ),
-
-            const SizedBox(height: 12),
-
-            /// TITLE
+            const SizedBox(height: 10),
             Text(
               title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: sp(15),
-                fontWeight: FontWeight.w600,
+                fontSize: sp(14),
+                fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
             ),
-
             const SizedBox(height: 4),
-
-            /// SUBTITLE
-            Expanded(
-              child: Text(
-                subtitle,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: sp(12), color: AppColors.textLight),
+            // MENGHILANGKAN Expanded agar teks subtitle tidak tersembunyi
+            Text(
+              subtitle,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: sp(11), 
+                color: AppColors.textLight,
+                // height: 1.3,
               ),
             ),
           ],
@@ -351,24 +340,16 @@ class _EyeCareTipsSectionState extends State<EyeCareTipsSection> {
 
     return Column(
       children: [
-        /// CARD SLIDER
         SizedBox(
-          height: height * 0.28, // adaptif layar
+          height: height * 0.26, // Disesuaikan sedikit lebih pendek
           child: PageView.builder(
             controller: _controller,
             itemCount: tips.length,
-            onPageChanged: (index) {
-              setState(() => currentIndex = index);
-            },
-            itemBuilder: (context, index) {
-              return _TipItem(tip: tips[index]);
-            },
+            onPageChanged: (index) => setState(() => currentIndex = index),
+            itemBuilder: (context, index) => _TipItem(tip: tips[index]),
           ),
         ),
-
         const SizedBox(height: 12),
-
-        /// DOT INDICATOR
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
@@ -394,7 +375,6 @@ class _EyeCareTipsSectionState extends State<EyeCareTipsSection> {
 
 class _TipItem extends StatelessWidget {
   final Map<String, dynamic> tip;
-
   const _TipItem({required this.tip});
 
   @override
@@ -409,82 +389,68 @@ class _TipItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: tip['color'],
           borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.bluePrimary.withOpacity(0.15),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// BADGE
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                '✨ Eye Care Tip',
+                '✨ Tips',
                 style: TextStyle(
-                  fontSize: sp(12),
-                  fontWeight: FontWeight.w500,
+                  fontSize: sp(11),
+                  fontWeight: FontWeight.bold,
                   color: AppColors.bluePrimary,
                 ),
               ),
             ),
-
-            const SizedBox(height: 12),
-
-            /// TITLE
+            const SizedBox(height: 10),
             Text(
               tip['title'],
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
               style: TextStyle(
-                fontSize: sp(22),
+                fontSize: sp(20),
                 fontWeight: FontWeight.bold,
                 color: AppColors.bluePrimary,
-                height: 1.2,
               ),
             ),
-
-            const SizedBox(height: 8),
-
-            /// DESC
+            const SizedBox(height: 6),
             Text(
               tip['desc'],
               maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: sp(14), color: AppColors.blueDark),
+              style: TextStyle(fontSize: sp(13), color: AppColors.blueDark),
             ),
-
             const Spacer(),
-
-            /// TIMER
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.bluePrimary,
-                borderRadius: BorderRadius.circular(12),
+            InkWell(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const TipsScreen()),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.timer, size: 16, color: Colors.white),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Next break in 18:45',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: sp(13),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.bluePrimary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Selengkapnya',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: sp(12),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    const Icon(Icons.arrow_forward_ios, size: 10, color: Colors.white),
+                  ],
+                ),
               ),
             ),
           ],

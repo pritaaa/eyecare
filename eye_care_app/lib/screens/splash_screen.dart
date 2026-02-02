@@ -4,6 +4,7 @@ import 'package:eye_care_app/main.dart';
 import 'package:eye_care_app/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:eye_care_app/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -67,18 +68,18 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 24),
 
             const Text(
-              "Healthy Habit",
+              "Kebiasaan Sehat",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.teal,
+                color: AppColors.birugelap,
               ),
             ),
 
             const SizedBox(height: 8),
 
             Text(
-              "Small steps, better life",
+              "Langkah kecil, demi hidup yang lebih baik",
               style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
           ],

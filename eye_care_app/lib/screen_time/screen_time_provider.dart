@@ -25,4 +25,25 @@ class ScreenTimeProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // METHOD BARU: Load Weekly Report
+  Future<void> loadWeeklyReport() async {
+    try {
+      _loading = true;
+      notifyListeners();
+
+      _weeklyReport = await ScreenTimeService.fetchWeeklyReport();
+      
+      // DEBUG: Print untuk cek data weekly
+      debugPrint("📊 Weekly Report loaded: ${_weeklyReport.length} days");
+      for (var day in _weeklyReport) {
+        debugPrint("   ${day['label']}: ${day['usageMs']} ms");
+      }
+    } catch (e) {
+      debugPrint("Error loading weekly report: $e");
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
 }

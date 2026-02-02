@@ -3,8 +3,21 @@ import 'package:provider/provider.dart';
 import 'package:eye_care_app/chatbot/controller.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 
-class ChatbotScreen extends StatelessWidget {
+class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
+
+  @override
+  State<ChatbotScreen> createState() => _ChatbotScreenState();
+}
+
+class _ChatbotScreenState extends State<ChatbotScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,34 +25,52 @@ class ChatbotScreen extends StatelessWidget {
       backgroundColor: AppColors.putih,
       appBar: AppBar(
         title: const Text(
-          'Eye Care Assistant',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold),
+          'Asisten Mata',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
         ),
         backgroundColor: Colors.white,
         foregroundColor: AppColors.teksgelap,
-        elevation: 10,
+        elevation: 2,
       ),
       body: Column(
-        children: const [
-          Expanded(child: _ChatList()),
-          _OptionSection(),
+        children: [
+          Expanded(
+            child: _ChatList(scrollController: _scrollController),
+          ),
+          SafeArea(
+            top: false,
+            child: const _OptionSection(),
+          ),
+          const SizedBox(height: 60),
         ],
+        
       ),
     );
   }
 }
 
-
 class _ChatList extends StatelessWidget {
-  const _ChatList();
+  final ScrollController scrollController;
+
+  const _ChatList({required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<ChatbotController>();
 
+    // Auto scroll setelah ada pesan baru
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+
     return ListView.builder(
+      controller: scrollController,
       padding: const EdgeInsets.all(16),
       itemCount: controller.messages.length,
       itemBuilder: (context, index) {
@@ -54,7 +85,7 @@ class _ChatList extends StatelessWidget {
             if (!isUser)
               const CircleAvatar(
                 radius: 14,
-                backgroundColor: AppColors.birumuda,
+                backgroundColor: AppColors.bluePrimary,
                 child: Icon(
                   Icons.visibility,
                   size: 16,
@@ -67,9 +98,7 @@ class _ChatList extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 6),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: isUser
-                      ? AppColors.birumuda
-                      : Colors.white,
+                  color: isUser ? AppColors.blueLight2 : Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(16),
                     topRight: const Radius.circular(16),
@@ -90,9 +119,7 @@ class _ChatList extends StatelessWidget {
                 child: Text(
                   msg.text,
                   style: TextStyle(
-                    color: isUser
-                        ? Colors.white
-                        : AppColors.teksgelap,
+                    color: isUser ? Colors.black54 : AppColors.teksgelap,
                     fontSize: 14,
                   ),
                 ),
@@ -104,7 +131,6 @@ class _ChatList extends StatelessWidget {
     );
   }
 }
-
 
 class _OptionSection extends StatelessWidget {
   const _OptionSection();
@@ -118,9 +144,14 @@ class _OptionSection extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(30),
+      margin: const EdgeInsets.only(bottom: 16), // ✅ Kurangi margin dari 70
+      constraints: const BoxConstraints(maxHeight: 180), // ✅ Tambah sedikit tinggi
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
       decoration: BoxDecoration(
-        // color: Colors.white,
+        color: AppColors.putih,
         boxShadow: [
           BoxShadow(
             color: Colors.white.withOpacity(0.05),
@@ -129,24 +160,40 @@ class _OptionSection extends StatelessWidget {
           ),
         ],
       ),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: controller.currentOptions.map((option) {
-          return OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              shape: const StadiumBorder(),
-              side: const BorderSide(color: AppColors.birugelap),
-            ),
-            onPressed: () {
-              controller.selectOption(option);
-            },
-            child: Text(
-              option.text,
-              style: const TextStyle(color: AppColors.birugelap),
-            ),
-          );
-        }).toList(),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: controller.currentOptions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final option = entry.value;
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: index < controller.currentOptions.length - 1 ? 8 : 0,
+              ),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  side: const BorderSide(color: AppColors.birugelap),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                ),
+                onPressed: () {
+                  controller.selectOption(option);
+                },
+                child: Text(
+                  option.text,
+                  style: const TextStyle(
+                    color: AppColors.birugelap,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }

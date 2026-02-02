@@ -143,12 +143,32 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        elevation: 20,
+        elevation: 2,
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        title: Text(
+        leading: Padding(
+          padding: const EdgeInsets.all(8),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.blueLight,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: AppColors.bluePrimary,
+              ),
+            ),
+          ),
+        ),
+        title: const Text(
           'Klinik Terdekat',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
         ),
       ),
       body: Padding(

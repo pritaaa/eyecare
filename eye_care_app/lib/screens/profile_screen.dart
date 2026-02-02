@@ -3,6 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_screen.dart';
+import 'package:eye_care_app/theme/app_colors.dart';
+import 'dart:math';
+import 'dart:async'; // Tambahkan import ini untuk Timer
+import 'dart:typed_data';
+import 'package:eye_care_app/app_usage/app_usage_provider.dart';
+import 'package:eye_care_app/screen_time/screen_time_model.dart';
+import 'package:eye_care_app/screen_time/screen_time_provider.dart';
+import 'package:eye_care_app/theme/app_colors.dart';
+import 'package:flutter/material.dart';
+import 'package:eye_care_app/theme/app_text.dart';
+import 'package:provider/provider.dart';
+import 'timers_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FBFF),
+      backgroundColor: AppColors.putih,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 120),
@@ -31,13 +43,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1E3A5F),
+                  color: AppColors.blueDark,
                 ),
               ),
               const SizedBox(height: 4),
               const Text(
                 'Kelola kebiasaan kesehatan mata Anda',
-                style: TextStyle(fontSize: 15, color: Color(0xFF7A9CC6)),
+                style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
               ),
 
               const SizedBox(height: 28),
@@ -45,21 +57,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               /// PROFILE CARD
               _profileCard(),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
 
               /// EYE HABIT SUMMARY
-              const Text('Ringkasan Kebiasaan Mata', style: _sectionTitle),
-              const SizedBox(height: 20),
+              const Text(
+                'Ringkasan', 
+                style: _sectionTitle
+                ,
+                ),
+              const SizedBox(height: 18),
               _statsGrid(),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
 
               /// QUICK SETTINGS
-              const Text('Pengaturan Cepat', style: _sectionTitle),
-              const SizedBox(height: 20),
-              _quickSettingCard(),
+              // const Text('Pengaturan Cepat', style: _sectionTitle),
+              // const SizedBox(height: 18),
+              // _quickSettingCard(),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
 
               /// SETTINGS
               const Text('Pengaturan', style: _sectionTitle),
@@ -70,6 +86,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               /// LOGOUT
               OutlinedButton(
+                
                 onPressed: () async {
                   await context.read<AuthProvider>().logout();
                   if (context.mounted) {
@@ -82,9 +99,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(52),
-                  side: const BorderSide(color: Color(0xFF1E3A5F)),
+                  side: const BorderSide(color: Colors.redAccent),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 child: const Text(
@@ -92,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1E3A5F),
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -135,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [Color(0xFF5EA1DF), Color(0xFF7FB8E8)],
+                colors: [AppColors.bluePrimary, AppColors.blueLight2],
               ),
             ),
             child: Center(
@@ -164,35 +181,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 4),
                 const Text(
-                  'Tingkat Kesehatan Mata: Sehat',
+                  'Perhatian kecil untuk mata',
                   style: TextStyle(fontSize: 14, color: Color(0xFF5EA1DF)),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, size: 28, color: Colors.black38),
+          // const Icon(Icons.chevron_right, size: 28, color: Colors.black38),
         ],
       ),
     );
   }
 
-  Widget _statsGrid() {
-    return Row(
-      children: const [
-        Expanded(
-          child: _StatCard(value: '5j\n20m', label: 'Waktu Layar'),
-        ),
-        SizedBox(width: 16),
-        Expanded(
-          child: _StatCard(value: '7j', label: 'Tidur'),
-        ),
-        SizedBox(width: 16),
-        Expanded(
-          child: _StatCard(value: '6', label: 'Istirahat'),
-        ),
-      ],
-    );
-  }
+
+Widget _statsGrid() {
+  return const Row(
+    children: [
+      Expanded(
+        child: ScreenTimeStatCard(),
+      ),
+      SizedBox(width: 16),
+      Expanded(
+        child: SleepStatCard(sleepHours: 7.5), // Ganti dengan data sleepHours kamu
+      ),
+    ],
+  );
+}
 
   Widget _quickSettingCard() {
     return Container(
@@ -217,14 +231,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       decoration: _cardDecoration,
       child: Column(
         children: [
-          ListTile(
-            leading: _settingIcon(Icons.schedule),
-            title: const Text('Jadwal Pengingat'),
-            subtitle: Text('Waktu istirahat: ${breakTime.format(context)}'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: _pickBreakTime,
-          ),
-          const Divider(height: 1),
+          // ListTile(
+          //   leading: _settingIcon(Icons.schedule),
+          //   title: const Text('Jadwal Pengingat'),
+          //   subtitle: Text('Waktu istirahat: ${breakTime.format(context)}'),
+          //   trailing: const Icon(Icons.chevron_right),
+          //   onTap: _pickBreakTime,
+          // ),
+          // const Divider(height: 1),
           ListTile(
             leading: _settingIcon(Icons.info_outline),
             title: const Text('Informasi Aplikasi'),
@@ -307,9 +321,9 @@ class _StatCard extends StatelessWidget {
 // ================= STYLES =================
 
 const _sectionTitle = TextStyle(
-  fontSize: 22,
+  fontSize: 18,
   fontWeight: FontWeight.w700,
-  color: Color(0xFF1E3A5F),
+  color: AppColors.textPrimary,
 );
 
 final _cardDecoration = BoxDecoration(

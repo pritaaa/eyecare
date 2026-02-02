@@ -7,7 +7,8 @@ class AppColors {
   static const birugelap = Color(0xFF000249);
 
   /// 30% – SURFACE
-  static const putih = Color(0xFFEFECE3);
+  // static const putih = Color(0xFFEFECE3);
+  static const putih = Color(0xFFF2F7FF);
 
   /// 10% – ACCENT
   static const birumuda = Color(0xFF8FABD4);
