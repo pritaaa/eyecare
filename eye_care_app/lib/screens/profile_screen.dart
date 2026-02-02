@@ -1,4 +1,5 @@
 import 'package:eye_care_app/auth/auth_provider.dart';
+import 'package:eye_care_app/screen_time/screen_time_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +27,14 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool reminderEnabled = true;
   TimeOfDay breakTime = const TimeOfDay(hour: 10, minute: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => context.read<ScreenTimeProvider>().loadTodayReport(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,20 +202,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _statsGrid() {
+    return Consumer<ScreenTimeProvider>(
+      builder: (context, provider, _) {
+        final ms = provider.report?.screenOnMs ?? 0;
+        final duration = Duration(milliseconds: ms);
+        final hours = duration.inHours;
+        final minutes = duration.inMinutes % 60;
 
-Widget _statsGrid() {
-  return const Row(
-    children: [
-      Expanded(
-        child: ScreenTimeStatCard(),
-      ),
-      SizedBox(width: 16),
-      Expanded(
-        child: SleepStatCard(sleepHours: 7.5), // Ganti dengan data sleepHours kamu
-      ),
-    ],
-  );
-}
+        return Row(
+          children: [
+            Expanded(
+              child: _StatCard(
+                value: '${hours}j\n${minutes}m',
+                label: 'Waktu Layar',
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Expanded(
+              child: _StatCard(value: '7j', label: 'Tidur'),
+            ),
+            const SizedBox(width: 16),
+            const Expanded(
+              child: _StatCard(value: '6', label: 'Istirahat'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _quickSettingCard() {
     return Container(
