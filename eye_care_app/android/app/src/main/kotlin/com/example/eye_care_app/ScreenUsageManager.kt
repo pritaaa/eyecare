@@ -3,8 +3,10 @@ package com.example.eye_care_app
 import android.content.Context
 import android.content.SharedPreferences
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import android.util.Log // Tambahkan import ini
 
 object ScreenUsageManager {
 
@@ -12,9 +14,8 @@ object ScreenUsageManager {
 
     fun onScreenOn(context: Context) {
         val pref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-        val today = getToday()
-
-        checkDateReset(pref, today)
+        
+        checkDateReset(context, pref)
 
         val count = pref.getInt("screen_on_count", 0)
         pref.edit()
@@ -38,20 +39,47 @@ object ScreenUsageManager {
         }
     }
 
-    private fun checkDateReset(pref: SharedPreferences, today: String) {
-        val lastDate = pref.getString("last_date", "")
-        if (lastDate != today) {
-            // Simpan data hari sebelumnya ke history (format key: history_YYYY-MM-DD)
-            if (lastDate != "") {
-                val previousTotal = pref.getLong("screen_on_ms", 0)
-                pref.edit().putLong("history_$lastDate", previousTotal).apply()
+    fun checkDateReset(context: Context, pref: SharedPreferences? = null) {
+        val sharedPref = pref ?: context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+        val today = getToday()
+        val lastDate = sharedPref.getString("last_date", "")
+
+        Log.d("ScreenUsage", "Cek Reset: Today=$today, LastDate=$lastDate")
+
+        if (lastDate != "" && lastDate != today) {
+            // Cek jika layar menyala saat pergantian hari (Midnight Crossing)
+            val isScreenOn = sharedPref.getBoolean("is_screen_on", false)
+            val lastOn = sharedPref.getLong("last_on_time", 0)
+            var previousTotal = sharedPref.getLong("screen_on_ms", 0)
+
+            if (isScreenOn && lastOn > 0) {
+                val calendar = Calendar.getInstance()
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+                val midnight = calendar.timeInMillis
+
+                // Jika waktu nyala terakhir sebelum tengah malam hari ini
+                if (lastOn < midnight) {
+                    val durationYesterday = midnight - lastOn
+                    Log.d("ScreenUsage", "Midnight Crossing terdeteksi! Tambah ke kemarin: $durationYesterday ms")
+                    previousTotal += durationYesterday
+                    // Update last_on_time jadi 00:00 hari ini agar hitungan hari ini mulai dari 0
+                    sharedPref.edit().putLong("last_on_time", midnight).apply()
+                }
             }
 
-            pref.edit()
+            sharedPref.edit().putLong("history_$lastDate", previousTotal).apply()
+            Log.d("ScreenUsage", "RESET SUKSES. Data $lastDate disimpan: $previousTotal ms")
+
+            sharedPref.edit()
                 .putLong("screen_on_ms", 0)
                 .putInt("screen_on_count", 0)
                 .putString("last_date", today)
                 .apply()
+        } else if (lastDate == "") {
+            sharedPref.edit().putString("last_date", today).apply()
         }
     }
 

@@ -71,6 +71,9 @@ class MainActivity : FlutterActivity() {
 
             when (call.method) {
                 "getTodayReport" -> {
+                    // FIX: Cek reset tanggal sebelum ambil data (untuk kasus midnight saat layar nyala)
+                    ScreenUsageManager.checkDateReset(applicationContext)
+
                     var totalMs = pref.getLong("screen_on_ms", 0)
                     val isScreenOn = pref.getBoolean("is_screen_on", true)
                     var lastOn = pref.getLong("last_on_time", 0)
@@ -214,6 +217,8 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun getWeeklyScreenTime(): List<Map<String, Any>> {
+        ScreenUsageManager.checkDateReset(applicationContext)
+        
         val pref = getSharedPreferences("screen_usage", Context.MODE_PRIVATE)
         val weeklyData = ArrayList<Map<String, Any>>()
         

@@ -207,61 +207,70 @@ class _TimersScreenState extends State<TimersScreen> {
               ],
             ),
 
-            const SizedBox(height: 32),
-            const Text(
-              'This Week',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.biru,
+            Visibility(
+              visible: false,
+              child: Column(
+                children: [
+                  const SizedBox(height: 32),
+                  const Text(
+                    'This Week',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.biru,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  Consumer<ScreenTimeProvider>(
+                    builder: (context, provider, _) {
+                      if (provider.isLoading && provider.weeklyReport.isEmpty) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+
+                      // Jika loading selesai tapi data kosong (Izin belum diberikan)
+                      if (provider.weeklyReport.isEmpty) {
+                        return Center(
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Data tidak tersedia.\nIzinkan akses penggunaan aplikasi.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                              TextButton(
+                                onPressed: () => context
+                                    .read<AppUsageProvider>()
+                                    .requestPermission(),
+                                child: const Text("Buka Pengaturan"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      // Konversi data dari Provider (ms) ke Jam (double)
+                      final List<double> hours = provider.weeklyReport.map((
+                        data,
+                      ) {
+                        final ms = data['usageMs'] as int;
+                        return ms / (1000 * 60 * 60); // ms ke jam
+                      }).toList();
+
+                      final List<String> labels = provider.weeklyReport
+                          .map((data) => data['label'] as String)
+                          .toList();
+
+                      return WeeklyBarChart(hours: hours, labels: labels);
+                    },
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 12),
-
-            Consumer<ScreenTimeProvider>(
-              builder: (context, provider, _) {
-                if (provider.isLoading && provider.weeklyReport.isEmpty) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-
-                // Jika loading selesai tapi data kosong (Izin belum diberikan)
-                if (provider.weeklyReport.isEmpty) {
-                  return Center(
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Data tidak tersedia.\nIzinkan akses penggunaan aplikasi.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                        TextButton(
-                          onPressed: () => context
-                              .read<AppUsageProvider>()
-                              .requestPermission(),
-                          child: const Text("Buka Pengaturan"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                // Konversi data dari Provider (ms) ke Jam (double)
-                final List<double> hours = provider.weeklyReport.map((data) {
-                  final ms = data['usageMs'] as int;
-                  return ms / (1000 * 60 * 60); // ms ke jam
-                }).toList();
-
-                final List<String> labels = provider.weeklyReport
-                    .map((data) => data['label'] as String)
-                    .toList();
-
-                return WeeklyBarChart(hours: hours, labels: labels);
-              },
             ),
 
             const SizedBox(height: 16),
