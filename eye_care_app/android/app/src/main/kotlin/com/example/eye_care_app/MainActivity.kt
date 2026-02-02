@@ -71,28 +71,25 @@ class MainActivity : FlutterActivity() {
 
             when (call.method) {
                 "getTodayReport" -> {
-                    // FIX: Cek reset tanggal sebelum ambil data (untuk kasus midnight saat layar nyala)
-                    ScreenUsageManager.checkDateReset(applicationContext)
-
-                    var totalMs = pref.getLong("screen_on_ms", 0)
-                    val isScreenOn = pref.getBoolean("is_screen_on", true)
-                    var lastOn = pref.getLong("last_on_time", 0)
-
-                    // FIX: Jika baru install (lastOn 0) tapi layar nyala, set waktu mulai sekarang
-                    if (isScreenOn && lastOn == 0L) {
-                        lastOn = System.currentTimeMillis()
-                        pref.edit().putLong("last_on_time", lastOn).apply()
-                    }
-
-                    if (isScreenOn) {
-                        if (lastOn > 0) {
-                            totalMs += (System.currentTimeMillis() - lastOn)
-                        }
-                    }
+                    // KONSEP BARU: Hitung total dari UsageStatsManager (Jumlah semua aplikasi)
+                    val calendar = Calendar.getInstance()
+                    calendar.set(Calendar.HOUR_OF_DAY, 0)
+                    calendar.set(Calendar.MINUTE, 0)
+                    calendar.set(Calendar.SECOND, 0)
+                    calendar.set(Calendar.MILLISECOND, 0)
+                    
+                    val start = calendar.timeInMillis
+                    val end = System.currentTimeMillis()
+                    
+                    // Hitung total durasi aplikasi hari ini
+                    val totalMs = calculateTotalUsage(start, end)
+                    
+                    // Ambil count dari prefs (opsional, jika masih ingin menampilkan jumlah buka layar)
+                    val count = pref.getInt("screen_on_count", 0)
 
                     val data = mapOf(
                         "screenOnMs" to totalMs,
-                        "screenOnCount" to pref.getInt("screen_on_count", 0)
+                        "screenOnCount" to count
                     )
                     result.success(data)
                 }
@@ -216,47 +213,58 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun getWeeklyScreenTime(): List<Map<String, Any>> {
-        ScreenUsageManager.checkDateReset(applicationContext)
+    // HELPER BARU: Menghitung total durasi semua aplikasi dalam rentang waktu tertentu
+    private fun calculateTotalUsage(startTime: Long, endTime: Long): Long {
+        if (!hasUsagePermission()) return 0L
         
-        val pref = getSharedPreferences("screen_usage", Context.MODE_PRIVATE)
-        val weeklyData = ArrayList<Map<String, Any>>()
+        val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val stats = usageStatsManager.queryAndAggregateUsageStats(startTime, endTime)
         
-        val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val sdfDay = SimpleDateFormat("E", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-
-        // Ambil data live hari ini
-        val currentMs = pref.getLong("screen_on_ms", 0)
-        val isScreenOn = pref.getBoolean("is_screen_on", false)
-        val lastOn = pref.getLong("last_on_time", 0)
-        
-        // Hitung tambahan waktu real-time jika layar sedang nyala
-        val liveAddition = if (isScreenOn && lastOn > 0L) {
-            System.currentTimeMillis() - lastOn
-        } else {
-            0L
+        var totalMs = 0L
+        for ((pkg, usage) in stats) {
+            val duration = usage.totalTimeInForeground
+            // Filter standar untuk menghindari aplikasi sistem background (sesuai logika getUsageStats)
+            if (duration > 0 && 
+                !pkg.startsWith("com.android") && 
+                pkg != packageName) {
+                totalMs += duration
+            }
         }
+        return totalMs
+    }
+
+    private fun getWeeklyScreenTime(): List<Map<String, Any>> {
+        val weeklyData = ArrayList<Map<String, Any>>()
+        val sdfDay = SimpleDateFormat("E", Locale.getDefault())
 
         for (i in 6 downTo 0) {
-            calendar.time = Date()
-            calendar.add(Calendar.DAY_OF_YEAR, -i)
-            val dateString = sdfDate.format(calendar.time)
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.DAY_OF_YEAR, -i)
             
-            var totalMs = 0L
+            // Set Start of Day (00:00:00)
+            cal.set(Calendar.HOUR_OF_DAY, 0)
+            cal.set(Calendar.MINUTE, 0)
+            cal.set(Calendar.SECOND, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            val start = cal.timeInMillis
             
-            if (i == 0) {
-                // Hari ini: Ambil dari screen_on_ms + live duration
-                totalMs = currentMs + liveAddition
+            // Set End of Day (23:59:59) atau Sekarang jika hari ini
+            val end = if (i == 0) {
+                System.currentTimeMillis()
             } else {
-                // Hari lalu: Ambil dari history yang disimpan ScreenUsageManager
-                // Jika tidak ada data (sebelum install), otomatis 0
-                totalMs = pref.getLong("history_$dateString", 0)
+                cal.set(Calendar.HOUR_OF_DAY, 23)
+                cal.set(Calendar.MINUTE, 59)
+                cal.set(Calendar.SECOND, 59)
+                cal.set(Calendar.MILLISECOND, 999)
+                cal.timeInMillis
             }
+
+            // Hitung total usage untuk hari tersebut
+            val totalMs = calculateTotalUsage(start, end)
 
             weeklyData.add(
                 mapOf(
-                    "label" to sdfDay.format(calendar.time).substring(0, 1),
+                    "label" to sdfDay.format(cal.time).substring(0, 1),
                     "usageMs" to totalMs
                 )
             )

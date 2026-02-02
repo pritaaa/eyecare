@@ -1,6 +1,3 @@
-
-
-
 import 'dart:math';
 import 'dart:async';
 import 'dart:typed_data';
@@ -37,10 +34,7 @@ class _TimersScreenState extends State<TimersScreen> {
     Future.microtask(() {
       // LOAD TODAY REPORT
       context.read<ScreenTimeProvider>().loadTodayReport();
-      
-      // LOAD WEEKLY REPORT (INI YANG DITAMBAH)
-      // context.read<ScreenTimeProvider>().loadWeeklyReport();
-      
+
       final appUsageProvider = context.read<AppUsageProvider>();
       appUsageProvider.checkPermission().then((_) async {
         if (appUsageProvider.hasPermission) {
@@ -119,10 +113,7 @@ class _TimersScreenState extends State<TimersScreen> {
                 color: AppColors.blueLight,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: AppColors.bluePrimary,
-              ),
+              child: const Icon(Icons.arrow_back, color: AppColors.bluePrimary),
             ),
           ),
         ),
@@ -211,18 +202,14 @@ class _TimersScreenState extends State<TimersScreen> {
 
             Row(
               children: [
-                const Expanded(
-                  child: ScreenTimeStatCard(),
-                ),
+                const Expanded(child: ScreenTimeStatCard()),
                 const SizedBox(width: 12),
-                Expanded(
-                  child: SleepStatCard(sleepHours: sleepHours),
-                ),
+                Expanded(child: SleepStatCard(sleepHours: sleepHours)),
               ],
             ),
 
             Visibility(
-              visible: false,
+              visible: true,
               child: Column(
                 children: [
                   const SizedBox(height: 32),
@@ -235,16 +222,16 @@ class _TimersScreenState extends State<TimersScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-            const SizedBox(height: 32),
-            const Text(
-              'Minggu Ini',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.biru,
-              ),
-            ),
-            const SizedBox(height: 12),
+                  const SizedBox(height: 32),
+                  const Text(
+                    'Minggu Ini',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.biru,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
 
                   Consumer<ScreenTimeProvider>(
                     builder: (context, provider, _) {
@@ -370,7 +357,9 @@ class _TimersScreenState extends State<TimersScreen> {
                   onPressed: () => _showSelectionDialog(context),
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 12),
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   child: const Text("Edit"),
@@ -556,12 +545,12 @@ class ScreenTimeStatCard extends StatelessWidget {
       builder: (context, provider, _) {
         final ms = provider.report?.screenOnMs ?? 0;
         final duration = Duration(milliseconds: ms);
-        
+
         // DEBUG - Print untuk cek nilai
         print('🔍 DEBUG Screen Time MS: $ms');
         print('🔍 DEBUG Hours: ${duration.inHours}');
         print('🔍 DEBUG Minutes: ${duration.inMinutes % 60}');
-        
+
         return StatCard(
           title: 'Durasi Layar',
           value: '${duration.inHours}h ${duration.inMinutes % 60}m',
@@ -578,10 +567,7 @@ class ScreenTimeStatCard extends StatelessWidget {
 class SleepStatCard extends StatelessWidget {
   final double sleepHours;
 
-  const SleepStatCard({
-    super.key,
-    required this.sleepHours,
-  });
+  const SleepStatCard({super.key, required this.sleepHours});
 
   @override
   Widget build(BuildContext context) {
@@ -660,7 +646,7 @@ class WeeklyBarChart extends StatelessWidget {
   final List<String> labels;
 
   const WeeklyBarChart({super.key, required this.hours, required this.labels})
-      : assert(hours.length == labels.length);
+    : assert(hours.length == labels.length);
 
   double get average {
     if (hours.isEmpty) return 0;
@@ -710,10 +696,10 @@ class WeeklyBarChart extends StatelessWidget {
                       labels[i],
                       style: TextStyle(
                         fontSize: 12,
-                        color:
-                            isToday ? AppColors.birugelap : Colors.black54,
-                        fontWeight:
-                            isToday ? FontWeight.bold : FontWeight.normal,
+                        color: isToday ? AppColors.birugelap : Colors.black54,
+                        fontWeight: isToday
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                   ],
