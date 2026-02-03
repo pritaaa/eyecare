@@ -4,6 +4,8 @@ import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -21,7 +23,6 @@ import kotlin.collections.HashMap
 class MainActivity : FlutterActivity() {
 
     private val USAGE_CHANNEL = "eye_care/usage_stats"
-    private val SCREEN_CHANNEL = "eye_care/screen_usage"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -58,44 +59,40 @@ class MainActivity : FlutterActivity() {
                     result.success(getInstalledApps())
                 }
 
-                else -> result.notImplemented()
-            }
-        }
-
-        MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            SCREEN_CHANNEL
-        ).setMethodCallHandler { call, result ->
-
-            val pref = getSharedPreferences("screen_usage", Context.MODE_PRIVATE)
-
-            when (call.method) {
-                "getTodayReport" -> {
-                    // KONSEP BARU: Hitung total dari UsageStatsManager (Jumlah semua aplikasi)
-                    val calendar = Calendar.getInstance()
-                    calendar.set(Calendar.HOUR_OF_DAY, 0)
-                    calendar.set(Calendar.MINUTE, 0)
-                    calendar.set(Calendar.SECOND, 0)
-                    calendar.set(Calendar.MILLISECOND, 0)
-                    
-                    val start = calendar.timeInMillis
-                    val end = System.currentTimeMillis()
-                    
-                    // Hitung total durasi aplikasi hari ini
-                    val totalMs = calculateTotalUsage(start, end)
-                    
-                    // Ambil count dari prefs (opsional, jika masih ingin menampilkan jumlah buka layar)
-                    val count = pref.getInt("screen_on_count", 0)
-
-                    val data = mapOf(
-                        "screenOnMs" to totalMs,
-                        "screenOnCount" to count
-                    )
-                    result.success(data)
+                "getTodayScreenTime" -> {
+                    if (!hasUsagePermission()) {
+                        result.error(
+                            "NO_PERMISSION",
+                            "Usage access not granted",
+                            null
+                        )
+                    } else {
+                        result.success(getTodayScreenTime())
+                    }
                 }
 
                 "getWeeklyScreenTime" -> {
-                    result.success(getWeeklyScreenTime())
+                    if (!hasUsagePermission()) {
+                        result.error(
+                            "NO_PERMISSION",
+                            "Usage access not granted",
+                            null
+                        )
+                    } else {
+                        result.success(getWeeklyScreenTime())
+                    }
+                }
+
+                "debugUsageStats" -> {
+                    if (!hasUsagePermission()) {
+                        result.error(
+                            "NO_PERMISSION",
+                            "Usage access not granted",
+                            null
+                        )
+                    } else {
+                        result.success(debugUsageStats())
+                    }
                 }
 
                 else -> result.notImplemented()
@@ -129,8 +126,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun getUsageStats(targetPackages: List<String>?): List<Map<String, Any?>> {
-        val usageStatsManager =
-            getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -140,27 +136,23 @@ class MainActivity : FlutterActivity() {
         val startTime = calendar.timeInMillis
         val endTime = System.currentTimeMillis()
 
-        val stats = usageStatsManager.queryAndAggregateUsageStats(
-            startTime,
-            endTime
-        )
+        val stats = usageStatsManager.queryAndAggregateUsageStats(startTime, endTime)
 
         val resultList = if (targetPackages != null && targetPackages.isNotEmpty()) {
-            // Jika user memilih aplikasi spesifik
             targetPackages.map { pkg ->
                 val usage = stats[pkg]
                 val total = usage?.totalTimeInForeground ?: 0L
                 AbstractMap.SimpleEntry(pkg, total)
             }
         } else {
-            // Default: Top 5 aplikasi hari ini
             val usageMap = HashMap<String, Long>()
+            val excludedPackages = getExcludedPackages()
+
             for ((pkg, usage) in stats) {
                 val total = usage.totalTimeInForeground
                 if (total > 0 &&
                     usage.lastTimeUsed >= startTime &&
-                    !pkg.startsWith("com.android") &&
-                    pkg != packageName
+                    isTrackableApp(pkg, excludedPackages)
                 ) {
                     usageMap[pkg] = total
                 }
@@ -170,23 +162,24 @@ class MainActivity : FlutterActivity() {
 
         val packageManager = applicationContext.packageManager
 
-        return resultList
-            .map {
-                val appName = try {
-                    packageManager.getApplicationLabel(packageManager.getApplicationInfo(it.key, 0)).toString()
-                } catch (e: Exception) {
-                    it.key
-                }
-
-                val appIcon = getAppIcon(it.key)
-
-                mapOf(
-                    "package" to it.key,
-                    "appName" to appName,
-                    "minutes" to (it.value / 1000 / 60),
-                    "appIcon" to appIcon
-                )
+        return resultList.map {
+            val appName = try {
+                packageManager.getApplicationLabel(
+                    packageManager.getApplicationInfo(it.key, 0)
+                ).toString()
+            } catch (e: Exception) {
+                it.key
             }
+
+            val appIcon = getAppIcon(it.key)
+
+            mapOf(
+                "package" to it.key,
+                "appName" to appName,
+                "minutes" to (it.value / 1000 / 60),
+                "appIcon" to appIcon
+            )
+        }
     }
 
     private fun getAppIcon(packageName: String): ByteArray? {
@@ -213,24 +206,103 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    // HELPER BARU: Menghitung total durasi semua aplikasi dalam rentang waktu tertentu
+    /**
+     * Mendapatkan total screen time hari ini dari total semua app usage
+     */
+    private fun getTodayScreenTime(): Map<String, Any> {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        
+        val start = calendar.timeInMillis
+        val end = System.currentTimeMillis()
+        
+        val totalMs = calculateTotalUsage(start, end)
+
+        return mapOf(
+            "totalMs" to totalMs,
+            "hours" to (totalMs / 1000 / 60 / 60),
+            "minutes" to ((totalMs / 1000 / 60) % 60)
+        )
+    }
+
     private fun calculateTotalUsage(startTime: Long, endTime: Long): Long {
         if (!hasUsagePermission()) return 0L
         
         val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
         val stats = usageStatsManager.queryAndAggregateUsageStats(startTime, endTime)
+        val excludedPackages = getExcludedPackages()
         
         var totalMs = 0L
         for ((pkg, usage) in stats) {
             val duration = usage.totalTimeInForeground
-            // Filter standar untuk menghindari aplikasi sistem background (sesuai logika getUsageStats)
-            if (duration > 0 && 
-                !pkg.startsWith("com.android") && 
-                pkg != packageName) {
+            if (duration > 0 && isTrackableApp(pkg, excludedPackages)) {
                 totalMs += duration
             }
         }
         return totalMs
+    }
+
+    private fun getExcludedPackages(): Set<String> {
+        val excluded = HashSet<String>()
+        
+        excluded.add(packageName)
+        
+        val homeIntent = Intent(Intent.ACTION_MAIN)
+        homeIntent.addCategory(Intent.CATEGORY_HOME)
+        val launchers = packageManager.queryIntentActivities(
+            homeIntent, 
+            PackageManager.MATCH_DEFAULT_ONLY
+        )
+        for (launcher in launchers) {
+            excluded.add(launcher.activityInfo.packageName)
+        }
+        
+        excluded.add("com.android.systemui")
+        excluded.add("com.android.launcher")
+        excluded.add("com.android.launcher2")
+        excluded.add("com.android.launcher3")
+        
+        excluded.add("com.google.android.gms")
+        excluded.add("com.google.android.gsf")
+        
+        excluded.add("com.android.inputmethod.latin")
+        excluded.add("com.google.android.inputmethod.latin")
+        excluded.add("com.samsung.android.honeyboard")
+        
+        excluded.add("android")
+        excluded.add("com.android.settings")
+        excluded.add("com.android.packageinstaller")
+        excluded.add("com.android.providers.downloads")
+        excluded.add("com.android.phone")
+        excluded.add("com.android.contacts")
+        
+        return excluded
+    }
+
+    private fun isTrackableApp(pkg: String, excludedPackages: Set<String>): Boolean {
+        if (excludedPackages.contains(pkg)) return false
+        
+        try {
+            val appInfo = packageManager.getApplicationInfo(pkg, 0)
+            
+            if ((appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
+                val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
+                if (launchIntent == null) {
+                    return false
+                }
+            }
+            
+            val launchIntent = packageManager.getLaunchIntentForPackage(pkg)
+            if (launchIntent == null) return false
+            
+            return true
+            
+        } catch (e: PackageManager.NameNotFoundException) {
+            return false
+        }
     }
 
     private fun getWeeklyScreenTime(): List<Map<String, Any>> {
@@ -241,14 +313,12 @@ class MainActivity : FlutterActivity() {
             val cal = Calendar.getInstance()
             cal.add(Calendar.DAY_OF_YEAR, -i)
             
-            // Set Start of Day (00:00:00)
             cal.set(Calendar.HOUR_OF_DAY, 0)
             cal.set(Calendar.MINUTE, 0)
             cal.set(Calendar.SECOND, 0)
             cal.set(Calendar.MILLISECOND, 0)
             val start = cal.timeInMillis
             
-            // Set End of Day (23:59:59) atau Sekarang jika hari ini
             val end = if (i == 0) {
                 System.currentTimeMillis()
             } else {
@@ -259,7 +329,6 @@ class MainActivity : FlutterActivity() {
                 cal.timeInMillis
             }
 
-            // Hitung total usage untuk hari tersebut
             val totalMs = calculateTotalUsage(start, end)
 
             weeklyData.add(
@@ -270,5 +339,42 @@ class MainActivity : FlutterActivity() {
             )
         }
         return weeklyData
+    }
+
+    private fun debugUsageStats(): List<Map<String, Any>> {
+        val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        
+        val stats = usageStatsManager.queryAndAggregateUsageStats(
+            calendar.timeInMillis,
+            System.currentTimeMillis()
+        )
+        
+        val excludedPackages = getExcludedPackages()
+        
+        return stats.entries
+            .filter { it.value.totalTimeInForeground > 0 }
+            .sortedByDescending { it.value.totalTimeInForeground }
+            .map { (pkg, usage) ->
+                val appName = try {
+                    packageManager.getApplicationLabel(
+                        packageManager.getApplicationInfo(pkg, 0)
+                    ).toString()
+                } catch (e: Exception) {
+                    pkg
+                }
+                
+                mapOf(
+                    "package" to pkg,
+                    "appName" to appName,
+                    "minutes" to (usage.totalTimeInForeground / 1000 / 60),
+                    "isTracked" to isTrackableApp(pkg, excludedPackages),
+                    "isExcluded" to excludedPackages.contains(pkg)
+                )
+            }
     }
 }

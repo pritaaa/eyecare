@@ -1,16 +1,14 @@
-import 'package:eye_care_app/screen_time/screen_time_model.dart';
 import 'package:flutter/services.dart';
 
 class ScreenTimeService {
-  static const _channel = MethodChannel('eye_care/screen_usage');
+  static const _channel = MethodChannel(
+    'eye_care/usage_stats',
+  ); // ✅ Ganti channel
 
-  static Future<ScreenTimeModel> fetchTodayReport() async {
-    final result = await _channel.invokeMethod('getTodayReport');
-
-    return ScreenTimeModel(
-      screenOnMs: result['screenOnMs'] ?? 0,
-      screenOnCount: result['screenOnCount'] ?? 0,
-    );
+  // ✅ Method baru - ambil dari getTodayScreenTime (tidak ada screenOnCount lagi)
+  static Future<Map<String, dynamic>> fetchTodayScreenTime() async {
+    final result = await _channel.invokeMethod('getTodayScreenTime');
+    return Map<String, dynamic>.from(result);
   }
 
   static Future<List<Map<String, dynamic>>> fetchWeeklyReport() async {

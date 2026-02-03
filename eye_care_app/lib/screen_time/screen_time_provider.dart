@@ -16,31 +16,65 @@ class ScreenTimeProvider extends ChangeNotifier {
       _loading = true;
       notifyListeners();
 
-      _todayReport = await ScreenTimeService.fetchTodayReport();
-      _weeklyReport = await ScreenTimeService.fetchWeeklyReport();
+      // ✅ Ambil data dari method baru
+      final result = await ScreenTimeService.fetchTodayScreenTime();
+
+      _todayReport = ScreenTimeModel(totalMs: result['totalMs'] ?? 0);
+
+      // DEBUG
+      debugPrint("📱 Today Screen Time: ${_todayReport?.totalMs} ms");
+      debugPrint("📱 Formatted: ${_todayReport?.formatted}");
     } catch (e) {
-      debugPrint("Error loading screen time: $e");
+      debugPrint("❌ Error loading screen time: $e");
     } finally {
       _loading = false;
       notifyListeners();
     }
   }
 
-  // METHOD BARU: Load Weekly Report
   Future<void> loadWeeklyReport() async {
     try {
       _loading = true;
       notifyListeners();
 
       _weeklyReport = await ScreenTimeService.fetchWeeklyReport();
-      
-      // DEBUG: Print untuk cek data weekly
+
+      // DEBUG
       debugPrint("📊 Weekly Report loaded: ${_weeklyReport.length} days");
       for (var day in _weeklyReport) {
-        debugPrint("   ${day['label']}: ${day['usageMs']} ms");
+        final ms = day['usageMs'] as int;
+        final hours = (ms / (1000 * 60 * 60)).toStringAsFixed(1);
+        debugPrint("   ${day['label']}: $hours hours");
       }
     } catch (e) {
-      debugPrint("Error loading weekly report: $e");
+      debugPrint("❌ Error loading weekly report: $e");
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  // ✅ Load both today and weekly dalam satu method
+  Future<void> loadAllReports() async {
+    try {
+      _loading = true;
+      notifyListeners();
+
+      // Load both secara paralel untuk efisiensi
+      final results = await Future.wait([
+        ScreenTimeService.fetchTodayScreenTime(),
+        ScreenTimeService.fetchWeeklyReport(),
+      ]);
+
+      _todayReport = ScreenTimeModel(
+        totalMs: (results[0] as Map<String, dynamic>)['totalMs'] ?? 0,
+      );
+
+      _weeklyReport = results[1] as List<Map<String, dynamic>>;
+
+      debugPrint("✅ All reports loaded successfully");
+    } catch (e) {
+      debugPrint("❌ Error loading reports: $e");
     } finally {
       _loading = false;
       notifyListeners();

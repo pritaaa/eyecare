@@ -32,9 +32,10 @@ class _TimersScreenState extends State<TimersScreen> {
 
   void _loadData() {
     Future.microtask(() {
-      // LOAD TODAY REPORT
-      context.read<ScreenTimeProvider>().loadTodayReport();
+      // ✅ Load screen time reports (today + weekly)
+      context.read<ScreenTimeProvider>().loadAllReports();
 
+      // ✅ Load app usage
       final appUsageProvider = context.read<AppUsageProvider>();
       appUsageProvider.checkPermission().then((_) async {
         if (appUsageProvider.hasPermission) {
@@ -93,6 +94,50 @@ class _TimersScreenState extends State<TimersScreen> {
       setState(() {
         isBedTime ? bedTime = picked : wakeTime = picked;
       });
+    }
+  }
+
+  Future<void> showDebugDialog(BuildContext context) async {
+    const platform = MethodChannel('eye_care/usage_stats');
+
+    try {
+      final List<dynamic> result = await platform.invokeMethod(
+        'debugUsageStats',
+      );
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Debug Usage Stats'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: result.length,
+              itemBuilder: (context, index) {
+                final app = result[index];
+                return ListTile(
+                  title: Text(app['appName']),
+                  subtitle: Text(
+                    '${app['minutes']} min\n'
+                    'Tracked: ${app['isTracked']}\n'
+                    'Excluded: ${app['isExcluded']}',
+                  ),
+                  dense: true,
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Close'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
@@ -543,17 +588,38 @@ class ScreenTimeStatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ScreenTimeProvider>(
       builder: (context, provider, _) {
-        final ms = provider.report?.screenOnMs ?? 0;
-        final duration = Duration(milliseconds: ms);
+        final screenTime = provider.report;
 
-        // DEBUG - Print untuk cek nilai
-        print('🔍 DEBUG Screen Time MS: $ms');
-        print('🔍 DEBUG Hours: ${duration.inHours}');
-        print('🔍 DEBUG Minutes: ${duration.inMinutes % 60}');
+        // ✅ Tampilkan loading atau data
+        if (provider.isLoading) {
+          return const StatCard(
+            title: 'Durasi Layar',
+            value: 'Loading...',
+            icon: Icons.phone_android,
+            color: Colors.white,
+          );
+        }
+
+        if (screenTime == null) {
+          return const StatCard(
+            title: 'Durasi Layar',
+            value: '0h 0m',
+            icon: Icons.phone_android,
+            color: Colors.white,
+          );
+        }
+
+        // ✅ Format display
+        final hours = screenTime.hours;
+        final minutes = screenTime.minutes;
+
+        // DEBUG
+        debugPrint('🔍 Screen Time Card - MS: ${screenTime.totalMs}');
+        debugPrint('🔍 Screen Time Card - Hours: $hours, Minutes: $minutes');
 
         return StatCard(
           title: 'Durasi Layar',
-          value: '${duration.inHours}h ${duration.inMinutes % 60}m',
+          value: '${hours}h ${minutes}m',
           icon: Icons.phone_android,
           color: Colors.white,
         );
