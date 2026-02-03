@@ -4,10 +4,14 @@ import 'package:eye_care_app/screens/clinic_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eye_care_app/screens/test_screen.dart';
 import 'package:eye_care_app/screens/timers_screen.dart';
+// import 'package:sizer/sizer.dart';
 import 'tips_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 import 'package:provider/provider.dart';
+import 'package:eye_care_app/screen_time/screen_time_provider.dart'; // ✅ TAMBAH INI
+import 'package:eye_care_app/screen_time/screen_time_warning.dart'; // ✅ TAMBAH INI
+import 'package:flutter_screenutil/flutter_screenutil.dart'; 
 
 final tips = [
   {
@@ -27,17 +31,53 @@ final tips = [
   },
 ];
 
-class HomeScreen extends StatelessWidget {
+
+class HomeScreen extends StatefulWidget { // ✅ UBAH INI
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState(); // ✅ TAMBAH INI
+}
+
+class _HomeScreenState extends State<HomeScreen> { // ✅ TAMBAH CLASS INI
+  bool _hasCheckedWarning = false; // ✅ Flag biar warning cuma muncul 1x
+  
+  @override
+  void initState() { // ✅ TAMBAH FUNGSI INI
+    super.initState();
+    
+    // Load data + cek warning setelah UI selesai render
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadDataAndCheckWarning();
+    });
+  }
+
+  // ✅ TAMBAH FUNGSI INI
+  Future<void> _loadDataAndCheckWarning() async {
+    if (!mounted) return;
+    
+    try {
+      // Load screen time data
+      await context.read<ScreenTimeProvider>().loadAllReports();
+      
+      // Cek warning hanya 1x
+      if (!_hasCheckedWarning && mounted) {
+        _hasCheckedWarning = true;
+        await ScreenTimeWarning.checkAndShow(context); // ✅ INI YANG MANGGIL WARNING DIALOG
+      }
+    } catch (e) {
+      debugPrint('❌ Error loading data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final textScale = MediaQuery.of(context).textScaleFactor;
+    // final textScale = MediaQuery.of(context).textScaleFactor;
     final username = context.select((AuthProvider p) => p.username);
 
     // Fungsi helper .sp (scaled pixels)
-    double sp(double size) => size * textScale.clamp(1.0, 1.2);
+    // double sp(double size) => size * textScale.clamp(1.0, 1.2);
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -54,9 +94,7 @@ class HomeScreen extends StatelessWidget {
                   Text(
                     'Halo, $username',
                     style: TextStyle(
-                      fontSize: sp(
-                        24,
-                      ), // Menggunakan sp tetap untuk konsistensi
+                      fontSize: 24.sp, // Menggunakan sp tetap untuk konsistensi
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                       // height: 1.2,
@@ -66,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                   Text(
                     'Mari jaga kesehatan mata hari ini',
                     style: TextStyle(
-                      fontSize: sp(14),
+                      fontSize: 14.sp,
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -130,7 +168,7 @@ class HomeScreen extends StatelessWidget {
                             Text(
                               'Tes Kesehatan Mata',
                               style: TextStyle(
-                                fontSize: sp(16),
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.textPrimary,
                               ),
@@ -139,7 +177,7 @@ class HomeScreen extends StatelessWidget {
                             Text(
                               'Tes singkat • Kurang dari 3 menit',
                               style: TextStyle(
-                                fontSize: sp(13),
+                                fontSize: 13.sp,
                                 color: AppColors.textSecondary,
                               ),
                             ),
@@ -164,7 +202,7 @@ class HomeScreen extends StatelessWidget {
               child: Text(
                 'Akses Cepat',
                 style: TextStyle(
-                  fontSize: sp(18),
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
@@ -240,6 +278,9 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+
+
+
 class _QuickCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -259,8 +300,8 @@ class _QuickCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScale = MediaQuery.of(context).textScaleFactor;
-    double sp(double size) => size * textScale.clamp(1.0, 1.2);
+    // final textScale = MediaQuery.of(context).textScaleFactor;
+    // double sp(double size) => size * textScale.clamp(1.0, 1.2);
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -298,7 +339,7 @@ class _QuickCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: sp(14),
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -310,7 +351,7 @@ class _QuickCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: sp(11),
+                fontSize: 11.sp,
                 color: AppColors.textLight,
                 // height: 1.3,
               ),
@@ -378,8 +419,8 @@ class _TipItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textScale = MediaQuery.of(context).textScaleFactor;
-    double sp(double size) => size * textScale.clamp(1.0, 1.2);
+    // final textScale = MediaQuery.of(context).textScaleFactor;
+    // double sp(double size) => size * textScale.clamp(1.0, 1.2);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -401,7 +442,7 @@ class _TipItem extends StatelessWidget {
               child: Text(
                 '✨ Tips',
                 style: TextStyle(
-                  fontSize: sp(11),
+                  fontSize: 11.sp,
                   fontWeight: FontWeight.bold,
                   color: AppColors.bluePrimary,
                 ),
@@ -412,7 +453,7 @@ class _TipItem extends StatelessWidget {
               tip['title'],
               maxLines: 1,
               style: TextStyle(
-                fontSize: sp(20),
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.bluePrimary,
               ),
@@ -421,7 +462,8 @@ class _TipItem extends StatelessWidget {
             Text(
               tip['desc'],
               maxLines: 2,
-              style: TextStyle(fontSize: sp(13), color: AppColors.blueDark),
+              style: TextStyle(
+                fontSize: 13.sp, color: AppColors.blueDark),
             ),
             const Spacer(),
             InkWell(
@@ -445,7 +487,7 @@ class _TipItem extends StatelessWidget {
                       'Selengkapnya',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: sp(12),
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

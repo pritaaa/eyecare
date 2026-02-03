@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
+import 'package:sizer/sizer.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -79,10 +80,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 40),
 
                 /// TITLE
-                const Text(
+                Text(
                   "Buat Akun",
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColors.biru,
                   ),
@@ -158,9 +159,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       "Daftar",
-                      style: TextStyle(fontSize: 16,
+                      style: TextStyle(fontSize: 16.sp,
                       color: Colors.white),
                     ),
                   ),

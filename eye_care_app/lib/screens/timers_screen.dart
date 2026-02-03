@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:sizer/sizer.dart';
 
 class TimersScreen extends StatefulWidget {
   const TimersScreen({super.key});
@@ -392,8 +393,8 @@ class _TimersScreenState extends State<TimersScreen> {
                   provider.selectedApps.isNotEmpty
                       ? 'Penggunaan Aplikasi (Custom)'
                       : 'Penggunaan Aplikasi (Top 5)',
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColors.biru,
                   ),
@@ -441,8 +442,8 @@ class _TimersScreenState extends State<TimersScreen> {
                           Expanded(
                             child: Text(
                               app.appName,
-                              style: const TextStyle(
-                                fontSize: 14,
+                              style: TextStyle(
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black87,
                               ),
@@ -454,8 +455,8 @@ class _TimersScreenState extends State<TimersScreen> {
                     ),
                     Text(
                       _formatDuration(app.minutes),
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style:  TextStyle(
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
                         color: AppColors.biru,
                       ),
@@ -562,7 +563,7 @@ class _TimersScreenState extends State<TimersScreen> {
           const SizedBox(height: 6),
           Text(
             time,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style:  TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -597,6 +598,7 @@ class ScreenTimeStatCard extends StatelessWidget {
             value: 'Loading...',
             icon: Icons.phone_android,
             color: Colors.white,
+            valueColor: AppColors.birugelap, // warna default
           );
         }
 
@@ -606,12 +608,16 @@ class ScreenTimeStatCard extends StatelessWidget {
             value: '0h 0m',
             icon: Icons.phone_android,
             color: Colors.white,
+            valueColor: AppColors.birugelap, // warna default
           );
         }
 
         // ✅ Format display
         final hours = screenTime.hours;
         final minutes = screenTime.minutes;
+
+        // ✅ Tentukan warna berdasarkan durasi
+        final valueColor = hours >= 3 ? Colors.red : AppColors.birugelap;
 
         // DEBUG
         debugPrint('🔍 Screen Time Card - MS: ${screenTime.totalMs}');
@@ -622,6 +628,7 @@ class ScreenTimeStatCard extends StatelessWidget {
           value: '${hours}h ${minutes}m',
           icon: Icons.phone_android,
           color: Colors.white,
+          valueColor: valueColor, // ✅ warna dinamis
         );
       },
     );
@@ -689,8 +696,8 @@ class SleepClockPainter extends CustomPainter {
       final tp = TextPainter(
         text: TextSpan(
           text: '$i',
-          style: const TextStyle(
-            fontSize: 14,
+          style:  TextStyle(
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black45,
           ),
@@ -761,7 +768,7 @@ class WeeklyBarChart extends StatelessWidget {
                     Text(
                       labels[i],
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: isToday ? AppColors.birugelap : Colors.black54,
                         fontWeight: isToday
                             ? FontWeight.bold
@@ -780,11 +787,13 @@ class WeeklyBarChart extends StatelessWidget {
 }
 
 /// ================= STAT CARD =================
+/// ================= STAT CARD =================
 class StatCard extends StatelessWidget {
   final String title;
   final String value;
   final IconData icon;
   final Color color;
+  final Color valueColor; // ✅ tambahkan parameter ini
 
   const StatCard({
     super.key,
@@ -792,6 +801,7 @@ class StatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.color,
+    this.valueColor = AppColors.birugelap, // ✅ default color
   });
 
   @override
@@ -818,10 +828,10 @@ class StatCard extends StatelessWidget {
             children: [
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle( // ✅ ubah jadi TextStyle biasa
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.birugelap,
+                  color: valueColor, // ✅ gunakan warna dinamis
                 ),
               ),
               const SizedBox(height: 4),

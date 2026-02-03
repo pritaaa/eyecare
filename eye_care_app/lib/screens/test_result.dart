@@ -167,6 +167,7 @@ Widget _snellenRow({
   return Container(
     margin: const EdgeInsets.only(bottom: 14),
     padding: const EdgeInsets.all(14),
+    width: double.infinity,
     decoration: BoxDecoration(
       color: color.withOpacity(0.08),
       borderRadius: BorderRadius.circular(14),

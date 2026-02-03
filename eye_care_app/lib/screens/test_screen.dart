@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
+import 'package:sizer/sizer.dart';
 import 'test_result.dart';
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -43,10 +44,10 @@ class _TestScreenState extends State<TestScreen> {
             ),
           ),
         ),
-        title: const Text(
+        title: Text(
           'Tes Mata',
           style: TextStyle(
-            fontSize: 22,
+            fontSize: 22.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
           ),
@@ -63,7 +64,7 @@ class _TestScreenState extends State<TestScreen> {
           'kemudian lakukan pemeriksaan pada jarak 3 meter (±10 feet).',
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: sp(13),
+            fontSize: 13.sp,
             color: AppColors.biru,
             height: 1.4,
           ),
@@ -120,7 +121,7 @@ class _TestScreenState extends State<TestScreen> {
             child: Text(
               'Selesaikan Tes',
               style: TextStyle(
-                fontSize: sp(15),
+                fontSize: 15.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
