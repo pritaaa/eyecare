@@ -212,17 +212,17 @@ class _TimersScreenState extends State<TimersScreen> {
               visible: true,
               child: Column(
                 children: [
-                  const SizedBox(height: 32),
-                  const Text(
-                    'This Week',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.biru,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 22),
+                  // const Text(
+                  //   'This Week',
+                  //   style: TextStyle(
+                  //     fontSize: 18,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: AppColors.biru,
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 12),
+                  // const SizedBox(height: 32),
                   const Text(
                     'Minggu Ini',
                     style: TextStyle(
@@ -231,7 +231,7 @@ class _TimersScreenState extends State<TimersScreen> {
                       color: AppColors.biru,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 18),
 
                   Consumer<ScreenTimeProvider>(
                     builder: (context, provider, _) {
@@ -345,8 +345,8 @@ class _TimersScreenState extends State<TimersScreen> {
               children: [
                 Text(
                   provider.selectedApps.isNotEmpty
-                      ? 'App Usage (Custom)'
-                      : 'App Usage (Top 5)',
+                      ? 'Penggunaan Aplikasi (Custom)'
+                      : 'Penggunaan Aplikasi (Top 5)',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
