@@ -1,21 +1,15 @@
 class ScreenTimeModel {
-  final int screenOnMs;
-  final int screenOnCount;
+  final int totalMs;
 
-  ScreenTimeModel({required this.screenOnMs, required this.screenOnCount});
+  ScreenTimeModel({required this.totalMs});
 
-  Duration get screenOnDuration => Duration(milliseconds: screenOnMs);
+  // Duration untuk display
+  Duration get duration => Duration(milliseconds: totalMs);
 
-  Duration get screenOffDuration {
-    final now = DateTime.now();
-    final startOfDay = DateTime(now.year, now.month, now.day);
+  // Format jam dan menit
+  int get hours => duration.inHours;
+  int get minutes => duration.inMinutes % 60;
 
-    final totalDayMs =
-        now.millisecondsSinceEpoch - startOfDay.millisecondsSinceEpoch;
-
-    final offMs = totalDayMs - screenOnMs;
-    return Duration(milliseconds: offMs < 0 ? 0 : offMs);
-  }
-
-  int get screenOffCount => screenOnCount;
+  // Format string untuk display
+  String get formatted => '${hours}h ${minutes}m';
 }

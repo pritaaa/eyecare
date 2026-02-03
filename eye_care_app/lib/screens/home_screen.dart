@@ -1,6 +1,5 @@
 import 'package:eye_care_app/app_usage/app_usage_view.dart';
 import 'package:eye_care_app/auth/auth_provider.dart';
-import 'package:eye_care_app/screen_time/screen_time_view.dart';
 import 'package:eye_care_app/screens/clinic_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:eye_care_app/screens/test_screen.dart';
@@ -55,7 +54,9 @@ class HomeScreen extends StatelessWidget {
                   Text(
                     'Halo, $username',
                     style: TextStyle(
-                      fontSize: sp(24), // Menggunakan sp tetap untuk konsistensi
+                      fontSize: sp(
+                        24,
+                      ), // Menggunakan sp tetap untuk konsistensi
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
                       // height: 1.2,
@@ -173,9 +174,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             Padding(
-              padding: 
-              const EdgeInsets.symmetric(
-                horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -311,7 +310,7 @@ class _QuickCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: sp(11), 
+                fontSize: sp(11),
                 color: AppColors.textLight,
                 // height: 1.3,
               ),
@@ -431,7 +430,10 @@ class _TipItem extends StatelessWidget {
                 MaterialPageRoute(builder: (_) => const TipsScreen()),
               ),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.bluePrimary,
                   borderRadius: BorderRadius.circular(10),
@@ -448,7 +450,11 @@ class _TipItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    const Icon(Icons.arrow_forward_ios, size: 10, color: Colors.white),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 10,
+                      color: Colors.white,
+                    ),
                   ],
                 ),
               ),
