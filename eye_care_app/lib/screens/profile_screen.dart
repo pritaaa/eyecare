@@ -2,6 +2,7 @@ import 'package:eye_care_app/auth/auth_provider.dart';
 import 'package:eye_care_app/screen_time/screen_time_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import 'login_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 
@@ -37,18 +38,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// HEADER
-              const Text(
+              Text(
                 'Profil',
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 22.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.blueDark,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 'Kelola kebiasaan kesehatan mata Anda',
-                style: TextStyle(fontSize: 15, color: AppColors.textSecondary),
+                style: TextStyle(
+                  fontSize: 15.sp, color: AppColors.textSecondary),
               ),
 
               const SizedBox(height: 28),
@@ -91,10 +93,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Keluar',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.red,
                   ),
@@ -145,8 +147,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Center(
               child: Text(
                 initial,
-                style: const TextStyle(
-                  fontSize: 28,
+                style: TextStyle(
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
@@ -160,16 +162,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Text(
                   username.isNotEmpty ? username : 'Pengguna',
-                  style: const TextStyle(
-                    fontSize: 20,
+                  style:  TextStyle(
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1E3A5F),
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Perhatian kecil untuk mata',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF5EA1DF)),
+                  style: TextStyle(
+                    fontSize: 14.sp, color: Color(0xFF5EA1DF)),
                 ),
               ],
             ),
@@ -294,8 +297,8 @@ class _StatCard extends StatelessWidget {
           Text(
             value,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 28,
+            style: TextStyle(
+              fontSize: 28.sp,
               fontWeight: FontWeight.w700,
               color: AppColors.birugelap,
             ),
@@ -303,7 +306,8 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF7A9CC6)),
+            style: TextStyle(
+              fontSize: 13.sp, color: Color(0xFF7A9CC6)),
           ),
         ],
       ),

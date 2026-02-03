@@ -1,6 +1,7 @@
 import 'package:eye_care_app/screens/home_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class TipOfTheDayCard extends StatelessWidget {
   const TipOfTheDayCard({super.key});
@@ -44,13 +45,13 @@ class TipOfTheDayCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              const Column(
+               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'TIP OF THE DAY',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       letterSpacing: 0.5,
                       color: Colors.white70,
                       fontWeight: FontWeight.w600,
@@ -60,7 +61,7 @@ class TipOfTheDayCard extends StatelessWidget {
                   Text(
                     'Tetap Terhidrasi',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
@@ -70,10 +71,10 @@ class TipOfTheDayCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          const Text(
+           Text(
             'Minumlah banyak air untuk menjaga kelembapan mata dan mengurangi kekeringan. Usahakan minum 8 gelas sehari.',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               color: Colors.white,
               height: 1.6,
             ),
@@ -112,10 +113,10 @@ class TipsScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           'Tips Perawatan Mata',
           style: TextStyle(
-            fontSize: 22,
+            fontSize: 22.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
           ),
@@ -126,7 +127,7 @@ class TipsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children:  [
             // _SearchBar(),
             SizedBox(height: 10),
 
@@ -136,7 +137,7 @@ class TipsScreen extends StatelessWidget {
             Text(
               'Berdasarkan Kategori',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -243,8 +244,8 @@ class CategoryCard extends StatelessWidget {
               const SizedBox(width: 14),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 17,
+                style:  TextStyle(
+                  fontSize: 17.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -276,8 +277,8 @@ class CategoryCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       tip,
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style:  TextStyle(
+                        fontSize: 14.sp,
                         color: AppColors.textSecondary,
                       ),
                     ),

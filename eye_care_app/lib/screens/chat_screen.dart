@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eye_care_app/chatbot/controller.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
+import 'package:sizer/sizer.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -24,9 +25,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           'Asisten Mata',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            fontSize: 22.sp, 
+            fontWeight: FontWeight.w700),
         ),
         backgroundColor: Colors.white,
         foregroundColor: AppColors.teksgelap,
@@ -120,7 +123,7 @@ class _ChatList extends StatelessWidget {
                   msg.text,
                   style: TextStyle(
                     color: isUser ? Colors.black54 : AppColors.teksgelap,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
               ),
@@ -185,9 +188,9 @@ class _OptionSection extends StatelessWidget {
                 },
                 child: Text(
                   option.text,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.birugelap,
-                    fontSize: 14,
+                    fontSize: 14.sp,
                   ),
                 ),
               ),

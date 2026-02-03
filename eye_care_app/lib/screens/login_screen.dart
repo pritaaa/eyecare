@@ -3,6 +3,7 @@ import 'package:eye_care_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 import 'signup_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 
@@ -68,10 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 40),
 
                     /// ===== TITLE =====
-                    const Text(
+                     Text(
                       "Masuk",
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 28.sp,
                         fontWeight: FontWeight.bold,
                         color: AppColors.biru,
                       ),
@@ -161,9 +162,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child: const Text(
+                        child:  Text(
                           "Masuk",
-                          style: TextStyle(fontSize: 16,
+                          style: TextStyle(fontSize: 16.sp,
                           color: Colors.white),
                         ),
                       ),
