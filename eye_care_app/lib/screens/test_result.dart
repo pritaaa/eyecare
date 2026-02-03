@@ -4,7 +4,6 @@ import 'package:eye_care_app/theme/app_text.dart';
 import 'test_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // WAJIB ADA
 
-
 class TestResultScreen extends StatelessWidget {
   final double scale;
 
@@ -27,10 +26,7 @@ class TestResultScreen extends StatelessWidget {
                 color: AppColors.blueLight,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: AppColors.bluePrimary,
-              ),
+              child: const Icon(Icons.arrow_back, color: AppColors.bluePrimary),
             ),
           ),
         ),
@@ -103,8 +99,6 @@ class TestResultScreen extends StatelessWidget {
                               'Penglihatan buruk, disarankan segera pergi ke klinik terdekat',
                           color: Colors.red,
                         ),
-
-
                       ],
                     ),
                   ),
@@ -157,7 +151,6 @@ class TestResultScreen extends StatelessWidget {
   }
 }
 
-
 Widget _snellenRow({
   required String category,
   required String result,
@@ -167,6 +160,7 @@ Widget _snellenRow({
   return Container(
     margin: const EdgeInsets.only(bottom: 14),
     padding: const EdgeInsets.all(14),
+    width: double.infinity,
     decoration: BoxDecoration(
       color: color.withOpacity(0.08),
       borderRadius: BorderRadius.circular(14),
@@ -186,10 +180,7 @@ Widget _snellenRow({
         const SizedBox(height: 4),
         Text(
           result,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 6),
         Text(
@@ -204,4 +195,3 @@ Widget _snellenRow({
     ),
   );
 }
-

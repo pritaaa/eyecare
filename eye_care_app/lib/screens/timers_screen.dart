@@ -288,28 +288,6 @@ class _TimersScreenState extends State<TimersScreen> {
                           ),
                         );
                       }
-
-                      // Jika loading selesai tapi data kosong (Izin belum diberikan)
-                      if (provider.weeklyReport.isEmpty) {
-                        return Center(
-                          child: Column(
-                            children: [
-                              const Text(
-                                "Data tidak tersedia.\nIzinkan akses penggunaan aplikasi.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                              TextButton(
-                                onPressed: () => context
-                                    .read<AppUsageProvider>()
-                                    .requestPermission(),
-                                child: const Text("Buka Pengaturan"),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-
                       // Konversi data dari Provider (ms) ke Jam (double)
                       final List<double> hours = provider.weeklyReport.map((
                         data,
@@ -389,9 +367,7 @@ class _TimersScreenState extends State<TimersScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  provider.selectedApps.isNotEmpty
-                      ? 'Penggunaan Aplikasi (Custom)'
-                      : 'Penggunaan Aplikasi (Top 5)',
+                  'Penggunaan Aplikasi Hari Ini',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
