@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:eye_care_app/theme/app_text.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 
 class TimersScreen extends StatefulWidget {
   const TimersScreen({super.key});
@@ -368,23 +369,26 @@ class _TimersScreenState extends State<TimersScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Penggunaan Aplikasi Hari Ini',
+                  'Penggunaan Aplikasi Hari Ini (Top 5)',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: AppColors.biru,
                   ),
                 ),
-                TextButton(
-                  onPressed: () => _showSelectionDialog(context),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+                Visibility(
+                  visible: false,
+                  child: TextButton(
+                    onPressed: () => _showSelectionDialog(context),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    child: const Text("Edit"),
                   ),
-                  child: const Text("Edit"),
                 ),
               ],
             ),

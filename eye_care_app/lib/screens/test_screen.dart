@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:eye_care_app/theme/app_text.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 import 'test_result.dart';
+
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
 
@@ -16,11 +18,11 @@ class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
     /// ================= MEDIA QUERY =================
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
+    // final width = MediaQuery.of(context).size.width;
+    // final height = MediaQuery.of(context).size.height;
+    // final textScale = MediaQuery.of(context).textScaleFactor;
 
-    double sp(double size) => size * textScale.clamp(1.0, 1.2);
+    // double sp(double size) => size * textScale.clamp(1.0, 1.2);
 
     return Scaffold(
       backgroundColor: AppColors.putih,
@@ -37,10 +39,7 @@ class _TestScreenState extends State<TestScreen> {
                 color: AppColors.blueLight,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: AppColors.bluePrimary,
-              ),
+              child: const Icon(Icons.arrow_back, color: AppColors.bluePrimary),
             ),
           ),
         ),
@@ -54,86 +53,85 @@ class _TestScreenState extends State<TestScreen> {
         ),
       ),
       body: SafeArea(
-  child: Padding(
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      children: [
-        /// ================= INSTRUKSI =================
-        Text(
-          'Atur ukuran tinggi huruf baris 20/20 hingga sekitar ±4 mm menggunakan penggaris, '
-          'kemudian lakukan pemeriksaan pada jarak 3 meter (±10 feet).',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 13.sp,
-            color: AppColors.biru,
-            height: 1.4,
-          ),
-        ),
-
-        const SizedBox(height: 12),
-
-        /// ================= IMAGE AREA =================
-        Expanded(
-          flex: 7,
-          child: ClipRect(
-            child: InteractiveViewer(
-              minScale: 0.6,
-              maxScale: 10,
-              panEnabled: false,
-              onInteractionUpdate: (details) {
-                setState(() {
-                  scale = details.scale.clamp(0.6, 1.8);
-                });
-              },
-              child: SizedBox.expand(
-                child: Image.asset(
-                  'assets/image/snellen.jpeg',
-                  fit: BoxFit.contain,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              /// ================= INSTRUKSI =================
+              Text(
+                'Atur ukuran tinggi huruf baris 20/20 hingga sekitar ±4 mm menggunakan penggaris, '
+                'kemudian lakukan pemeriksaan pada jarak 3 meter (±10 feet).',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  color: AppColors.biru,
+                  height: 1.4,
                 ),
               ),
-            ),
-          ),
-        ),
 
-        const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
-        /// ================= BUTTON =================
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.birugelap,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 4,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => TestResultScreen(scale: scale),
+              /// ================= IMAGE AREA =================
+              Expanded(
+                flex: 7,
+                child: ClipRect(
+                  child: InteractiveViewer(
+                    minScale: 0.6,
+                    maxScale: 10,
+                    panEnabled: false,
+                    onInteractionUpdate: (details) {
+                      setState(() {
+                        scale = details.scale.clamp(0.6, 1.8);
+                      });
+                    },
+                    child: SizedBox.expand(
+                      child: Image.asset(
+                        'assets/image/snellen.jpeg',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
                 ),
-              );
-            },
-            child: Text(
-              'Selesaikan Tes',
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.bold,
               ),
-            ),
+
+              const SizedBox(height: 16),
+
+              /// ================= BUTTON =================
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.birugelap,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 4,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => TestResultScreen(scale: scale),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Selesaikan Tes',
+                    style: TextStyle(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+            ],
           ),
         ),
-
-        const SizedBox(height: 12),
-      ],
-    ),
-  ),
-),
-
+      ),
     );
   }
 }

@@ -3,7 +3,8 @@ import 'package:eye_care_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 import 'signup_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 
@@ -69,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 40),
 
                     /// ===== TITLE =====
-                     Text(
+                    Text(
                       "Masuk",
                       style: TextStyle(
                         fontSize: 28.sp,
@@ -122,20 +123,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             return;
                           }
 
-                          final prefs =
-                              await SharedPreferences.getInstance();
+                          final prefs = await SharedPreferences.getInstance();
                           final storedEmail = prefs.getString('email');
-                          final storedPassword =
-                              prefs.getString('password');
-                          final storedUsername =
-                              prefs.getString('username');
+                          final storedPassword = prefs.getString('password');
+                          final storedUsername = prefs.getString('username');
 
                           if (storedEmail != null &&
                               storedEmail == email &&
                               storedPassword == password) {
-                            await context
-                                .read<AuthProvider>()
-                                .login(storedUsername ?? 'User');
+                            await context.read<AuthProvider>().login(
+                              storedUsername ?? 'User',
+                            );
 
                             if (context.mounted) {
                               Navigator.pushReplacement(
@@ -150,7 +148,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                      "Alamat email atau kata sandi tidak valid"),
+                                    "Alamat email atau kata sandi tidak valid",
+                                  ),
                                 ),
                               );
                             }
@@ -162,10 +161,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        child:  Text(
+                        child: Text(
                           "Masuk",
-                          style: TextStyle(fontSize: 16.sp,
-                          color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),

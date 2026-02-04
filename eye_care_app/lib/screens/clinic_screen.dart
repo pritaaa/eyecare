@@ -5,7 +5,8 @@ import 'package:eye_care_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 
@@ -156,10 +157,7 @@ class _ClinicFinderScreenState extends State<ClinicFinderScreen> {
                 color: AppColors.blueLight,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: AppColors.bluePrimary,
-              ),
+              child: const Icon(Icons.arrow_back, color: AppColors.bluePrimary),
             ),
           ),
         ),

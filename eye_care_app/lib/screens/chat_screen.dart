@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eye_care_app/chatbot/controller.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -25,11 +26,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
     return Scaffold(
       backgroundColor: AppColors.putih,
       appBar: AppBar(
-        title:  Text(
+        title: Text(
           'Asisten Mata',
-          style: TextStyle(
-            fontSize: 22.sp, 
-            fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w700),
         ),
         backgroundColor: Colors.white,
         foregroundColor: AppColors.teksgelap,
@@ -37,16 +36,10 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: _ChatList(scrollController: _scrollController),
-          ),
-          SafeArea(
-            top: false,
-            child: const _OptionSection(),
-          ),
+          Expanded(child: _ChatList(scrollController: _scrollController)),
+          SafeArea(top: false, child: const _OptionSection()),
           const SizedBox(height: 60),
         ],
-        
       ),
     );
   }
@@ -82,18 +75,15 @@ class _ChatList extends StatelessWidget {
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment:
-              isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+          mainAxisAlignment: isUser
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           children: [
             if (!isUser)
               const CircleAvatar(
                 radius: 14,
                 backgroundColor: AppColors.bluePrimary,
-                child: Icon(
-                  Icons.visibility,
-                  size: 16,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.visibility, size: 16, color: Colors.white),
               ),
             const SizedBox(width: 8),
             Flexible(
@@ -105,10 +95,12 @@ class _ChatList extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(16),
                     topRight: const Radius.circular(16),
-                    bottomLeft:
-                        isUser ? const Radius.circular(16) : Radius.zero,
-                    bottomRight:
-                        isUser ? Radius.zero : const Radius.circular(16),
+                    bottomLeft: isUser
+                        ? const Radius.circular(16)
+                        : Radius.zero,
+                    bottomRight: isUser
+                        ? Radius.zero
+                        : const Radius.circular(16),
                   ),
                   boxShadow: [
                     if (!isUser)
@@ -148,11 +140,10 @@ class _OptionSection extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16), // ✅ Kurangi margin dari 70
-      constraints: const BoxConstraints(maxHeight: 180), // ✅ Tambah sedikit tinggi
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 12,
-      ),
+      constraints: const BoxConstraints(
+        maxHeight: 180,
+      ), // ✅ Tambah sedikit tinggi
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.putih,
         boxShadow: [
@@ -188,10 +179,7 @@ class _OptionSection extends StatelessWidget {
                 },
                 child: Text(
                   option.text,
-                  style: TextStyle(
-                    color: AppColors.birugelap,
-                    fontSize: 14.sp,
-                  ),
+                  style: TextStyle(color: AppColors.birugelap, fontSize: 14.sp),
                 ),
               ),
             );

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -48,7 +49,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(
                     Icons.arrow_back,
-                    color: AppColors.birugelap),
+                    color: AppColors.birugelap,
+                  ),
                 ),
 
                 const SizedBox(height: 24),
@@ -161,8 +163,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     child: Text(
                       "Daftar",
-                      style: TextStyle(fontSize: 16.sp,
-                      color: Colors.white),
+                      style: TextStyle(fontSize: 16.sp, color: Colors.white),
                     ),
                   ),
                 ),
@@ -171,31 +172,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 /// LOGIN LINK
                 Center(
-                  child : Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         "Sudah punya akun? ",
                         style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
                         ),
+                      ),
 
                       GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Text(
-                      "Masuk",
-                      style: TextStyle(
-                        color: AppColors.birugelap,
-                        fontWeight: FontWeight.w500,
+                        onTap: () => Navigator.pop(context),
+                        child: const Text(
+                          "Masuk",
+                          style: TextStyle(
+                            color: AppColors.birugelap,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-
                     ],
-                  )
-                  
+                  ),
                 ),
 
                 const SizedBox(height: 40),

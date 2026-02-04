@@ -2,7 +2,8 @@ import 'package:eye_care_app/auth/auth_provider.dart';
 import 'package:eye_care_app/screen_time/screen_time_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 import 'login_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 
@@ -50,7 +51,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 'Kelola kebiasaan kesehatan mata Anda',
                 style: TextStyle(
-                  fontSize: 15.sp, color: AppColors.textSecondary),
+                  fontSize: 15.sp,
+                  color: AppColors.textSecondary,
+                ),
               ),
 
               const SizedBox(height: 28),
@@ -162,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Text(
                   username.isNotEmpty ? username : 'Pengguna',
-                  style:  TextStyle(
+                  style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1E3A5F),
@@ -171,8 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 4),
                 Text(
                   'Perhatian kecil untuk mata',
-                  style: TextStyle(
-                    fontSize: 14.sp, color: Color(0xFF5EA1DF)),
+                  style: TextStyle(fontSize: 14.sp, color: Color(0xFF5EA1DF)),
                 ),
               ],
             ),
@@ -306,8 +308,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 13.sp, color: Color(0xFF7A9CC6)),
+            style: TextStyle(fontSize: 13.sp, color: Color(0xFF7A9CC6)),
           ),
         ],
       ),

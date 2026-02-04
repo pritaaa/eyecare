@@ -1,7 +1,8 @@
 import 'package:eye_care_app/screens/home_screen.dart';
 import 'package:eye_care_app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:sizer/sizer.dart';
 
 class TipOfTheDayCard extends StatelessWidget {
   const TipOfTheDayCard({super.key});
@@ -13,10 +14,7 @@ class TipOfTheDayCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
-          colors: [
-            AppColors.bluePrimary,
-            AppColors.blueDark,
-          ],
+          colors: [AppColors.bluePrimary, AppColors.blueDark],
         ),
         boxShadow: [
           BoxShadow(
@@ -45,7 +43,7 @@ class TipOfTheDayCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-               Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -71,13 +69,9 @@ class TipOfTheDayCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-           Text(
+          Text(
             'Minumlah banyak air untuk menjaga kelembapan mata dan mengurangi kekeringan. Usahakan minum 8 gelas sehari.',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.white,
-              height: 1.6,
-            ),
+            style: TextStyle(fontSize: 14.sp, color: Colors.white, height: 1.6),
           ),
         ],
       ),
@@ -106,14 +100,11 @@ class TipsScreen extends StatelessWidget {
                 color: AppColors.blueLight,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.arrow_back,
-                color: AppColors.bluePrimary,
-              ),
+              child: const Icon(Icons.arrow_back, color: AppColors.bluePrimary),
             ),
           ),
         ),
-        title:  Text(
+        title: Text(
           'Tips Perawatan Mata',
           style: TextStyle(
             fontSize: 22.sp,
@@ -127,7 +118,7 @@ class TipsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children:  [
+          children: [
             // _SearchBar(),
             SizedBox(height: 10),
 
@@ -136,10 +127,7 @@ class TipsScreen extends StatelessWidget {
 
             Text(
               'Berdasarkan Kategori',
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w700,
-              ),
+              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w700),
             ),
             SizedBox(height: 16),
 
@@ -244,10 +232,7 @@ class CategoryCard extends StatelessWidget {
               const SizedBox(width: 14),
               Text(
                 title,
-                style:  TextStyle(
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -277,7 +262,7 @@ class CategoryCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       tip,
-                      style:  TextStyle(
+                      style: TextStyle(
                         fontSize: 14.sp,
                         color: AppColors.textSecondary,
                       ),
