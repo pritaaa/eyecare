@@ -73,7 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ],
                     ),
                     child: Image.asset(
-                      'assets/image/logo.png',
+                      'assets/image/logo2.png',
                       fit: BoxFit.contain,
                     ),
                   ),
